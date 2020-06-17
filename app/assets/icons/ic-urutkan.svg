@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-urutkan-_21">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-urutkan-_21" data-name="ic-urutkan- – 21" clip-path="url(#clip-ic-urutkan-_21)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="sort_1_" data-name="sort (1)" transform="translate(56)">
+      <g id="Group_185" data-name="Group 185" transform="translate(0)">
+        <g id="Group_184" data-name="Group 184">
+          <path id="Path_225" data-name="Path 225" d="M153.667,0l-111,110.723h83.25V305.252h55.5V110.723h83.25Z" transform="translate(-42.667)" fill="#fff"/>
+          <path id="Path_226" data-name="Path 226" d="M309.417,343.861V149.333h-55.5V343.861h-83.25l111,110.723,111-110.723Z" transform="translate(-4.167 44.918)" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

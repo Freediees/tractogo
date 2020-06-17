@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-curentlocation-_23">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-curentlocation-_23" data-name="ic-curentlocation- – 23" clip-path="url(#clip-ic-curentlocation-_23)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <path id="aim" d="M249.968,159.07a90.9,90.9,0,1,0,90.9,90.9A90.872,90.872,0,0,0,249.968,159.07Zm203.155,68.173A204.389,204.389,0,0,0,272.692,46.812V0H227.243V46.812A204.387,204.387,0,0,0,46.812,227.243H0v45.449H46.812A204.39,204.39,0,0,0,227.244,453.124v46.813h45.448V453.124A204.391,204.391,0,0,0,453.124,272.692h46.813V227.243H453.124Zm-203.155,181.8a159.07,159.07,0,1,1,159.07-159.07A159.1,159.1,0,0,1,249.968,409.038Z" transform="translate(0.064 -0.397)"/>
+  </g>
+</svg>

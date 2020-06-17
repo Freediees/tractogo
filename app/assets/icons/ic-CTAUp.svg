@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-CTAup-_14">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-CTAup-_14" data-name="ic-CTAup- – 14" clip-path="url(#clip-ic-CTAup-_14)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="back" transform="translate(815.871 372.521) rotate(90)">
+      <g id="Group_339" data-name="Group 339" transform="translate(-269.52 316.088)">
+        <path id="Path_2760" data-name="Path 2760" d="M200.144,250,387.111,63.021a27.4,27.4,0,0,0,0-38.658L370.729,7.988a27.384,27.384,0,0,0-38.662,0L109.452,230.6a27.591,27.591,0,0,0,0,38.8l222.407,222.4a27.388,27.388,0,0,0,38.666,0l16.38-16.375a27.373,27.373,0,0,0,0-38.662Z" transform="translate(-101.48 0)" fill="#f17c1f"/>
+      </g>
+    </g>
+  </g>
+</svg>

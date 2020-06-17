@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-timeinactive_5">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-timeinactive_5" data-name="ic-timeinactive – 5" clip-path="url(#clip-ic-timeinactive_5)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="clock_1_" data-name="clock (1)" transform="translate(0.494 0.073)">
+      <g id="Group_106" data-name="Group 106">
+        <path id="Path_97" data-name="Path 97" d="M249.749,0C111.818,0,0,111.821,0,249.749S111.818,499.506,249.749,499.506,499.506,387.676,499.506,249.749,387.68,0,249.749,0ZM357.722,297.251H251.838c-.358,0-.691-.087-1.046-.1-.355.017-.686.1-1.046.1a17.274,17.274,0,0,1-17.273-17.273V103.647a17.273,17.273,0,1,1,34.546,0V262.7h90.7a17.273,17.273,0,0,1,.007,34.546Z" fill="#a0a4a8"/>
+      </g>
+    </g>
+  </g>
+</svg>

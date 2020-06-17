@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-image-permata_1">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="image-permata_1" data-name="image-permata – 1" clip-path="url(#clip-image-permata_1)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="pin" transform="translate(68.412)">
+      <g id="Group_107" data-name="Group 107" transform="translate(0)">
+        <path id="Path_101" data-name="Path 101" d="M251.723,0C151.836,0,70.573,81.263,70.573,181.149c0,123.961,162.111,305.944,169.014,313.63a16.317,16.317,0,0,0,24.273,0c6.9-7.687,169.014-189.669,169.014-313.63C432.872,81.263,351.609,0,251.723,0Zm0,272.29a91.141,91.141,0,1,1,91.139-91.14A91.244,91.244,0,0,1,251.723,272.29Z" transform="translate(-70.573 0)" fill="#23419b"/>
+      </g>
+    </g>
+  </g>
+</svg>

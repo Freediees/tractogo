@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-plus-_28">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-plus-_28" data-name="ic-plus- – 28" clip-path="url(#clip-ic-plus-_28)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <path id="more_1_" data-name="more (1)" d="M250,0C112.145,0,0,112.145,0,250S112.145,500,250,500,500,387.855,500,250,387.855,0,250,0ZM359.375,270.832H270.832v88.543a20.832,20.832,0,0,1-41.664,0V270.832H140.625a20.832,20.832,0,0,1,0-41.664h88.543V140.625a20.832,20.832,0,0,1,41.664,0v88.543h88.543a20.832,20.832,0,0,1,0,41.664Zm0,0"  fill="#A0A4A8"/>
+  </g>
+</svg>

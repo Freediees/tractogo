@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-google_4">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-google_4" data-name="ic-google – 4" clip-path="url(#clip-ic-google_4)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="mail" transform="translate(0 -1)">
+      <g id="Group_290" data-name="Group 290" transform="translate(0 64)">
+        <g id="Group_289" data-name="Group 289" transform="translate(0 0)">
+          <path id="Path_412" data-name="Path 412" d="M10.6,94.426c68.623,58.116,189.035,160.36,224.426,192.24,4.751,4.3,9.847,6.49,15.137,6.49s10.366-2.167,15.106-6.449C300.689,254.8,421.1,152.542,489.726,94.426a10.41,10.41,0,0,0,1.465-14.374A41.366,41.366,0,0,0,458.5,64H41.829A41.362,41.362,0,0,0,9.135,80.053,10.409,10.409,0,0,0,10.6,94.426Z" transform="translate(-0.162 -64)" fill="#fff"/>
+          <path id="Path_413" data-name="Path 413" d="M493.958,127.383a10.369,10.369,0,0,0-11.108,1.506C406.748,193.4,309.621,276.1,279.063,303.632c-17.151,15.483-40.955,15.483-58.146-.021C188.344,274.263,79.273,181.541,17.15,128.888A10.417,10.417,0,0,0,0,136.833V398.8a41.707,41.707,0,0,0,41.667,41.666H458.334A41.707,41.707,0,0,0,500,398.8V136.833A10.411,10.411,0,0,0,493.958,127.383Z" transform="translate(0 -65.463)" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

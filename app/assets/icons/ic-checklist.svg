@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-Checklist-_25">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-Checklist-_25" data-name="ic-Checklist- – 25" clip-path="url(#clip-ic-Checklist-_25)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="success" transform="translate(0 0.947)">
+      <path id="Path_494" data-name="Path 494" d="M249.526,0C111.941,0,0,111.932,0,249.526S111.941,499.053,249.526,499.053,499.053,387.121,499.053,249.526,387.111,0,249.526,0ZM388.637,166.309,235.083,339.058a19.211,19.211,0,0,1-26.344,2.236l-95.972-76.777a19.2,19.2,0,0,1,23.983-29.982l81.739,65.385L359.942,140.79a19.2,19.2,0,0,1,28.7,25.519Z" fill="#22409a"/>
+    </g>
+  </g>
+</svg>

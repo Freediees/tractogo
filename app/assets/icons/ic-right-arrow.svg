@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <filter id="Ellipse_194" x="-9" y="-6" width="518" height="518" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <clipPath id="clip-ic-CTADown-_15">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-CTADown-_15" data-name="ic-CTADown- – 15" clip-path="url(#clip-ic-CTADown-_15)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Ellipse_194)">
+      <circle id="Ellipse_194-2" data-name="Ellipse 194" cx="250" cy="250" r="250" fill="#fff"/>
+    </g>
+    <path id="ic_call_received_24px" d="M201.537,18.944,182.593,0,26.872,155.721V67.179H0V201.537H134.358V174.666H45.816Z" transform="translate(249.605 392.114) rotate(-135)" fill="#f17c1f"/>
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-filter-_22">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-filter-_22" data-name="ic-filter- – 22" clip-path="url(#clip-ic-filter-_22)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="filter" transform="translate(23.982 0.469)">
+      <g id="Group_188" data-name="Group 188" transform="translate(-0.344 -0.469)">
+        <g id="Group_187" data-name="Group 187" transform="translate(0 0)">
+          <path id="Path_227" data-name="Path 227" d="M184,236.346a14.817,14.817,0,0,1,4.183,10.225V463l92.954-79.475V246.57a14.817,14.817,0,0,1,4.183-10.225L442.565,65H26.75Z" transform="translate(-7.451 37.001)" fill="#fff"/>
+          <rect id="Rectangle_295" data-name="Rectangle 295" width="453" height="65" transform="translate(0.362)" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

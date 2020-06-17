@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-borderchecklist_26">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-borderchecklist_26" data-name="ic-borderchecklist – 26" clip-path="url(#clip-ic-borderchecklist_26)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="dot">
+      <g id="Group_353" data-name="Group 353">
+        <path id="Path_2789" data-name="Path 2789" d="M250,0C111.932,0,0,111.932,0,250S111.932,500,250,500,500,388.068,500,250,388.068,0,250,0Zm0,458.333C134.943,458.333,41.667,365.057,41.667,250S134.943,41.667,250,41.667,458.333,134.943,458.333,250,365.057,458.333,250,458.333Z" fill="#22409a"/>
+      </g>
+    </g>
+  </g>
+</svg>

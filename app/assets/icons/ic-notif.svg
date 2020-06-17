@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-google_5">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-google_5" data-name="ic-google – 5" clip-path="url(#clip-ic-google_5)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="bell" transform="translate(38.499 0)">
+      <path id="Path_419" data-name="Path 419" d="M416.579,409.749l-.008-.008c-60.253-52.341-86.1-120.074-86.41-226.478A123.283,123.283,0,0,0,293.7,96.585C271.266,74.4,241.958,62.227,211.067,62.227c-.328,0-.656,0-.984,0-65.105.549-118.068,53.955-118.068,119.053,0,54.844-6.779,99.262-20.721,135.792C57.583,353,36.106,383.306,5.638,409.726a14.926,14.926,0,0,0,9.777,26.2l391.379.015a14.924,14.924,0,0,0,9.785-26.2Zm0,0" transform="translate(0 -1.459)" fill="#fff"/>
+      <path id="Path_420" data-name="Path 420" d="M208.926,511.133a71.029,71.029,0,0,0,61.825-36.152l-123.653,0a71.041,71.041,0,0,0,61.829,36.157Zm0,0" transform="translate(-3.436 -11.133)" fill="#fff"/>
+      <path id="Path_421" data-name="Path 421" d="M214.872,31.4a115.626,115.626,0,0,1,48.653,10.7,51.017,51.017,0,0,0-100.685,1.35A118,118,0,0,1,213.888,31.41c.328,0,.656-.008.984-.008Zm0,0" transform="translate(-3.806)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

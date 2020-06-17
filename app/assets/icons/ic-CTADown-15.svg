@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-CTADown-_15">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-CTADown-_15" data-name="ic-CTADown- – 15" clip-path="url(#clip-ic-CTADown-_15)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <path id="ic_call_received_24px" d="M343.96,32.332,311.628,0,45.861,265.767V114.653H0V343.96H229.307V298.1H78.194Z" transform="translate(257.174 504.961) rotate(-135)" fill="#f17c1f"/>
+  </g>
+</svg>

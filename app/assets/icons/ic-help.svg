@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-help">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-help" clip-path="url(#clip-ic-help)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="interface">
+      <g id="Group_1003" data-name="Group 1003">
+        <g id="Group_1002" data-name="Group 1002">
+          <circle id="Ellipse_231" data-name="Ellipse 231" cx="24.414" cy="24.414" r="24.414" transform="translate(225.586 345.215)"/>
+          <path id="Path_2844" data-name="Path 2844" d="M250,0C111.832,0,0,111.813,0,250,0,388.168,111.813,500,250,500c138.168,0,250-111.813,250-250C500,111.832,388.187,0,250,0Zm0,460.937A210.937,210.937,0,1,1,460.937,250,210.823,210.823,0,0,1,250,460.937Z"/>
+          <path id="Path_2845" data-name="Path 2845" d="M254.125,128.5A78.214,78.214,0,0,0,176,206.625a19.531,19.531,0,0,0,39.063,0,39.063,39.063,0,1,1,39.063,39.063,19.531,19.531,0,0,0-19.531,19.531v48.828a19.531,19.531,0,1,0,39.063,0V282.278A78.13,78.13,0,0,0,254.125,128.5Z" transform="translate(-4.125 -3.012)"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

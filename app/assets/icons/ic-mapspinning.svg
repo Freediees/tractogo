@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-mapspinning-_24">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-mapspinning-_24" data-name="ic-mapspinning- – 24" clip-path="url(#clip-ic-mapspinning-_24)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="map" transform="translate(0 0.394)">
+      <path id="Path_2773" data-name="Path 2773" d="M254.911,75a43.911,43.911,0,1,0,43.911,43.911A43.961,43.961,0,0,0,254.911,75Zm0,0" transform="translate(-5.108 -1.815)"/>
+      <path id="Path_2774" data-name="Path 2774" d="M253.1,0a117.113,117.113,0,0,0-99.112,179.474l99.111,158.151,99.111-158.151A117.114,117.114,0,0,0,253.095,0Zm0,190.28A73.185,73.185,0,1,1,326.279,117.1,73.272,73.272,0,0,1,253.1,190.28Zm0,0" transform="translate(-3.292)"/>
+      <path id="Path_2775" data-name="Path 2775" d="M183,509.8H325.42L314.164,421H193.97Zm0,0" transform="translate(-4.43 -10.19)"/>
+      <path id="Path_2776" data-name="Path 2776" d="M197.992,389.37h49.682l-41.46-65.756Zm0,0" transform="translate(-4.792 -7.833)"/>
+      <path id="Path_2777" data-name="Path 2777" d="M343.547,388.821H458.864L422.271,301H332.285Zm0,0" transform="translate(-8.043 -7.286)"/>
+      <path id="Path_2778" data-name="Path 2778" d="M50,388.821H164.911L175.889,301h-89.3Zm0,0" transform="translate(-1.21 -7.286)"/>
+      <path id="Path_2779" data-name="Path 2779" d="M263.094,389.389h49.255l-8.321-64.913Zm0,0" transform="translate(-6.368 -7.854)"/>
+      <path id="Path_2780" data-name="Path 2780" d="M160.042,421H36.588L0,509.8H149.068Zm0,0" transform="translate(0 -10.19)"/>
+      <path id="Path_2781" data-name="Path 2781" d="M471.434,421H347.672l11.259,88.8h149.09Zm0,0" transform="translate(-8.416 -10.19)"/>
+    </g>
+  </g>
+</svg>

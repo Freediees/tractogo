@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-image-permata_3">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="image-permata_3" data-name="image-permata – 3" clip-path="url(#clip-image-permata_3)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="date" transform="translate(2.631)">
+      <path id="Path_98" data-name="Path 98" d="M54.353,105.525A34.594,34.594,0,0,0,89.036,70.911V34.683a34.674,34.674,0,1,0-69.349,0V70.928A34.587,34.587,0,0,0,54.353,105.525Z" transform="translate(314.762)" fill="#23419b"/>
+      <path id="Path_99" data-name="Path 99" d="M492.533,4.319H422.721V21.952a52.788,52.788,0,1,1-105.577,0V4.319H176.267V21.952a52.806,52.806,0,1,1-105.611,0V4.319L.208,3.443V444.328H457.885l35.181-.1Zm-34.683,404.9H35.44V127.563H457.885V409.215Z" transform="translate(-0.208 55.672)" fill="#23419b"/>
+      <path id="Path_100" data-name="Path 100" d="M39.985,105.525a34.609,34.609,0,0,0,34.7-34.614V34.683a34.674,34.674,0,1,0-69.349,0V70.928A34.55,34.55,0,0,0,39.985,105.525Z" transform="translate(82.71)" fill="#23419b"/>
+      <rect id="Rectangle_205" data-name="Rectangle 205" width="55.475" height="48.968" transform="translate(176.162 221.026)" fill="#23419b"/>
+      <rect id="Rectangle_206" data-name="Rectangle 206" width="55.527" height="48.968" transform="translate(265.856 221.026)" fill="#23419b"/>
+      <rect id="Rectangle_207" data-name="Rectangle 207" width="55.475" height="48.968" transform="translate(349.044 221.026)" fill="#23419b"/>
+      <rect id="Rectangle_208" data-name="Rectangle 208" width="55.475" height="48.934" transform="translate(176.162 302.342)" fill="#23419b"/>
+      <rect id="Rectangle_209" data-name="Rectangle 209" width="55.527" height="48.934" transform="translate(265.856 302.342)" fill="#23419b"/>
+      <rect id="Rectangle_210" data-name="Rectangle 210" width="55.475" height="48.934" transform="translate(349.044 302.342)" fill="#23419b"/>
+      <rect id="Rectangle_211" data-name="Rectangle 211" width="55.475" height="48.934" transform="translate(176.162 385.272)" fill="#23419b"/>
+      <rect id="Rectangle_212" data-name="Rectangle 212" width="55.441" height="48.934" transform="translate(88.046 302.342)" fill="#23419b"/>
+      <rect id="Rectangle_213" data-name="Rectangle 213" width="55.441" height="48.934" transform="translate(88.046 385.272)" fill="#23419b"/>
+      <rect id="Rectangle_214" data-name="Rectangle 214" width="55.527" height="48.934" transform="translate(265.856 385.272)" fill="#23419b"/>
+      <rect id="Rectangle_215" data-name="Rectangle 215" width="55.475" height="48.934" transform="translate(349.044 385.272)" fill="#23419b"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-call">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-call" clip-path="url(#clip-ic-call)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="phone" transform="translate(1.054)">
+      <g id="Group_976" data-name="Group 976" transform="translate(0 0)">
+        <path id="Path_2840" data-name="Path 2840" d="M486.4,366.949l-69.776-69.776c-24.92-24.92-67.284-14.951-77.252,17.444-7.476,22.429-32.4,34.889-54.824,29.9-49.84-12.46-117.124-77.252-129.584-129.585-7.476-22.429,7.476-47.349,29.9-54.824,32.4-9.968,42.364-52.332,17.444-77.252L132.538,13.083C112.6-4.361,82.7-4.361,65.254,13.083L17.906,60.431c-47.348,49.84,4.984,181.917,122.108,299.042s249.2,171.95,299.04,122.109L486.4,434.234C503.846,414.3,503.846,384.393,486.4,366.949Z" transform="translate(-0.539 0)" fill="#0038a9"/>
+      </g>
+    </g>
+  </g>
+</svg>

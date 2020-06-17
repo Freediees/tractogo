@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500" viewBox="0 0 500 500">
+  <defs>
+    <clipPath id="clip-ic-unhide">
+      <rect width="500" height="500"/>
+    </clipPath>
+  </defs>
+  <g id="ic-unhide" clip-path="url(#clip-ic-unhide)">
+    <rect width="500" height="500" fill="rgba(255,255,255,0)"/>
+    <g id="eye" transform="translate(0 4.333)">
+      <g id="Group_346" data-name="Group 346" transform="translate(0 74.667)">
+        <g id="Group_345" data-name="Group 345">
+          <path id="Path_2761" data-name="Path 2761" d="M238.908,170.667a68.241,68.241,0,1,0,68.241,68.241A68.295,68.295,0,0,0,238.908,170.667Z" transform="translate(11.31 -68.305)" fill="#cacccf"/>
+          <path id="Path_2762" data-name="Path 2762" d="M250.218,74.667C136.482,74.667,39.353,145.41,0,245.27c39.353,99.859,136.482,170.6,250.218,170.6,113.849,0,210.865-70.744,250.218-170.6C461.084,145.41,364.067,74.667,250.218,74.667Zm0,284.338A113.735,113.735,0,1,1,363.954,245.27,113.777,113.777,0,0,1,250.218,359Z" transform="translate(0 -74.667)" fill="#cacccf"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
