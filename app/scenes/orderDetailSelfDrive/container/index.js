@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Platform, Text, View, Button, ActivityIndicator, Image, Alert } from 'react-native'
+import { Platform, Text, View, Button, ActivityIndicator, Image, Alert, BackHandler } from 'react-native'
 import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
 import I18n from 'react-native-i18n'
 import Moment from 'moment/min/moment-with-locales'
 import OrderDetailWithDriverAction from 'scenes/orderDetailWithDriver/store/actions'
 import OrderDetailSelfDriveAction from 'scenes/orderDetailSelfDrive/store/actions'
-import CarFilterScreenActions from 'scenes/filter/store/actions'
+import CartScreenActions from 'scenes/cartScreen/store/actions'
 import DetailItemSelfDrive from 'components/organism/detailItemSelfDrive'
 import AsyncStorage from '@react-native-community/async-storage'
 import { RENTAL_TIMEBASE, SERVICE_ID_SELF_DRIVE } from 'config'
 import { getFilterObject, getUserProfileObject, pad } from 'function'
 import { generateCheckoutPayload } from 'function/payloadGenerator'
-
+import { doResolveLoginRoute } from 'function/apiRequest'
 
 export function useForceUpdate() {
   const [, setTick] = useState(0)
@@ -35,14 +35,24 @@ const OrderDetailSelfDriveScreen = ({
   navigateHome,
   additionalItems,
   changeAdditionalItems,
+  cartDetails,
+  cartDetailsIsLoading,
+  cartDetailsErrorMessage,
+  fetchCartDetails,
 }) => {
   const { item } = navigation.state.params
 
   const [updated, changeUpdated] = useState(false)
   const [initReady, changeInitReady] = useState(false)
+  const [edit, changeEdit] = useState(false)
 
-  const [totalAmount, changeTotalAmount] = useState(item.discountedPrice || item.priceAmount)
-  const [totalAmountTemp, changeTotalAmountTemp] = useState(item.discountedPrice || item.priceAmount)
+  const [totalAmount, changeTotalAmount] = useState(
+    parseInt(item.discountedPrice) * parseInt(item.duration) ||
+      parseInt(item.priceAmount) * parseInt(item.duration)
+  )
+  const [totalAmountTemp, changeTotalAmountTemp] = useState(
+    parseInt(item.discountedPrice) * parseInt(item.duration) || parseInt(item.priceAmount) * parseInt(item.duration)
+  )
   const [additionPersonName, changeAdditionPersonName] = useState('')
   const [additionPersonPhone, changeAdditionPersonPhone] = useState('')
   const [startDate, changeStartDate] = useState(new Date())
@@ -60,39 +70,65 @@ const OrderDetailSelfDriveScreen = ({
   const [checkedAdditionPerson, changeCheckedAdditionPerson] = useState(false)
   const [isValid, changeIsValid] = useState(false)
   const [returnToggle, changeReturnToggle] = useState(false)
+  const [frontEndValidate, changeFrontEndValidate] = useState(true)
   const forceUpdate = useForceUpdate()
 
   const refreshLocations = (newLocations) => {
+    changeEdit(true)
     changePickUpLocations(newLocations)
     const tempExtras = additionalItems
+    console.log(tempExtras)
     if (newLocations[0].priceExpedition) {
+      console.log('price expe')
+      console.log(newLocations[0])
       if (newLocations[0].priceExpedition[0]) {
-        tempExtras[tempExtras.length - 2].value = newLocations[0].priceExpedition[0].BasePrice
-        tempExtras[tempExtras.length - 2].total = newLocations[0].priceExpedition[0].TotalPrice
+        console.log('tempExtras')
+        console.log(tempExtras[tempExtras.length - 2])
+        tempExtras[tempExtras.length - 2].value = parseInt(newLocations[0].priceExpedition[0].BasePrice)
+        tempExtras[tempExtras.length - 2].total = parseInt(newLocations[0].priceExpedition[0].TotalPrice)
         tempExtras[tempExtras.length - 2].count = newLocations[0].priceExpedition[0].Distance
-        changeTotalAmount(totalAmountTemp + newLocations[0].priceExpedition[0].TotalPrice)
+        console.log(tempExtras[tempExtras.length - 2])
+        changeTotalAmount(
+          parseInt(totalAmountTemp) + parseInt(newLocations[0].priceExpedition[0].TotalPrice)
+        )
+        console.log(tempExtras)
         changeAdditionalItems(tempExtras)
+        forceUpdate()
       } else {
         changeTotalAmount(totalAmountTemp)
         tempExtras[tempExtras.length - 2].value = 0
         tempExtras[tempExtras.length - 2].total = 0
         tempExtras[tempExtras.length - 2].count = 0
         changeAdditionalItems(extras)
+        forceUpdate()
       }
+    } else {
+      changeTotalAmount(totalAmountTemp)
+      tempExtras[tempExtras.length - 2].value = 0
+      tempExtras[tempExtras.length - 2].total = 0
+      tempExtras[tempExtras.length - 2].count = 0
+      changeAdditionalItems(extras)
     }
     forceUpdate()
+    changeEdit(false)
   }
 
   const refreshLocationsDrop = (newLocations) => {
+    changeEdit(true)
     changeDropLocations(newLocations)
     const tempExtras = additionalItems
     if (newLocations[0].priceExpedition) {
       if (newLocations[0].priceExpedition[0]) {
-        tempExtras[tempExtras.length - 1].value = newLocations[0].priceExpedition[0].BasePrice
-        tempExtras[tempExtras.length - 1].total = newLocations[0].priceExpedition[0].TotalPrice
+        tempExtras[tempExtras.length - 1].value = parseInt(newLocations[0].priceExpedition[0].BasePrice)
+        tempExtras[tempExtras.length - 1].total = parseInt(newLocations[0].priceExpedition[0].TotalPrice)
         tempExtras[tempExtras.length - 1].count = newLocations[0].priceExpedition[0].Distance
-        changeTotalAmount(totalAmountTemp + newLocations[0].priceExpedition[0].TotalPrice)
+        console.log(tempExtras[tempExtras.length - 1])
+        changeTotalAmount(
+          parseInt(totalAmountTemp) + parseInt(newLocations[0].priceExpedition[0].TotalPrice)
+        )
+        console.log(tempExtras)
         changeAdditionalItems(tempExtras)
+        forceUpdate()
       } else {
         changeTotalAmount(totalAmountTemp)
         tempExtras[tempExtras.length - 1].value = 0
@@ -100,8 +136,15 @@ const OrderDetailSelfDriveScreen = ({
         tempExtras[tempExtras.length - 1].count = 0
         changeAdditionalItems(extras)
       }
+    } else {
+      changeTotalAmount(totalAmountTemp)
+      tempExtras[tempExtras.length - 1].value = 0
+      tempExtras[tempExtras.length - 1].total = 0
+      tempExtras[tempExtras.length - 1].count = 0
+      changeAdditionalItems(extras)
     }
     forceUpdate()
+    changeEdit(false)
   }
 
   const initSchedules = () => {
@@ -135,8 +178,8 @@ const OrderDetailSelfDriveScreen = ({
       location: {
         name: `Pool ${city.cityName}`,
         address: `${city.item.BranchName}`,
-        lat: city.item.Latitude || 0,
-        long: city.item.Longitude || 0,
+        lat: parseFloat(city.item.Latitude) || 0,
+        lon: parseFloat(city.item.Longitude) || 0,
       },
       isPool: true,
       priceExpedition: [],
@@ -150,8 +193,17 @@ const OrderDetailSelfDriveScreen = ({
     changeSchedules(schedulesArr)
   }
 
+  const changeToggle = (val) => {
+    if (val) {
+      refreshLocationsDrop(pickUpLocations)
+    }
+    changeReturnToggle(val)
+  }
+
   useEffect(() => {
     async function init() {
+      await fetchCartDetails()
+      validateOnFrontEnd()
       const prdID = await AsyncStorage.getItem('prdID')
       const payload = {
         payload: {
@@ -162,7 +214,6 @@ const OrderDetailSelfDriveScreen = ({
         },
         item: item,
       }
-      console.log(payload)
 
       const filterObject = await getFilterObject()
       if (filterObject.selectedCity.cityName) {
@@ -202,6 +253,23 @@ const OrderDetailSelfDriveScreen = ({
     changeUpdated(true)
   }
 
+  const validateOnFrontEnd = async () => {
+    let checkValidate = true
+    changeFrontEndValidate(true)
+    let tempProductId = ''
+    if (cartDetailsIsLoading && cartDetails.length > 0) {
+      cartDetails.forEach((v) => {
+        if (tempProductId !== '' && tempProductId !== v.MsProductId) {
+          checkValidate = false
+          console.log('multiple product')
+        } else {
+          tempProductId = v.MsProductId
+        }
+      })
+      changeFrontEndValidate(checkValidate)
+    }
+  }
+
   /*
   if (!addCartIsLoading) {
     if (addCartErrorMessage) {
@@ -233,12 +301,12 @@ const OrderDetailSelfDriveScreen = ({
         // }
         if (!pickUpLocations || pickUpLocations.length === 0) {
           changeIsValid(false)
-          Alert.alert('Pilih lokasi pick up terlebih dahulu')
+          Alert.alert('Select Location pick up terlebih dahulu')
           return false
         }
         if (!dropLocations || dropLocations.length === 0) {
           changeIsValid(false)
-          Alert.alert('Pilih lokasi drop terlebih dahulu')
+          Alert.alert('Select Location drop terlebih dahulu')
           return false
         }
         changeIsValid(true)
@@ -253,8 +321,9 @@ const OrderDetailSelfDriveScreen = ({
             }
           }
         })
-        let tempPriceDiscount = item.discountedPrice
-        let tempSubtotal = item.discountedPrice + tempPriceExtra + tempPriceExpedition
+        let tempPriceDiscount = item.discountedPrice || item.priceAmount
+        let tempSubtotal =
+          parseInt(tempPriceDiscount) * item.duration + tempPriceExtra + tempPriceExpedition
         const payload = {
           item: item,
           isWithDriver: true,
@@ -269,7 +338,7 @@ const OrderDetailSelfDriveScreen = ({
           city: city,
           PriceExtras: tempPriceExtra,
           PriceExpedition: tempPriceExpedition,
-          PriceDiscount: item.discountedPrice,
+          PriceDiscount: item.discountedPrice || 0,
           SubTotal: tempSubtotal,
           additionalPersonName: checkedAdditionPerson ? additionPersonName : null,
           additionalPersonPhone: checkedAdditionPerson ? additionPersonPhone : null,
@@ -284,7 +353,7 @@ const OrderDetailSelfDriveScreen = ({
         // addCart(newPayload)
       }}
       returnToggle={returnToggle}
-      changeReturnToggle={changeReturnToggle}
+      changeReturnToggle={changeToggle}
       isValid={isValid}
       personName={personName}
       personEmail={personEmail}
@@ -343,7 +412,10 @@ OrderDetailSelfDriveScreen.propTypes = {
   navigateHome: PropTypes.func,
   additionalItems: PropTypes.arrayOf(PropTypes.shape({})),
   changeAdditionalItems: PropTypes.func,
-  
+  cartDetails: PropTypes.arrayOf(PropTypes.shape({})),
+  cartDetailsIsLoading: PropTypes.bool,
+  cartDetailsErrorMessage: PropTypes.string,
+  fetchCartDetails: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
@@ -354,13 +426,18 @@ const mapStateToProps = (state) => ({
   addCartErrorMessage: state.orderDetailWithDriver.addCartErrorMessage,
   addCartSuccessMessage: state.orderDetailWithDriver.addCartSuccessMessage,
   additionalItems: state.orderDetailWithDriver.additionalItems,
+  cartDetails: state.cartScreen.cartDetails,
+  cartDetailsIsLoading: state.cartScreen.cartDetailsIsLoading,
+  cartDetailsErrorMessage: state.cartScreen.cartDetailsErrorMessage,
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchCartDetails: () => dispatch(CartScreenActions.fetchCartDetails()),
   fetchExtras: (payload) => dispatch(OrderDetailSelfDriveAction.fetchExtrasSelfDrive(payload)),
   addCart: (payload) => dispatch(OrderDetailWithDriverAction.addCart(payload)),
   navigateHome: () => dispatch(OrderDetailWithDriverAction.navigateHome()),
-  changeAdditionalItems: (payload) => dispatch(OrderDetailWithDriverAction.changeAdditionalItems(payload)),
+  changeAdditionalItems: (payload) =>
+    dispatch(OrderDetailWithDriverAction.changeAdditionalItems(payload)),
 })
 
 export default connect(

@@ -38,9 +38,15 @@ import PaymentScreen from 'scenes/paymentScreen/container'
 import OrderRatingScreen from 'scenes/orderRatingScreen/container'
 import AirportCarListScreen from 'scenes/airportCarListScreen/container'
 import MyOrderDetailScreen from 'scenes/myOrderDetail/container'
-import PaymentSuccessScreen from 'scenes/paymentSuccessScreen/container'
 import MyOrderItemDetailScreen from 'scenes/myOrderItemDetail/container'
+import OrderDetailAirportScreen from 'scenes/orderDetailAirport/container'
+import PaymentSuccessScreen from 'scenes/paymentSuccessScreen/container'
+import TokenScreen from 'scenes/creditCardScreen/container'
 import MyOrderCancelScreen from 'scenes/myOrderCancel/container'
+import MyOrderRefundScreen from 'scenes/myOrderRefund/container'
+import OrderPaymentDetailScreen from 'scenes/orderDetailPayment/container'
+import NewsDetailScreen from 'scenes/newsDetailScreen/container'
+import RegistrationGoogleScreen from 'scenes/registrationGoogle/container'
 
 import Camera from 'scenes/kYCFaceCamera/container'
 import KYCImage from 'scenes/kYCImage/container'
@@ -52,6 +58,8 @@ import profileDisabled from 'icons/ic-profile-disabled.svg'
 import profileActive from 'icons/ic-profile-active.svg'
 import orderDisabled from 'icons/ic-myorder-disabled.svg'
 import orderActive from 'icons/ic-myorder-active.svg'
+
+import { doResolveLoginRoute, checkAuth } from 'function/apiRequest'
 
 const OnboardingRoutes = createStackNavigator(
   {
@@ -77,6 +85,9 @@ const OnboardingRoutes = createStackNavigator(
     },
     RegisterVerifyScreen: {
       screen: RegisterVerifyScreen,
+    },
+    RegistrationGoogleScreen: {
+      screen: RegistrationGoogleScreen,
     },
   },
   {
@@ -127,7 +138,7 @@ const AirportTransferRoutes = createStackNavigator(
   }
 )
 
-/* Semua routing yang ada di tab EXPLORE */
+/* All routing yang ada di tab EXPLORE */
 const ExploreRoutes = createStackNavigator(
   {
     MainScreen: {
@@ -139,14 +150,17 @@ const ExploreRoutes = createStackNavigator(
     Home: {
       screen: HomeScreen,
     },
+    MyOrderHome: {
+      screen: MyOrderScreen,
+    },
+    NewsDetail: {
+      screen: NewsDetailScreen,
+    },
     CartHome: {
       screen: CartScreen,
     },
     ProfileSetting: {
       screen: ProfileSettingScreen,
-    },
-    Profile: {
-      screen: ProfileScreen,
     },
     ChangePhoneno: {
       screen: ChangePhoneScreen,
@@ -165,9 +179,34 @@ const ExploreRoutes = createStackNavigator(
     },
     OrderDetailWithDriverScreen: {
       screen: OrderDetailWithDriverScreen,
+      navigationOptions: ({ navigation }) => {
+        checkAuth().then((v) => {
+          if (v) {
+          } else {
+            const callback = () => {
+              console.log('with driver replace')
+              navigation.navigate('OrderDetailWithDriverScreen', {
+                item: navigation.state.params.item,
+              })
+            }
+            navigation.replace('LoginScreen', { loginAction: callback })
+          }
+        })
+      },
     },
     OrderDetailSelfDriveScreen: {
       screen: OrderDetailSelfDriveScreen,
+      navigationOptions: ({ navigation }) => {
+        checkAuth().then((v) => {
+          if (v) {
+          } else {
+            const callback = () => {
+              navigation.popToTop()
+            }
+            navigation.replace('LoginScreen', { loginAction: callback })
+          }
+        })
+      },
     },
     LocationPickScreen: {
       screen: LocationPickScreen,
@@ -184,11 +223,46 @@ const ExploreRoutes = createStackNavigator(
     PaymentScreen: {
       screen: PaymentScreen,
     },
+    PaymentSuccessScreen: {
+      screen: PaymentSuccessScreen,
+    },
     AirportCarListScreen: {
       screen: AirportCarListScreen,
     },
-    PaymentSuccessScreen: {
-      screen: PaymentSuccessScreen,
+    CreditCardScreen: {
+      screen: TokenScreen,
+    },
+    OrderDetailAirportScreen: {
+      screen: OrderDetailAirportScreen,
+      navigationOptions: ({ navigation }) => {
+        checkAuth().then((v) => {
+          if (v) {
+          } else {
+            const callback = () => {
+              console.log('erport gengs')
+              navigation.navigate('OrderDetailAirportScreen', {
+                item: navigation.state.params.item,
+              })
+            }
+            navigation.replace('LoginScreen', { loginAction: callback })
+          }
+        })
+      },
+    },
+    LoginScreen: {
+      screen: LoginScreen,
+    },
+    LoginVerifyScreen: {
+      screen: LoginVerifyScreen,
+    },
+    RegisterScreen: {
+      screen: RegisterScreen,
+    },
+    RegisterVerifyScreen: {
+      screen: RegisterVerifyScreen,
+    },
+    RegistrationGoogleScreen: {
+      screen: RegistrationGoogleScreen,
     },
   },
   {
@@ -197,7 +271,7 @@ const ExploreRoutes = createStackNavigator(
   }
 )
 
-/* Semua routing yang ada di tab EXPLORE */
+/* All routing yang ada di tab EXPLORE */
 const CartRoutes = createStackNavigator(
   {
     MainScreen: {
@@ -215,6 +289,24 @@ const CartRoutes = createStackNavigator(
     PaymentSuccessScreen: {
       screen: PaymentSuccessScreen,
     },
+    CreditCardScreen: {
+      screen: TokenScreen,
+    },
+    LoginScreen: {
+      screen: LoginScreen,
+    },
+    LoginVerifyScreen: {
+      screen: LoginVerifyScreen,
+    },
+    RegisterScreen: {
+      screen: RegisterScreen,
+    },
+    RegisterVerifyScreen: {
+      screen: RegisterVerifyScreen,
+    },
+    RegistrationGoogleScreen: {
+      screen: RegistrationGoogleScreen,
+    },
   },
   {
     headerMode: 'none',
@@ -227,6 +319,9 @@ const MyOrderRoutes = createStackNavigator(
     MainScreen: {
       screen: MyOrderScreen,
     },
+    MyOrderScreen: {
+      screen: MyOrderScreen,
+    },
     MyOrderDetailScreen: {
       screen: MyOrderDetailScreen,
     },
@@ -236,8 +331,29 @@ const MyOrderRoutes = createStackNavigator(
     MyOrderCancel: {
       screen: MyOrderCancelScreen,
     },
+    MyOrderRefund: {
+      screen: MyOrderRefundScreen,
+    },
     OrderRating: {
       screen: OrderRatingScreen,
+    },
+    OrderPaymentDetail: {
+      screen: OrderPaymentDetailScreen,
+    },
+    LoginScreen: {
+      screen: LoginScreen,
+    },
+    LoginVerifyScreen: {
+      screen: LoginVerifyScreen,
+    },
+    RegisterScreen: {
+      screen: RegisterScreen,
+    },
+    RegisterVerifyScreen: {
+      screen: RegisterVerifyScreen,
+    },
+    RegistrationGoogleScreen: {
+      screen: RegistrationGoogleScreen,
     },
   },
   {
@@ -271,6 +387,21 @@ const ProfileRoutes = createStackNavigator(
     },
     OrderRating: {
       screen: OrderRatingScreen,
+    },
+    LoginScreen: {
+      screen: LoginScreen,
+    },
+    LoginVerifyScreen: {
+      screen: LoginVerifyScreen,
+    },
+    RegisterScreen: {
+      screen: RegisterScreen,
+    },
+    RegisterVerifyScreen: {
+      screen: RegisterVerifyScreen,
+    },
+    RegistrationGoogleScreen: {
+      screen: RegistrationGoogleScreen,
     },
   },
   {
@@ -364,6 +495,19 @@ const TabNavigator = createMaterialBottomTabNavigator(
     activeColors: Colors.blue,
     barStyle: { backgroundColor: Colors.white },
     defaultNavigationOptions: ({ navigation }) => ({
+      tabBarOnPress: ({ navigation, defaultHandler }) => {
+        checkAuth().then((result) => {
+          if (result === true) {
+            console.log('onPress:', navigation.state.routeName)
+            defaultHandler()
+          } else {
+            const callback = async () => {
+              navigation.popToTop()
+            }
+            doResolveLoginRoute(callback)
+          }
+        })
+      },
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
         const { routeName } = navigation.state
         let svg
@@ -429,33 +573,33 @@ const TabNavigatorCart = createMaterialBottomTabNavigator(
       navigationOptions: {
         title: 'Home',
         gesturesEnabled: false,
-        activeColors: Colors.blue
+        activeColors: Colors.blue,
       },
     },
     MyBooking: {
       screen: HomeScreen,
       navigationOptions: {
         title: 'My Order',
-        tabBarOptions: { 
+        tabBarOptions: {
           activeTintColor: '#000',
           inactiveTintColor: '#fff',
-        }
-      }
+        },
+      },
     },
     Cart: {
       screen: CartRoutes,
       navigationOptions: {
         title: 'Cart',
-        activeColors: Colors.blue
-      }
+        activeColors: Colors.blue,
+      },
     },
     Profile: {
       screen: HomeScreen,
       navigationOptions: {
         title: 'Profile',
-        activeColors: Colors.blue
-      }
-    }
+        activeColors: Colors.blue,
+      },
+    },
   },
   {
     labeled: false,
@@ -464,62 +608,62 @@ const TabNavigatorCart = createMaterialBottomTabNavigator(
     inActiveColors: Colors.smoky_gray,
     activeColors: Colors.blue,
     barStyle: { backgroundColor: Colors.white },
-    defaultNavigationOptions: ({navigation}) => ({
+    defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
-        const { routeName } = navigation.state;
-        let svg;
-        let title = '';
-        let color = '';
+        const { routeName } = navigation.state
+        let svg
+        let title = ''
+        let color = ''
         if (routeName === 'Explore') {
-          title = 'Home';
+          title = 'Home'
           if (focused) {
-            color = Colors.blue;
-            svg = homeActive;
+            color = Colors.blue
+            svg = homeActive
           } else {
-            color = Colors.smoky_grey;
-            svg = homeDisabled;
+            color = Colors.smoky_grey
+            svg = homeDisabled
           }
         } else if (routeName === 'MyBooking') {
-          title = 'My Order';
+          title = 'My Order'
           if (focused) {
-            color = Colors.blue;
-            svg = orderActive;
+            color = Colors.blue
+            svg = orderActive
           } else {
-            color = Colors.smoky_grey;
-            svg = orderDisabled;
+            color = Colors.smoky_grey
+            svg = orderDisabled
           }
         } else if (routeName === 'Profile') {
-          title = 'Profile';
+          title = 'Profile'
           if (focused) {
-            color = Colors.blue;
-            svg = profileActive;
+            color = Colors.blue
+            svg = profileActive
           } else {
-            color = Colors.smoky_grey;
-            svg = profileDisabled;
+            color = Colors.smoky_grey
+            svg = profileDisabled
           }
         } else if (routeName === 'Cart') {
-          title = 'Cart';
+          title = 'Cart'
           if (focused) {
-            color = Colors.blue;
-            svg = cartActive;
+            color = Colors.blue
+            svg = cartActive
           } else {
-            color = Colors.smoky_grey;
-            svg = cartDisabled;
+            color = Colors.smoky_grey
+            svg = cartDisabled
           }
         }
 
         return (
           <View style={{ flex: 1 }}>
-            <View style ={{ alignItems: 'center',  ...Column.col_3, marginTop: -4 }}>
+            <View style={{ alignItems: 'center', ...Column.col_3, marginTop: -4 }}>
               <SvgXml xml={svg} width={16} height={16} />
             </View>
-            <View style ={{ alignItems: 'center', ...Column.col_3 }}>
+            <View style={{ alignItems: 'center', ...Column.col_3 }}>
               <Text style={{ color: color, ...Fonts.f_8, ...Margin.mt_4 }}>{title}</Text>
             </View>
           </View>
-        );
+        )
       },
-    })
+    }),
   }
 )
 

@@ -12,7 +12,6 @@ export default function CardHeaderPrice({ title, value, unit, isPositif }) {
       }}
     >
       <Text style={{ ...Fonts.f_12 }}>{title}</Text>
-      {value && (
         <View style={{ ...Margin.mt_4 }}>
           <Text>
             <Text style={{ ...Fonts.f_10, ...Fonts.text_green }}>{isPositif ? '+ ' : '- '}</Text>
@@ -20,7 +19,7 @@ export default function CardHeaderPrice({ title, value, unit, isPositif }) {
             <Text style={{ ...Fonts.text_smoky_grey, ...Fonts.f_10 }}>{`/ ${unit}`}</Text>
           </Text>
         </View>
-      )}
+      
     </View>
   )
 }

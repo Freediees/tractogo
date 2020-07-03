@@ -18,8 +18,8 @@ export default function CardHeaderCheckOut({ carRentalLabel, rentalDriverLabel, 
 }
 
 CardHeaderCheckOut.defaultProps = {
-  carRentalLabel: 'Sewa Mobil', 
-  rentalDriverLabel: 'Tanpa Sopir', 
+  carRentalLabel: 'Car Rental', 
+  rentalDriverLabel: 'Self Drive', 
   placeLabel: 'Bandung', 
   dateLabel: '26 - 27 April 2020'
 }

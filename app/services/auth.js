@@ -1,16 +1,17 @@
 /* eslint-disable no-return-await */
 import axios from 'axios'
 import { Config } from 'config/index.dev'
-import { LOGIN_SOSMED, LOGIN_VERIFY } from 'config'
+import { LOGIN_SOSMED, LOGIN_VERIFY, POST_REGISTER_GOOGLE, USER } from 'config'
 import { generateSocialitePayload } from 'function/payloadGenerator'
 
 export const postLoginRequest = async (payload) => {
+  console.log(payload)
   console.log('postLoginRequest: ', JSON.stringify(Config.API_URL))
   return await axios
     .post(
       `${Config.API_URL}confirmation`, // login-phone-number`,
       {
-        NoHandphone: payload.NoHandphone,
+        NoHandphone: payload.payload.NoHandphone,
         OtpCode: '1234', // sementara
       },
       {
@@ -31,10 +32,7 @@ export const postLoginVerify = async (payload) => {
   return await axios
     .post(
       `${LOGIN_VERIFY}`, // login-phone-number`,
-      {
-        NoHandphone: payload.NoHandphone,
-        OtpCode: payload.OtpCode,
-      },
+      payload.payload,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +50,7 @@ export const postLoginVerify = async (payload) => {
 }
 
 export const postLoginSocialiteRequest = async (payload) => {
-  const newPayload = await generateSocialitePayload(payload)
+  const newPayload = await generateSocialitePayload(payload.payload)
   console.log('postLoginRequest: ', JSON.stringify(Config.API_URL))
   return axios
     .post(LOGIN_SOSMED, newPayload, {
@@ -71,12 +69,12 @@ export const postRegisterRequest = async (payload) => {
     .post(
       `${Config.API_URL}register-phone-number`,
       {
-        EmailPersonal: payload.EmailPersonal,
-        NoHandphone: payload.NoHandphone,
-        FirstName: payload.FirstName,
-        LastName: payload.LastName,
-        BirthDate: payload.BirthDate,
-        Gender: payload.Gender,
+        EmailPersonal: payload.payload.EmailPersonal,
+        NoHandphone: payload.payload.NoHandphone,
+        FirstName: payload.payload.FirstName,
+        LastName: payload.payload.LastName,
+        BirthDate: payload.payload.BirthDate,
+        Gender: payload.payload.Gender,
       },
       {
         headers: {
@@ -89,12 +87,27 @@ export const postRegisterRequest = async (payload) => {
     .catch((error) => error)
 }
 
+export const postRegisterGoogleRequest = async (payload) => {
+  console.log('user: ', JSON.stringify(payload.payload.payload))
+  console.log('token: ', payload.payload.token)
+  return axios
+    .post(`${POST_REGISTER_GOOGLE}`, payload.payload.payload, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${payload.payload.token}`,
+      },
+    })
+    .then((response) => response)
+    .catch((error) => error)
+}
+
 export const postRegisterVerify = async (payload) => {
   return axios
     .post(
       `${Config.API_URL}confirmation-register`,
       {
-        NoHandphone: payload.NoHandphone,
+        NoHandphone: payload.payload.NoHandphone,
         OtpCode: '1234', // SEMENTARA NUNGGU ID NEXMO
       },
       {
@@ -113,7 +126,7 @@ export const postRetryOTP = async (payload) => {
     .post(
       `${Config.API_URL}retry-otp`,
       {
-        NoHandphone: payload.NoHandphone,
+        NoHandphone: payload.payload.NoHandphone,
       },
       {
         headers: {

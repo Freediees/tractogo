@@ -2,10 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TouchableOpacity, Text, View, Image } from 'react-native'
 import CenterView from 'components/molecules/centerView'
-import Svg, { Ellipse } from 'react-native-svg'
+import Svg, { Ellipse, SvgXml } from 'react-native-svg'
 import { Fonts, ImageSize, Margin, Padding } from 'theme'
 import styles from './styles'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
+import avatar from 'icons/ic-deafult profile.svg'
 
 export default function HeaderProfile({
   imageSource,
@@ -20,10 +21,15 @@ export default function HeaderProfile({
     <View style={styles.contentHeader}>
       <View style={styles.contentlayer}>
         <View style={{ flexDirection: 'row' }}>
-          <Image
+          {/* <Image
             source={imageSource}
-            style={{ ...ImageSize.img_xs, backgroundColor: Colors.white, borderRadius: ImageSize.img_xs.width }}
-          />
+            style={{
+              ...ImageSize.img_xs,
+              backgroundColor: Colors.white,
+              borderRadius: ImageSize.img_xs.width,
+            }}
+          /> */}
+          <SvgXml xml={avatar} width={60} height={60} />
           <View style={styles.contentProfile}>
             <View style={{ ...Margin.ml_20 }}>
               <Text style={{ ...Fonts.f_15, ...Fonts.bold, ...Fonts.text_black }}>{fullName}</Text>

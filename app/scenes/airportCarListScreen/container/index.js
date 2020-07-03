@@ -34,13 +34,14 @@ function AirportCarListScreen({
   filterStocksWithPrice,
   filteredStocks,
   sortStocksWithPrice,
+  resetAirportState,
 }) {
   const [sortItems, changeSortItems] = useState(getSortItems())
   const [chipItems, changeChipItems] = useState(getChipItems())
   const [selectedSortItem, changeSelectedSortItem] = useState(sortItems ? sortItems[0] : null)
   const [selectedSortIndex, changeSelectedSortIndex] = useState(0)
   const [selectedMin, changeSelectedMin] = useState(0)
-  const [selectedMax, changeSelectedMax] = useState(1000000)
+  const [selectedMax, changeSelectedMax] = useState(2000000)
   const [selectedChipItem, changeSelectedChipItem] = useState(chipItems[0])
   const [selectedChipIndex, changeSelectedChipIndex] = useState(0)
 
@@ -50,6 +51,7 @@ function AirportCarListScreen({
 
   useEffect(() => {
     async function initialize() {
+      resetAirportState()
       console.log({ airportStockPayload })
       console.log({ reservationDetails })
       const newPayload = {
@@ -58,6 +60,7 @@ function AirportCarListScreen({
         reservationDetails: reservationDetails,
         forceUpdate: forceUpdate,
       }
+      console.log({ stocks })
       fetchStocks(newPayload)
     }
     initialize()
@@ -75,7 +78,7 @@ function AirportCarListScreen({
       itemsLoading={stocksWithPriceIsLoading}
       minRange={0}
       isAirport={true}
-      maxRange={1000000}
+      maxRange={2000000}
       selectedMin={selectedMin}
       selectedMax={selectedMax}
       chipItems={chipItems}
@@ -94,7 +97,7 @@ function AirportCarListScreen({
         filterStocksWithPrice(stocksWithPrice, payloadFilter)
       }}
       onSortPress={() => {
-        sortStocksWithPrice(stocksWithPrice, selectedSortItem.value)
+        sortStocksWithPrice(filteredStocks, selectedSortItem.value)
         forceUpdate()
       }}
       sortItems={sortItems}
@@ -127,6 +130,7 @@ AirportCarListScreen.propTypes = {
   stocksWithPriceIsLoading: PropTypes.bool,
   stocksWithPriceErrorMessage: PropTypes.string,
   filteredStocks: PropTypes.arrayOf(PropTypes.shape({})),
+  resetAirportState: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
@@ -155,6 +159,7 @@ const mapDispatchToProps = (dispatch) => ({
     console.log(filtered)
     dispatch(AirportCarListScreenActions.changeAirportStocksWithPrice(filtered))
   },
+  resetAirportState: () => dispatch(AirportCarListScreenActions.resetAirportState()),
 })
 
 export default connect(

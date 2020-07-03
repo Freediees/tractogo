@@ -91,7 +91,7 @@ MemberScreen.defaultProps = {
   dataList: [
     {
       icon: require('images/banefit-member-09.png'),
-      title: 'Sewa Mobil Self Drive',
+      title: 'Car Rental Self Drive',
       description: 'Anda dapat mengakses layanan self drive',
     },
     {

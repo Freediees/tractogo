@@ -15,4 +15,5 @@ export const INITIAL_STATE = {
   pricesIsLoading: false,
   pricesErrorMessage: null,
   filteredStocks: [],
+  alertVisible: false,
 }

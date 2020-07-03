@@ -69,12 +69,12 @@ export default function CartItem({
 
 CartItem.defaultProps = {
   style: {},
-  cardTitle: 'Sewa Mobil - Dengan Sopir',
+  cardTitle: 'Car Rental - With Driver',
   city: 'Bandung',
   startDate: new Date(),
   endDate: new Date().getTime() + 86400000,
   rentHour: 12,
-  rentHourSuffix: 'Jam',
+  rentHourSuffix: 'Hour',
   totalAmount: 500000,
   carName: 'TOYOTA ALPHARD',
 }

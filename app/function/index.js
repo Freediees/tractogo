@@ -139,6 +139,26 @@ async function getImage(key) {
   return image
 }
 
+async function addNavCounter() {
+  let counter = await AsyncStorage.getItem('navCounter')
+  if (counter) {
+    counter = parseInt(counter) + 1
+    await AsyncStorage.setItem('navCounter', '' + counter)
+  } else {
+    counter = 1
+    await AsyncStorage.setItem('navCounter', '' + counter)
+  }
+}
+
+async function getNavCounter() {
+  let counter = await AsyncStorage.getItem('navCounter')
+  return counter
+}
+
+async function resetNavCounter() {
+  await AsyncStorage.removeItem('navCounter')
+}
+
 export {
   saveFilterFunc,
   saveFilterObject,
@@ -153,4 +173,7 @@ export {
   isNumeric,
   setImage,
   getImage,
+  addNavCounter,
+  getNavCounter,
+  resetNavCounter,
 }

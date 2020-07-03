@@ -484,7 +484,6 @@ export default function FilterArea({
         onCityClick={onCityClick}
         changeModalVisible={() => {
           changeModalVisible(false)
-          changeSelectedCity({ cityName: null })
         }}
       />
       <CustomTopSheet
@@ -500,7 +499,6 @@ export default function FilterArea({
             changeSelectedDate(date)
           }}
           minDate={minDate}
-          maxDate={maxDate}
           selectedDate={selectedDate}
           weekdays={weekdaysLabel}
           months={monthsLabel}
@@ -509,7 +507,7 @@ export default function FilterArea({
       <CustomBottomSheet
         title={placeHolderStartTime}
         botSheetRef={(ref) => (bsTimePicker = ref)}
-        rightText={() => renderRightText(2)}
+        topRightComponent={() => renderRightText(2)}
       >
         <CustomTimePicker
           okLabel={okLabel}
@@ -525,8 +523,6 @@ export default function FilterArea({
           }}
           onCancelPress={() => {
             if (bsTimePicker) {
-              changeSelectedHour('00')
-              changeSelectedMinute('00')
               bsTimePicker.close()
               onSaveTime()
             }
@@ -536,7 +532,7 @@ export default function FilterArea({
       <CustomBottomSheet
         title={placeHolderDuration}
         botSheetRef={(ref) => (bsDuration = ref)}
-        rightText={() => renderRightText(3)}
+        topRightComponent={() => renderRightText(3)}
       >
         <CustomItemPicker
           items={durationData}
@@ -552,17 +548,15 @@ export default function FilterArea({
           }}
           onCancelPress={() => {
             if (bsDuration) {
-              changeSelectedDurationIndex(-1)
-              changeSelectedDuration({})
               bsDuration.close()
             }
           }}
         />
       </CustomBottomSheet>
       <CustomBottomSheet
-        title={'Pilih Paket Sewa'}
+        title={'Rental Package'}
         botSheetRef={(ref) => (bsPackage = ref)}
-        rightText={() => renderRightText(4)}
+        topRightComponent={() => renderRightText(4)}
       >
         <CustomItemPicker
           items={rentPackageData}
@@ -578,8 +572,6 @@ export default function FilterArea({
           }}
           onCancelPress={() => {
             if (bsPackage) {
-              changeSelectedPackageIndex(-1)
-              changeSelectedPackage({})
               bsPackage.close()
             }
           }}
@@ -590,16 +582,16 @@ export default function FilterArea({
 }
 
 FilterArea.defaultProps = {
-  locationFilterLabel: 'Kota Sewa',
+  locationFilterLabel: 'Pick-up City',
   placeHolderLocationFilter: 'Pilih Kota Sewa',
-  startDateLabel: 'Tanggal Mulai',
+  startDateLabel: 'Pick-up Date',
   placeHolderStartDate: 'Pilih Tanggal Mulai',
-  durationLabel: 'Durasi',
+  durationLabel: 'Duration',
   placeHolderDuration: 'Pilih Durasi',
-  startTimeLabel: 'Waktu Mulai',
-  placeHolderStartTime: 'Pilih Waktu Mulai',
-  packageLabel: 'Paket Sewa',
-  placeHolderPackage: 'Pilih Paket Sewa',
+  startTimeLabel: 'Pick-up Time',
+  placeHolderStartTime: 'Pick-up Time',
+  packageLabel: 'Rental Package',
+  placeHolderPackage: 'Rental Package',
   citiesData: [],
   border: true,
   okLabel: 'Simpan',
@@ -635,15 +627,15 @@ FilterArea.defaultProps = {
   ],
   rentPackageData: [
     {
-      leftLabel: '4 Jam',
+      leftLabel: '4 Hour',
       rightLabel: '09.00 - 13.00 WIB',
     },
     {
-      leftLabel: '8 Jam',
+      leftLabel: '8 Hour',
       rightLabel: '09.00 - 17.00 WIB',
     },
     {
-      leftLabel: '10 Jam',
+      leftLabel: '10 Hour',
       rightLabel: '09.00 - 19.00 WIB',
     },
   ],
@@ -659,7 +651,7 @@ FilterArea.defaultProps = {
   selectedDurationIndex: 0,
   changeSelectedDurationIndex: () => {},
   selectedPackage: {
-    leftLabel: '4 Jam',
+    leftLabel: '4 Hour',
     rightLabel: '09.00 - 13.00 WIB',
   },
   changeSelectedPackage: () => {},
@@ -671,13 +663,13 @@ FilterArea.defaultProps = {
   changeSelectedDate: () => {},
   endDate: new Date().getTime() + 864000000,
   minDate: new Date(),
-  maxDate: new Date().getTime() + 864000000,
+  maxDate: null,
   timeSufix: 'WIB',
   footer: true,
-  startRentLabel: 'Mulai Sewa',
-  endRentLabel: 'Akhir Sewa',
+  startRentLabel: 'Pick-up',
+  endRentLabel: 'Drop-off',
   searchButtonEnabled: false,
-  searchButtonLabel: 'Cari Mobil',
+  searchButtonLabel: 'Search Car',
   onSearchButtonPress: () => {},
   isStartTime: true,
   isPackage: true,

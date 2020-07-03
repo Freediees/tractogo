@@ -1,5 +1,6 @@
 import { NavigationActions, StackActions } from 'react-navigation'
 import AsyncStorage from '@react-native-community/async-storage'
+import { getNavCounter } from 'function'
 
 /**
  * The navigation is implemented as a service so that it can be used outside of components, for example in sagas.
@@ -31,12 +32,33 @@ function navigate(routeName, params) {
   )
 }
 
-function logout() {
-  AsyncStorage.removeItem('token')
-  navigator.dispatch(NavigationActions.navigate('routeOne'))
+function backToPrev(numer) {
+  navigator.dispatch(StackActions.pop(1))
 }
 
-function login() {
+async function backAfterLogin() {
+  const number = parseInt(await getNavCounter())
+  console.log(number)
+  navigator.dispatch(
+    StackActions.pop({
+      n: number,
+    })
+  )
+}
+
+async function logout() {
+  console.log('logging out')
+  await AsyncStorage.removeItem('token')
+  console.log('navigate')
+  console.log(navigator)
+  if (navigator) {
+    console.log('dispatch')
+    navigator.dispatch(NavigationActions.navigate('routeOne'))
+    console.log('test')
+  }
+}
+
+async function login() {
   navigator.dispatch(NavigationActions.navigate('routeTwo'))
 }
 
@@ -50,6 +72,27 @@ function login() {
  * @param params Route parameters.
  */
 function navigateAndReset(routeName, params) {
+  if (navigator) {
+    navigator.dispatch(
+      StackActions.reset({
+        index: 0,
+        key: null,
+        actions: [
+          NavigationActions.navigate({
+            routeName,
+            params,
+          }),
+        ],
+      })
+    )
+  }
+}
+
+function goBack() {
+  navigator.dispatch(NavigationActions.back())
+}
+
+function navigateAndResetNoParam(routeName) {
   navigator.dispatch(
     StackActions.reset({
       index: 0,
@@ -57,7 +100,6 @@ function navigateAndReset(routeName, params) {
       actions: [
         NavigationActions.navigate({
           routeName,
-          params,
         }),
       ],
     })
@@ -84,8 +126,12 @@ function navigateAndResetTabNavigator(tab, routeName) {
 export default {
   navigate,
   navigateAndReset,
+  navigateAndResetNoParam,
   setTopLevelNavigator,
   navigateAndResetTabNavigator,
   login,
   logout,
+  goBack,
+  backToPrev,
+  backAfterLogin,
 }

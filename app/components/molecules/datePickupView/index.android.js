@@ -45,7 +45,7 @@ export default function DatePickupView({
           <Text style={{ ...Fonts.f_12, ...Padding.pv_4, ...style }}>{startDateValue}</Text>
           {packageStartValue !== null && (
             <Text style={{ ...Fonts.f_12, ...Padding.pv_4, ...style }}>
-              {packageStartValue} Jam
+              {packageStartValue} Hour
             </Text>
           )}
         </View>
@@ -57,7 +57,7 @@ export default function DatePickupView({
             <Text style={{ ...Fonts.f_12, ...Padding.pv_4, ...style }}>{endDatevalue}</Text>
             {packageEndValue !== null && (
               <Text style={{ ...Fonts.f_12, ...Padding.pv_4, ...style }}>
-                {packageEndValue} Jam
+                {packageEndValue} Hour
               </Text>
             )}
           </View>
@@ -70,12 +70,12 @@ export default function DatePickupView({
 
 DatePickupView.defaultProps = {
   title: 'Tanggal Mulai dan selesai',
-  startDateLabel: 'Tanggal Mulai',
+  startDateLabel: 'Pick-up Date',
   endDateLabel: 'Tanggal Selesai',
   startDateValue: 'Jumat, 16 Des 2020',
   endDatevalue: null,
-  packageStartValue: '12 Jam',
-  packageEndValue: '12 Jam',
+  packageStartValue: '12 Hour',
+  packageEndValue: '12 Hour',
   checklistLabel: 'Pesan untuk orang lain',
   onCheckedAddition: () => {},
   additionPersonName: null,

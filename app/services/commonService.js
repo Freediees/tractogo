@@ -19,22 +19,16 @@ import {
   GOOGLE_GET_DISTANCE_MATRIX,
   GOOGLE_FIND_PLACE,
   ZONE,
+  SEND_DEVICE_TOKEN,
 } from 'config'
 import NavigationService from 'services/navigationService'
 import { objectToQueryString } from 'function'
+import { defineHeaders, unAuthenticateCallBack } from 'function/apiRequest'
 import AsyncStorage from '@react-native-community/async-storage'
 
 const getStocksRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-    // 'App-Key': SM_APP_KEY,
-  }
+  const headers = await defineHeaders()
   // console.log('SM_APP_KEY', SM_APP_KEY)
-  console.log(`${LIST_STOCK}?${objectToQueryString(payload)}`)
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
   const url = `${LIST_STOCK}?${objectToQueryString(payload)}`
   return axios
     .get(url, {
@@ -48,48 +42,22 @@ const getStocksRequest = async (payload) => {
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getRentalDuration = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(RENTAL_DURATION_CAR_RENTAL, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
       if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
+        return unAuthenticateCallBack(err)
       }
     })
 }
@@ -97,192 +65,81 @@ const getRentalDuration = async (payload) => {
 const getCityCoverage = async (payload) => {
   const buID = await AsyncStorage.getItem('buID')
   const prdID = await AsyncStorage.getItem('prdID')
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  console.log('url', CITY_COVERAGE)
+  const headers = await defineHeaders()
   return axios
     .get(`${CITY_COVERAGE([CID, buID, prdID])}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getMasterAirport = async () => {
   // const buID = await AsyncStorage.getItem('buID')
   // const prdID = await AsyncStorage.getItem('prdID')
-  const AUTH = await AsyncStorage.getItem('token')
-  // const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    // 'Accept-Language': LANG || 'id',
-  }
-  console.log({ MASTER_AIRPORT })
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(MASTER_AIRPORT, {
       headers,
     })
     .then((response) => {
-      console.log('response status', response.status)
-      console.log({ response })
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getAirportCoverage = async (airportCode) => {
   // const buID = await AsyncStorage.getItem('buID')
   // const prdID = await AsyncStorage.getItem('prdID')
-  const AUTH = await AsyncStorage.getItem('token')
-  // const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    // 'Accept-Language': LANG || 'id',
-  }
-  console.log( AIRPORT_COVERAGE + airportCode.payload)
-  console.log({ airportCode })
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(AIRPORT_COVERAGE + airportCode.payload, {
       headers,
     })
     .then((response) => {
-      console.log('response status', response.status)
-      console.log({ response })
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getAdjustmentRetails = async () => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(`${ADJUSTMENT_TIME}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getDistanceMatrixRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  // payload origins=-6.2,122.2132&destinations=-6.23,102.120391
+  const headers = await defineHeaders()
   return axios
     .get(`${GOOGLE_GET_DISTANCE_MATRIX}?${objectToQueryString(payload)}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getDistanceMatrixRequestByAddress = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  // payload origins=-6.2,122.2132&destinations=-6.23,102.120391
+  const headers = await defineHeaders()
   console.log({ payload })
   return axios
     .get(
@@ -292,34 +149,15 @@ const getDistanceMatrixRequestByAddress = async (payload) => {
       }
     )
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getPlaceCoordinate = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   // payload origins=-6.2,122.2132&destinations=-6.23,102.120391
   console.log(`${GOOGLE_FIND_PLACE}?input=${payload}`)
   return axios
@@ -327,235 +165,99 @@ const getPlaceCoordinate = async (payload) => {
       headers,
     })
     .then((response) => {
-      console.log('response coordinate', response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log('error coordinate')
-      console.log({ err })
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getZone = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(`${ZONE([payload.buID, payload.prdID, payload.distance])}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getAddressRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(`${GOOGLE_PLACE_AUTOCOMPLETE}?input=${payload}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getAddressDetailRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(`${GOOGLE_PLACE_DETAIL}?${objectToQueryString(payload)}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getBranchRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(`${BRANCH}/${payload}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getMasterBankRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(`${BANK}?${objectToQueryString(payload)}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getCarTypeRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(`${LIST_CAR_TYPE}/${payload}`, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getMasterProduct = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(LIST_PRODUCT, {
       headers,
@@ -568,82 +270,58 @@ const getMasterProduct = async (payload) => {
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getPromoRequest = async () => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(PROMO, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getNewsRequest = async () => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(CONTENT_ARTICLE, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
+      return unAuthenticateCallBack(err)
+    })
+}
+
+const sentDeviceToken = async (payload) => {
+  const headers = await defineHeaders()
+  return axios
+    .post(
+      SEND_DEVICE_TOKEN,
+      {
+        Type: payload.type,
+        TokenDevice: payload.deviceToken,
+      },
+      {
+        headers,
       }
+    )
+    .then((response) => {
+      console.log(response)
+      return response
+    })
+    .catch((error) => {
+      console.log(error)
+      return error
     })
 }
 
@@ -666,4 +344,5 @@ export const commonService = {
   getPlaceCoordinate,
   getDistanceMatrixRequestByAddress,
   getZone,
+  sentDeviceToken,
 }

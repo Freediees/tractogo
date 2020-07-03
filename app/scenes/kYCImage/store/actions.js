@@ -8,6 +8,8 @@ const { Types, Creators } = createActions({
   putImageSuccess: null,
   putImageLoading: null,
   resetImage: null,
+  setCardData: ['payload'],
+  toggleModal: null,
 })
 
 export const ImageTypes = Types

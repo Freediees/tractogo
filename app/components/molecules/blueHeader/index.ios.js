@@ -28,9 +28,9 @@ export default function BlueHeader({ children, onChatPress, onNotifPress }) {
       <View style={{ flex: 10 }}>
         <Image source={require('images/logo-negatif.png')} style={{ height: 25, width: 100 }} />
       </View>
-      <View style={{ flex: 1, ...Padding.ph_8 }}>
+      {/* <View style={{ flex: 1, ...Padding.ph_8 }}>
         <IconButton onPress={onChatPress} svg={iconChat} />
-      </View>
+      </View> */}
       <View style={{ flex: 1, ...Padding.ph_8 }}>
         <IconButton onPress={onNotifPress} svg={iconNotif} />
       </View>

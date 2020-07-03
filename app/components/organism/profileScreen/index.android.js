@@ -5,6 +5,7 @@ import ButtonCard from 'components/molecules/buttonCard'
 import DefaultHeader from 'components/molecules/defaultHeader'
 import ListItem from 'components/molecules/listItem'
 import HeaderProfile from 'components/molecules/headerProfile'
+import ModalProfile from 'components/molecules/modalProfile'
 import ModalTermsAndCondition from 'components/molecules/modalTermsAndCondition'
 import { Fonts, ImageSize, Margin, Padding, Flex } from 'theme'
 import { change } from 'redux-form'
@@ -25,12 +26,15 @@ export default function ProfileScreen({
   moveToDetail,
   moveToMember,
   dataList,
+  modalContent,
+  modalVisible,
+  toggleModal,
 }) {
-  const [modalVisible, setModalVisible] = useState(false)
+  // const [modalVisible, setModalVisible] = useState(false)
 
-  const changeModalVisible = (value) => {
-    setModalVisible(value)
-  }
+  // const changeModalVisible = (value) => {
+  //   setModalVisible(value)
+  // }
 
   return (
     <View style={{ flex: 1, width: '100%' }}>
@@ -46,7 +50,17 @@ export default function ProfileScreen({
             editLabel={editLabel}
             onEdit={moveToDetail}
           >
-            <View style={{ width: '100%', position: 'absolute', top: -10 }}>
+            <View
+              style={{
+                width: '100%',
+                position: 'absolute',
+                top: -10,
+                borderBottomLeftRadius: 100,
+                borderBottomRightRadius: 100,
+                backgroundColor: 'rgb(230,237,255)',
+                height: 50,
+              }}
+            >
               <ButtonCard
                 onPress={moveToMember.bind(this)}
                 label={memberLabel}
@@ -69,7 +83,7 @@ export default function ProfileScreen({
                   title={a.title}
                   body={a.body}
                   //onPress={a.pencet.bind(this)}
-                  onPress={ a.type == 'modal' ? changeModalVisible.bind(this, true) : a.onPress.bind(this) }
+                  onPress={a.type == 'modal' ? a.onPress.bind(this) : a.onPress.bind(this)}
                   //onPress={changeModalVisible.bind(this, true)}
                 />
               )
@@ -77,10 +91,9 @@ export default function ProfileScreen({
           </View>
         </View>
       </View>
-      <ModalTermsAndCondition modalVisible={modalVisible} changeModalVisible={changeModalVisible} />
-    
-      
-      
+      <ModalProfile visible={modalVisible} toggleModal={toggleModal}>
+        {modalContent}
+      </ModalProfile>
     </View>
   )
 }
@@ -89,14 +102,14 @@ ProfileScreen.defaultProps = {
   moveToMember: () => {},
   moveToDetail: () => {},
   title: 'My Account',
-  fullName: 'Firdaus Ryan',
-  email: 'firdausryan@gmail.com',
-  phoneNo: '123456',
-  editLabel: 'UBAH',
+  fullName: ' - ',
+  email: ' - ',
+  phoneNo: ' - ',
+  editLabel: 'Change',
   onGoogleLoginSuccess: false,
-  memberLabel: 'DATA MEMBER',
-  memberDesc: 'Anda mempunyai 2 Benefit',
-  avatarImg: require('images/TOM.png'),
+  memberLabel: 'Verified your member',
+  memberDesc: ' ',
+  avatarImg: require('icons/ic-deafult profile.svg'),
   imgMember: {
     uri:
       'https://cdn.zeplin.io/5e29ad5448bfce96eef74049/assets/dea2c681-bc35-4968-bf1d-76140ee72245.png',
@@ -107,6 +120,7 @@ ProfileScreen.defaultProps = {
   onPrivate: () => {},
   onSetting: () => {},
   onLogout: () => {},
+  modalVisible: false,
 }
 
 ProfileScreen.propTypes = {
@@ -131,4 +145,5 @@ ProfileScreen.propTypes = {
   onLogout: PropTypes.func,
   moveToDetail: PropTypes.func,
   moveToMember: PropTypes.func,
+  modalVisible: PropTypes.bool,
 }

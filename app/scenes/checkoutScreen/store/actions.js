@@ -2,10 +2,12 @@ import { createActions } from 'reduxsauce'
 
 const { Types, Creators } = createActions({
   postCheckout: ['payload'],
+  postCheckoutCC: ['payload'],
   postCheckoutLoading: null,
   postCheckoutSuccess: ['successMessage'],
   postCheckoutFailure: ['errorMessage'],
   postCheckoutWithoutCart: ['payload'],
+  postCheckoutWithoutCartCC: ['payload'],
   postCheckoutWithoutCartLoading: null,
   postCheckoutWithoutCartSuccess: ['successMessage'],
   postCheckoutWithoutCartFailure: ['errorMessage'],

@@ -25,6 +25,7 @@ const { Types, Creators } = createActions({
   fetchZoneLoading: null,
   fetchZoneSuccess: ['zone'],
   fetchZoneFailure: ['errorMessage'],
+  changeSelectedDate: ['payload'],
 })
 
 export const AirportFilterScreenTypes = Types

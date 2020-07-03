@@ -52,9 +52,9 @@ export default function CardLocation({
   dateBefore,
   locationBefore,
   changeToggle,
+  checked,
+  changeChecked,
 }) {
-  const [checked, changeChecked] = useState(true)
-
   let bsTimePicker = null
 
   const onValueChange = (hour, minute) => {
@@ -206,7 +206,7 @@ export default function CardLocation({
               placeholder={notesPlaceholder}
               editable={true}
               value={notes}
-              onChange={(value) => {
+              onChangeText={(value) => {
                 onNoteChange(value)
               }}
               placeholderTextColor={Colors.grey}
@@ -313,7 +313,7 @@ export default function CardLocation({
               placeholder={notesPlaceholder}
               editable={true}
               value={notes}
-              onChange={(value) => {
+              onChangeText={(value) => {
                 onNoteChange(value)
               }}
               placeholderTextColor={Colors.grey}
@@ -362,7 +362,7 @@ CardLocation.defaultProps = {
     lon: 106.816666,
   },
   notesPlaceholder: 'Notes',
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   date: new Date(),
   notes: null,
   onNoteChange: () => {},
@@ -383,6 +383,8 @@ CardLocation.defaultProps = {
   locationBefore: null,
   changeLocation: () => {},
   changeToggle: () => {},
+  checked: true,
+  changeChecked: () => {},
 }
 
 CardLocation.propTypes = {
@@ -411,4 +413,6 @@ CardLocation.propTypes = {
   locationBefore: PropTypes.shape({}),
   changeLocation: PropTypes.func,
   changeToggle: PropTypes.func,
+  checked: PropTypes.bool,
+  changeChecked: PropTypes.func,
 }

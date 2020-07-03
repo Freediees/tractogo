@@ -26,13 +26,15 @@ const MyOrderItemDetailContainer = ({
 
   // sementara nanti data ini diganti sama data dari fetchData dari backend
   const [titleLabel, setTitleLabel] = useState('Sopir menuju titik penjemputan anda')
-  const [infoLabel, setInfoLabel] = useState('Sewa mobil - Dengan driver')
-  const [currentActivity, setCurrentActivity] = useState(4)
+  const [infoLabel, setInfoLabel] = useState('Car Rental - Dengan driver')
+  const [currentActivity, setCurrentActivity] = useState(0)
 
   useEffect(() => {
     async function initialize() {
-      fetchorderDetail()
     }
+    console.log('testtt')
+    console.log(item)
+    console.log(reservation)
     initialize()
   }, [])
 
@@ -41,9 +43,9 @@ const MyOrderItemDetailContainer = ({
       item={item}
       reservation={reservation}
       onIconLeftPress={() => navigation.goBack()}
+      onRatingPress={(index) => navigation.navigate('OrderRating', { item: item[index] })}
       titleLabel={titleLabel}
       infoLabel={infoLabel}
-      currentActivity={currentActivity}
     />
   )
 }

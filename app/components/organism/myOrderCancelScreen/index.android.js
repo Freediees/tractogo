@@ -7,7 +7,7 @@ import PrimaryButton from 'components/atom/primaryButton'
 import TextInputFloat from 'components/atom/textInputFloat'
 import TextButton from 'components/atom/textButton'
 import DefaultHeader from 'components/molecules/defaultHeader'
-import CustomLeftCheckAccordion from 'components/atom/customLeftCheckAccordion'
+import CustomLeftCheckAccordion from 'components/atom/customLeftCheckAccordion2'
 import CustomBottomSheet from 'components/molecules/customBottomSheet'
 import CustomPickerButton from 'components/molecules/customPickerButton'
 import ModalTermsAndCondition from 'components/molecules/modalTermsAndCondition'
@@ -19,22 +19,49 @@ import { SvgXml } from 'react-native-svg'
 import backIcon from 'icons/ic-back.svg'
 import caret from 'icons/ic-CTADown.svg'
 
+import Spinner from 'react-native-loading-spinner-overlay'
+
 export default function MyOrderCancelScreen({
   onIconLeftPress,
+  isRefund,
+  isLoadingCancel,
   title,
   termsModalTitle,
   termsModalItems,
-  reason1Label,
-  reason2Label,
-  reason3Label,
   bsBank,
   bankLabel,
   actionLabel,
   onPressTitle,
+  accountNumber,
+  changeAccountNumber,
+  accountName,
+  changeAccountName,
+  reasons,
+  changeReasons,
+  selectedItem,
+  changeSelectedItem,
+  bankData,
+  bankName,
+  setBankName,
+  reasonLabel,
+  otherReason,
+  changeOtherReason,
   topRightBottomSheetTitle,
+  onSubmit,
 }) {
   const [modalTerms, changeModalTerms] = useState(false)
-  const [bankName, setBankName] = useState('BCA')
+
+  const changeItemChecked = (index, val) => {
+    let tempReasons = reasons
+    if (tempReasons[index].checked === false) {
+      tempReasons.forEach((v) => {
+        v.checked = false
+      })
+      tempReasons[index].checked = val
+      changeSelectedItem(tempReasons[index])
+      changeReasons(tempReasons)
+    }
+  }
 
   return (
     <View
@@ -44,6 +71,7 @@ export default function MyOrderCancelScreen({
         flexDirection: 'column',
       }}
     >
+      <Spinner visible={isLoadingCancel} textContent={'Submit Cancel...'} />
       <DefaultHeader
         isBlack
         border={true}
@@ -52,7 +80,7 @@ export default function MyOrderCancelScreen({
         onIconLeftPress={onIconLeftPress}
       />
       <View style={{ flex: 9 }}>
-        <ScrollView style={{ ...Background.bg_light_grey }}>
+        <ScrollView style={{ ...Background.bg_white }}>
           <View
             style={{
               ...Background.bg_white,
@@ -60,104 +88,136 @@ export default function MyOrderCancelScreen({
               ...Padding.ph_16,
             }}
           >
-            <CustomLeftCheckAccordion
-              renderHeader={() => {
-                return (
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ ...Fonts.f_12 }}>{reason1Label}</Text>
-                    </View>
-                  </View>
-                )
-              }}
-            />
-            <CustomLeftCheckAccordion
-              renderHeader={() => {
-                return (
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ ...Fonts.f_12 }}>{reason2Label}</Text>
-                    </View>
-                  </View>
-                )
-              }}
-            />
-            <CustomLeftCheckAccordion
-              renderHeader={() => {
-                return (
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ ...Fonts.f_12 }}>{reason3Label}</Text>
-                    </View>
-                  </View>
-                )
-              }}
-            />
-          </View>
-          <View
-            style={{
-              ...Background.bg_white,
-              ...Padding.pv_16,
-              ...Padding.ph_16,
-            }}
-          >
-            <Text style={{ ...Fonts.f_12, ...Fonts.semibold, ...Margin.mh_16, ...Margin.mb_8 }}>
-              {bankLabel}
+            <Text style={{ ...Fonts.f_12, ...Fonts.semibold, ...Margin.mv_16, ...Margin.mh_16 }}>
+              {reasonLabel}
             </Text>
-            <View
-              style={{
-                ...Style.pickerWrapper,
-                ...Margin.mh_16,
-                paddingTop: 10,
-                alignItems: 'center',
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => bsBank.open()}
-                style={{ flexDirection: 'row', height: 30 }}
-              >
-                <View style={{ width: '95%' }}>
-                  <Text>{bankName}</Text>
-                </View>
-
-                <View>
-                  <SvgXml xml={caret} width={16} height={16} />
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                ...Margin.mt_8,
-                ...Padding.ph_16,
-                flexDirection: 'column',
-                ...Background.bg_white,
-              }}
-            >
-              <TextInputFloat
-                placeholder={'Account Number'}
-                value={''}
-                maxLength={12}
-                numberOfLines={1}
-                placeholderTextColor={Colors.grey}
-              />
-            </View>
-            <View
-              style={{
-                ...Margin.mt_8,
-                ...Padding.ph_16,
-                flexDirection: 'column',
-                ...Background.bg_white,
-              }}
-            >
-              <TextInputFloat
-                placeholder={'Account Name'}
-                value={''}
-                maxLength={12}
-                numberOfLines={1}
-                placeholderTextColor={Colors.grey}
-              />
-            </View>
+            {reasons &&
+              reasons.length > 0 &&
+              reasons.map((v, i) => {
+                if (v.item && v.item.Id === 'CNL-003') {
+                  return (
+                    <CustomLeftCheckAccordion
+                      renderHeader={() => {
+                        return (
+                          <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flex: 1 }}>
+                              <Text style={{ ...Fonts.f_12 }}>{v ? v.label : ''}</Text>
+                            </View>
+                          </View>
+                        )
+                      }}
+                      checked={v.checked}
+                      changeChecked={(val) => {
+                        changeItemChecked(i, val)
+                      }}
+                    >
+                      <TextInput
+                        multiline
+                        numberOfLines={4}
+                        onChangeText={(text) => changeOtherReason(text)}
+                        value={otherReason}
+                        placeholder={'Other Reason'}
+                        style={{
+                          height: 100,
+                          ...Fonts.f_12,
+                          ...Padding.pv_8,
+                          ...Padding.ph_8,
+                          borderColor: Colors.grey,
+                          borderWidth: 1,
+                          borderRadius: 8,
+                        }}
+                      />
+                    </CustomLeftCheckAccordion>
+                  )
+                } else {
+                  return (
+                    <CustomLeftCheckAccordion
+                      renderHeader={() => {
+                        return (
+                          <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flex: 1 }}>
+                              <Text style={{ ...Fonts.f_12 }}>{v ? v.label : ''}</Text>
+                            </View>
+                          </View>
+                        )
+                      }}
+                      checked={v.checked}
+                      changeChecked={(val) => {
+                        changeItemChecked(i, val)
+                      }}
+                    />
+                  )
+                }
+              })}
           </View>
+          {isRefund && (
+            <View
+              style={{
+                ...Background.bg_white,
+                ...Padding.pv_16,
+                ...Padding.ph_16,
+              }}
+            >
+              <Text style={{ ...Fonts.f_12, ...Fonts.semibold, ...Margin.mh_16, ...Margin.mb_20 }}>
+                {bankLabel}
+              </Text>
+              <View
+                style={{
+                  ...Style.pickerWrapper,
+                  ...Margin.mh_16,
+                  paddingTop: 10,
+                  alignItems: 'center',
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => bsBank.open()}
+                  style={{ flexDirection: 'row', height: 30 }}
+                >
+                  <View style={{ width: '95%' }}>
+                    <Text>{bankName || 'Bank Tujuan'}</Text>
+                  </View>
+                  <View>
+                    <SvgXml xml={caret} width={16} height={16} />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  ...Margin.mt_20,
+                  ...Padding.ph_16,
+                  flexDirection: 'column',
+                  ...Background.bg_white,
+                }}
+              >
+                <TextInputFloat
+                  placeholder={'Account Number'}
+                  value={accountNumber}
+                  onChange={(val) => changeAccountNumber(val)}
+                  type={'numeric'}
+                  maxLength={12}
+                  numberOfLines={1}
+                  placeholderTextColor={Colors.grey}
+                />
+              </View>
+              <View
+                style={{
+                  ...Margin.mt_20,
+                  ...Padding.ph_16,
+                  flexDirection: 'column',
+                  ...Background.bg_white,
+                }}
+              >
+                <TextInputFloat
+                  placeholder={'Account Name'}
+                  maxLength={12}
+                  numberOfLines={1}
+                  value={accountName}
+                  onChange={(val) => changeAccountName(val)}
+                  placeholderTextColor={Colors.grey}
+                />
+              </View>
+            </View>
+          )}
           <ModalTermsAndCondition
             title={termsModalTitle}
             modalVisible={modalTerms}
@@ -167,8 +227,8 @@ export default function MyOrderCancelScreen({
           <CustomBottomSheet
             title={bsBank}
             botSheetRef={(ref) => (bsBank = ref)}
-            // rightText={() => renderRightText(1)}
-            bsHeight="25%"
+            // topRightComponent={() => renderRightText(1)}
+            bsHeight="40%"
             topRightComponent={() => (
               <TextButton
                 style={{ ...Fonts.f_10 }}
@@ -184,11 +244,11 @@ export default function MyOrderCancelScreen({
                 onPressTitle(i, item)
                 bsBank.close()
               }}
-              datasource={['BCA', 'Mandiri']}
+              datasource={bankData}
             />
           </CustomBottomSheet>
           {/* <CustomBottomSheet
-            rightText={() => renderRightText(1)}
+            topRightComponent={() => renderRightText(1)}
             title={paymentDetailLabel}
             botSheetRef={(ref) => (bsPaymentDetail = ref)}
           >
@@ -209,7 +269,7 @@ export default function MyOrderCancelScreen({
           </CustomBottomSheet> */}
         </ScrollView>
         <View style={{ ...Padding.ph_16 }}>
-          <PrimaryButton style={{ ...Margin.mv_16 }} text={actionLabel} />
+          <PrimaryButton style={{ ...Margin.mv_16 }} text={actionLabel} onPress={onSubmit} />
         </View>
       </View>
     </View>
@@ -218,12 +278,14 @@ export default function MyOrderCancelScreen({
 
 MyOrderCancelScreen.defaultProps = {
   onIconLeftPress: () => {},
+  isRefund: false,
+  isLoadingCancel: false,
   title: 'Order Detail',
+  reasonLabel: 'Select a reason for cancellation: ',
   reason1Label: 'I found better price',
   reason2Label: 'My trip is cancelled',
   reason3Label: 'Another reason',
   bsBank: 'Bank Tujuan',
-  bankName: 'Bank Tujuan',
   bankLabel: 'Input bank refund account',
   topRightBottomSheetTitle: 'Done',
   onPressTitle: () => {},
@@ -273,11 +335,43 @@ MyOrderCancelScreen.defaultProps = {
   },
   totalAmount: 500000,
   changeTotalAmount: () => {},
+  accountNumber: null,
+  changeAccountNumber: () => {},
+  accountName: null,
+  changeAccountName: () => {},
+  reasons: [
+    {
+      label: 'test',
+      item: {},
+    },
+    {
+      label: 'test',
+      item: {},
+    },
+    {
+      label: 'test',
+      item: {},
+    },
+  ],
+  selectedItem: {
+    label: 'test',
+  },
+  changeSelectedItem: () => {},
+  bankData: ['BCA', 'MANDIRI', 'PERMATA'],
+  bankName: 'BCA',
+  setBankName: () => {},
+  otherReason: null,
+  changeOtherReason: () => {},
+  changeReasons: () => {},
+  onSubmit: () => {},
 }
 
 MyOrderCancelScreen.propTypes = {
   onIconLeftPress: PropTypes.func,
+  isRefund: PropTypes.bool,
+  isLoadingCancel: PropTypes.bool,
   title: PropTypes.string,
+  reasonLabel: PropTypes.string,
   helpCenterLabel: PropTypes.string,
   additionalLabel: PropTypes.string,
   priceLabel: PropTypes.string,
@@ -302,6 +396,19 @@ MyOrderCancelScreen.propTypes = {
   actionLabel: PropTypes.string,
   styleMultiOrder: PropTypes.shape({}),
   styleOrder: PropTypes.shape({}),
+  accountNumber: PropTypes.string,
+  changeAccountNumber: PropTypes.func,
+  accountName: PropTypes.string,
+  changeAccountName: PropTypes.string,
+  selectedItem: PropTypes.shape({}),
+  changeSelectedItem: PropTypes.shape({}),
+  bankData: PropTypes.arrayOf(PropTypes.shape({})),
+  reasons: PropTypes.arrayOf(PropTypes.shape({})),
+  setBankName: PropTypes.func,
+  otherReason: PropTypes.string,
+  changeOtherReason: PropTypes.func,
+  changeReasons: PropTypes.func,
+  onSubmit: PropTypes.func,
 }
 
 const Style = {

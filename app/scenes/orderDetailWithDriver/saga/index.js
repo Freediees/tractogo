@@ -26,7 +26,15 @@ function* fetchExtras({ payload }) {
       json.Data.forEach((item) => {
         let newData = {
           name: item.extras.Name,
-          value: parseInt(item.Price.replace('.00', '')),
+          value:
+            item.extras.Name === 'Add Hours'
+              ? parseInt(
+                  payload.item.priceInformation.configuration_price_product_retail_details[0].AdditionalPrice.replace(
+                    '.00',
+                    ''
+                  )
+                )
+              : parseInt(item.Price.replace('.00', '')),
           count: 0,
           total: 0,
           type: item.extras.ValueType,
@@ -40,16 +48,18 @@ function* fetchExtras({ payload }) {
         }
       })
       if (payload.item.priceInformation.PriceDiscount) {
-        dataArr.push({
-          name: payload.item.priceInformation.PriceDiscount.category_name,
-          value: payload.item.priceAmount - payload.item.discountedPrice,
-          unit: 'Item',
-          count: 1,
-          total: (payload.item.priceAmount - payload.item.discountedPrice) * -1,
-          type: 'discount',
-          stockType: '0',
-          availability: 0,
-        })
+        if (payload.item.priceInformation.PriceDiscount.category_name) {
+          dataArr.push({
+            name: payload.item.priceInformation.PriceDiscount.category_name,
+            value: payload.item.priceAmount - payload.item.discountedPrice,
+            unit: 'Item',
+            count: 1,
+            total: (payload.item.priceAmount - payload.item.discountedPrice) * -1 * parseInt(payload.item.duration),
+            type: 'discount',
+            stockType: '0',
+            availability: 0,
+          })
+        }
       }
     }
     yield put(OrderDetailWithDriverAction.changeAdditionalItems(dataArr))

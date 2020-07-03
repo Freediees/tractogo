@@ -11,15 +11,14 @@ export const fetchPhoneNumberLoading = (state) => ({
 export const fetchPhoneNumberSuccess = (state, { value }) => ({
   ...state,
   phoneNumber: value,
-  extrasIsLoading: false,
-  extrasErrorMessage: null,
+  phoneNumberIsLoading: false,
+  phoneNumberErrorMessage: null,
 })
 
-export const fetchPhoneNumberFailure = (state, { message }) => ({
+export const fetchPhoneNumberFailure = (state, { payload }) => ({
   ...state,
-  phoneNumber: '+62',
-  extrasIsLoading: false,
-  extrasErrorMessage: message,
+  phoneNumberIsLoading: false,
+  phoneNumberErrorMessage: payload,
 })
 
 export const reducer = createReducer(INITIAL_STATE, {

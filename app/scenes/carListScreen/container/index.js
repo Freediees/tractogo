@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, Fragment } from 'react'
 import { Platform, Text, View, Button, ActivityIndicator, Image, Alert } from 'react-native'
 import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
 import I18n from 'react-native-i18n'
 import Moment from 'moment'
 import CarListScreenActions from 'scenes/carListScreen/store/actions'
+import CustomAlert from 'components/molecules/customAlert'
 import CarFilterScreenActions from 'scenes/filter/store/actions'
 import ProductListScreen from 'components/organism/productListScreen'
 import AsyncStorage from '@react-native-community/async-storage'
+import { NavigationActions, StackActions } from 'react-navigation'
 import { saveFilterFunc, saveFilterObject, getFilterObject, pad } from 'function'
 import { RENTAL_TIMEBASE, SERVICE_ID_SELF_DRIVE, SERVICE_ID_WITH_DRIVER } from 'config'
 import { getSortItems, sortStock } from 'function/sort'
@@ -73,6 +75,8 @@ const CarListScreen = ({
   changeActiveTab,
   changeProductId,
   resetState,
+  alertVisible,
+  changeAlertVisible,
 }) => {
   const { withDriver } = navigation.state.params
   const [initReady, changeInit] = useState(false)
@@ -83,7 +87,7 @@ const CarListScreen = ({
   const [selectedSortItem, changeSelectedSortItem] = useState(sortItems ? sortItems[0] : null)
   const [selectedSortIndex, changeSelectedSortIndex] = useState(0)
   const [selectedMin, changeSelectedMin] = useState(0)
-  const [selectedMax, changeSelectedMax] = useState(1000000)
+  const [selectedMax, changeSelectedMax] = useState(2000000)
   const [chipItems, changeChipItems] = useState(getChipItems())
   const [selectedChipItem, changeSelectedChipItem] = useState(chipItems[0])
   const [selectedChipIndex, changeSelectedChipIndex] = useState(0)
@@ -93,52 +97,6 @@ const CarListScreen = ({
   useEffect(() => {
     async function initialize() {
       // resetState()
-      fetchCityCoverages()
-      fetchRentDurations()
-      changeDate(Moment(new Date(selectedDate)))
-
-      const filterObject = await getFilterObject()
-      if (filterObject.selectedCity.cityName) {
-        changeSelectedCity(filterObject.selectedCity)
-      }
-      if (filterObject.selectedDate) {
-        const filterDate = new Date(filterObject.selectedDate)
-        const dateNow = new Date()
-        if (
-          filterDate.getMonth() === dateNow.getMonth() &&
-          filterDate.getDate() >= dateNow.getDate()
-        ) {
-          changeDate(Moment(filterObject.selectedDate))
-          onSaveDate()
-          if (filterObject.selectedEndDate) {
-            changeEndDate(filterObject.selectedEndDate)
-          }
-        } else {
-          changeDate(Moment(new Date()))
-          onSaveDate()
-          if (filterObject.selectedEndDate) {
-            changeEndDate(filterObject.selectedEndDate)
-          }
-        }
-      }
-      if (filterObject.selectedHour) {
-        changeSelectedHour(filterObject.selectedHour)
-      }
-      if (filterObject.selectedMinute) {
-        changeSelectedMinute(filterObject.selectedMinute)
-      }
-      if (filterObject.selectedPackage && filterObject.selectedPackage.leftLabel) {
-        changeSelectedPackage(filterObject.selectedPackage)
-      }
-      if (filterObject.selectedDuration && filterObject.selectedDuration.leftLabel) {
-        changeSelectedDuration(filterObject.selectedDuration)
-      }
-      if (filterObject.selectedPackageIndex) {
-        changeSelectedPackageIndex(filterObject.selectedPackageIndex)
-      }
-      if (filterObject.selectedDurationIndex) {
-        changeSelectedDurationIndex(filterObject.selectedDurationIndex)
-      }
       const withDriver = await AsyncStorage.getItem('isWithDriver')
       const payload = {
         payload: {
@@ -154,6 +112,7 @@ const CarListScreen = ({
           ValidateAttribute: '1',
         },
         forceUpdate: forceUpdate,
+        changeAlertVisible: changeAlertVisible,
       }
       if (withDriver === '0') {
         payload.payload.RentalPackage = 24
@@ -175,12 +134,7 @@ const CarListScreen = ({
   ) {
     changeRenderMount(true)
     changeInit(false)
-    // if (stocksWithPriceIsLoading === false && stocksWithPrice.length > 0) {
-    console.log('sortttt')
-    console.log(selectedSortItem)
-    console.log(stocksWithPrice)
     sortStocksWithPrice(stocksWithPrice, selectedSortItem.value)
-    console.log(stocksWithPrice)
     // changeFilteredStocks(stocksWithPrice)
     // console.log(stocksWithPrice)
     // sortStocksWithPrice(stocksWithPrice, selectedSortItem.value)
@@ -207,23 +161,44 @@ const CarListScreen = ({
     changeSelectedPackage(arrTemp[selectedPackageIndex])
   }
 
+  const changePackage = async (data) => {
+    console.log('start change package')
+    changeSelectedPackage(data)
+    onChangePackage(data)
+    console.log('end change package')
+    forceUpdate()
+  }
+
   const onSaveDate = () => {
     const newDurationsArr = []
     for (let i = 1; i <= 10; i++) {
+      let pastDay = 0
+      const tempDate = new Date(selectedDate)
+      if (selectedPackage && selectedPackage.item) {
+        if (parseInt(tempDate.getHours()) + parseInt(selectedPackage.item.Duration) >= 24) {
+          pastDay = 1
+        }
+      }
       const newDuration = {
         leftLabel: `${i} Hari`,
-        rightLabel: `Pengembalian ${Moment(selectedDate.getTime() + i * 86400000).format(
-          'dddd, DD MMMM YYYY'
-        )}`,
+        rightLabel: `Pengembalian ${Moment(
+          new Date(new Date(selectedDate).getTime() + (i + parseInt(pastDay) - 1) * 86400000)
+        ).format('dddd, DD MMMM YYYY')}`,
         item: {
           value: i,
           endDate: new Date(selectedDate).getDate() + i,
+          date: new Date(new Date(selectedDate).getTime() + (i + parseInt(pastDay) - 1) * 86400000),
         },
       }
+      console.log(selectedDate)
+      console.log(newDuration)
       newDurationsArr.push(newDuration)
     }
+    console.log('index' + selectedDurationIndex)
     changeDurations(newDurationsArr)
-    changeSelectedDurationFunc(newDurationsArr[selectedDurationIndex])
+    if (selectedDurationIndex !== -1 || selectedDurationIndex !== '-1') {
+      changeSelectedDuration(newDurationsArr[selectedDurationIndex])
+    }
   }
 
   const changeHour = (hour) => {
@@ -253,18 +228,20 @@ const CarListScreen = ({
       Alert.alert('Pilih Waktu terlebih dahulu')
       return
     }
-    if (!selectedPackage && activeTab === 0) {
-      Alert.alert('Pilih Paket terlebih dahulu')
-      return
-    } else {
+    if (activeTab === 1 || activeTab === '1') {
       changeSelectedPackage(rentPackages[0])
       changeSelectedPackageIndex(0)
+    } else {
+      if (!selectedPackage || !selectedPackage.item || !selectedPackage.item.Duration) {
+        Alert.alert('Pilih Paket terlebih dahulu')
+        return
+      }
     }
-    if (!selectedDuration) {
+    if (selectedDurationIndex === -1 || selectedDurationIndex === '-1') {
       Alert.alert('Pilih Durasi terlebih dahulu')
       return
     }
-
+    console.log(endDate)
     const start = new Date(selectedDate)
     start.setHours(selectedHour)
     start.setMinutes(selectedMinute)
@@ -287,9 +264,8 @@ const CarListScreen = ({
       isWithDriver: activeTab === 1 ? '0' : '1',
       productServiceId: activeTab === 1 ? SERVICE_ID_SELF_DRIVE : SERVICE_ID_WITH_DRIVER,
       rentalPackage: activeTab === 1 ? '24' : selectedPackage.item.Duration,
-      rentalDuration: activeTab === 1 ? '24' : selectedDuration.item.value.toString(),
+      rentalDuration: selectedDuration.item.value.toString(),
     }
-    console.log(payload)
     saveFilterFunc(payload)
     const selectedDateObj = new Date(selectedDate)
     selectedDateObj.setHours(0)
@@ -311,7 +287,6 @@ const CarListScreen = ({
       selectedMinute: selectedMinute,
     })
     const withDriver = await AsyncStorage.getItem('isWithDriver')
-    console.log(withDriver)
     const payloadSearch = {
       payload: {
         BusinessUnitId: await AsyncStorage.getItem('buID'),
@@ -326,8 +301,9 @@ const CarListScreen = ({
         ValidateAttribute: '1',
       },
       forceUpdate: forceUpdate,
+      changeAlertVisible: changeAlertVisible,
     }
-    if (withDriver === '0') {
+    if (activeTab === 1) {
       payloadSearch.payload.RentalPackage = 24
     }
     changeRenderMount(false)
@@ -353,101 +329,194 @@ const CarListScreen = ({
   }
 
   const changeSelectedDurationFunc = (duration) => {
+    changeSelectedDuration(duration)
     if (duration && duration.item) {
-      changeSelectedDuration(duration)
-      changeEndDate(new Date(selectedDate).getTime() + parseInt(duration.item.value) * 86400000)
+      console.log(duration.item.date)
+      changeEndDate(duration.item.date)
     }
   }
 
   const changeDate = (date) => {
     changeSelectedDate(date._d)
     if (selectedDuration && selectedDuration.item) {
-      changeEndDate(
-        new Date(selectedDate).getTime() + parseInt(selectedDuration.item.value) * 86400000
-      )
+      console.log(selectedDate)
+      console.log(selectedDuration)
+      console.log(selectedPackage)
+      let pastDay = 0
+      const tempDate = new Date(selectedDate).getTime()
+      if (selectedPackage && selectedPackage.item) {
+        if (tempDate.getHours + parseInt(selectedPackage.item.Duration) >= 24) {
+          pastDay = 1
+          console.log('past day')
+        }
+      }
+      const endTime =
+        date._d.getTime() + (selectedDuration.item.value + parseInt(pastDay) - 1) * 86400000
+      console.log(endTime)
+      console.log(new Date(endTime))
+      changeEndDate(new Date(endTime))
+      forceUpdate()
+    }
+    onChangeDate(date._d)
+    forceUpdate()
+  }
+
+  const onChangePackage = (data) => {
+    const newDurationsArr = []
+    for (let i = 1; i <= 10; i++) {
+      let pastDay = 0
+      const tempDate = new Date(selectedDate)
+      if (data.item && data.item.Duration) {
+        if (parseInt(tempDate.getHours()) + parseInt(data.item.Duration) >= 24) {
+          pastDay = 1
+        }
+      }
+      const newDuration = {
+        leftLabel: `${i} Hari`,
+        rightLabel: `Pengembalian ${Moment(
+          new Date(new Date(selectedDate).getTime() + (i + parseInt(pastDay) - 1) * 86400000)
+        ).format('dddd, DD MMMM YYYY')}`,
+        item: {
+          value: i,
+          endDate: new Date(selectedDate).getDate() + i,
+          date: new Date(new Date(selectedDate).getTime() + (i + parseInt(pastDay) - 1) * 86400000),
+        },
+      }
+      newDurationsArr.push(newDuration)
+    }
+    changeDurations(newDurationsArr)
+    changeSelectedDurationFunc(newDurationsArr[selectedDurationIndex])
+  }
+
+  const onChangeDate = (date) => {
+    const newDurationsArr = []
+    for (let i = 1; i <= 10; i++) {
+      let pastDay = 0
+      const tempDate = new Date(date)
+      if (selectedPackage && selectedPackage.item && selectedPackage.item.Duration) {
+        if (parseInt(tempDate.getHours()) + parseInt(selectedPackage.item.Duration) >= 24) {
+          pastDay = 1
+        }
+      }
+      const newDuration = {
+        leftLabel: `${i} Hari`,
+        rightLabel: `Pengembalian ${Moment(
+          new Date(new Date(date).getTime() + (i + parseInt(pastDay) - 1) * 86400000)
+        ).format('dddd, DD MMMM YYYY')}`,
+        item: {
+          value: i,
+          endDate: new Date(date).getDate() + i,
+          date: new Date(new Date(date).getTime() + (i + parseInt(pastDay) - 1) * 86400000),
+        },
+      }
+      newDurationsArr.push(newDuration)
+    }
+    console.log('index' + selectedDurationIndex)
+    changeDurations(newDurationsArr)
+    if (selectedDurationIndex !== -1 || selectedDurationIndex !== '-1') {
+      changeSelectedDuration(newDurationsArr[selectedDurationIndex])
     }
   }
 
   return (
-    <ProductListScreen
-      title={`Sewa Mobil di ${selectedCity.cityName ? selectedCity.cityName : ''}`}
-      subtitle={
-        withDriver
-          ? `${Moment(selectedDate).format('dddd, DD MMM')} - ${Moment(endDate).format(
-              'DD MMM YYYY'
-            )} || ${
-              selectedPackage && selectedPackage.item && selectedPackage.item.Duration
-                ? selectedPackage.item.Duration
-                : '0'
-            } Jam`
-          : `${Moment(selectedDate).format('dddd, DD MMM')} - ${Moment(endDate).format(
-              'DD MMM YYYY'
-            )}`
-      }
-      onSaveDate={onSaveDate}
-      onSaveTime={() => reloadRentPackage()}
-      endDate={endDate}
-      citiesData={cityCoverages}
-      durationData={durations}
-      rentPackageData={rentPackages}
-      selectedHour={selectedHour}
-      changeSelectedHour={changeHour}
-      selectedMinute={selectedMinute}
-      changeSelectedMinute={changeMinute}
-      selectedDuration={selectedDuration}
-      changeSelectedDuration={changeSelectedDurationFunc}
-      selectedDurationIndex={selectedDurationIndex}
-      changeSelectedDurationIndex={changeSelectedDurationIndex}
-      selectedPackage={selectedPackage}
-      changeSelectedPackage={changeSelectedPackage}
-      selectedPackageIndex={selectedPackageIndex}
-      changeSelectedPackageIndex={changeSelectedPackageIndex}
-      selectedCity={selectedCity}
-      changeSelectedCity={changeSelectedCity}
-      selectedDate={selectedDate}
-      changeSelectedDate={changeDate}
-      onSearchButtonPress={() => searchCar()}
-      items={filteredStocks}
-      isDriver={withDriver}
-      isPackage={withDriver}
-      onIconLeftPress={() => navigation.goBack()}
-      itemsLoading={stocksWithPriceIsLoading}
-      sortItems={sortItems}
-      selectedSortItem={selectedSortItem}
-      selectedSortIndex={selectedSortIndex}
-      changeSelectedSortItem={(val, index) => {
-        changeSelectedSortIndex(index)
-        changeSelectedSortItem(val)
-      }}
-      onSortPress={() => {
-        sortStocksWithPrice(stocksWithPrice, selectedSortItem.value)
-        forceUpdate()
-      }}
-      selectedMin={selectedMin}
-      selectedMax={selectedMax}
-      changeSelectedMin={changeSelectedMin}
-      changeSelectedMax={changeSelectedMax}
-      minRange={0}
-      maxRange={1000000}
-      chipItems={chipItems}
-      selectedChipItem={selectedChipItem}
-      selectedChipIndex={selectedChipIndex}
-      onSelectChipItem={(val, index) => {
-        changeSelectedChipItem(val)
-        changeSelectedChipIndex(index)
-      }}
-      onFilterPress={(x, y, z) => {
-        const payloadFilter = {
-          selectedMin: x,
-          selectedMax: y,
-          selectedChipItem: z,
+    <Fragment>
+      <ProductListScreen
+        title={`Cars in ${selectedCity.cityName ? selectedCity.cityName : ''}`}
+        subtitle={
+          withDriver
+            ? `${Moment(selectedDate).format('dddd, DD MMM')} - ${Moment(endDate).format(
+                'DD MMM YYYY'
+              )} || ${
+                selectedPackage && selectedPackage.item && selectedPackage.item.Duration
+                  ? selectedPackage.item.Duration
+                  : '0'
+              } Hour`
+            : `${Moment(selectedDate).format('dddd, DD MMM')} - ${Moment(endDate).format(
+                'DD MMM YYYY'
+              )}`
         }
+        onSaveDate={onSaveDate}
+        onSaveTime={() => reloadRentPackage()}
+        endDate={endDate}
+        citiesData={cityCoverages}
+        durationData={durations}
+        rentPackageData={rentPackages}
+        selectedHour={selectedHour}
+        changeSelectedHour={changeHour}
+        selectedMinute={selectedMinute}
+        changeSelectedMinute={changeMinute}
+        selectedDuration={selectedDuration}
+        changeSelectedDuration={changeSelectedDurationFunc}
+        selectedDurationIndex={selectedDurationIndex}
+        changeSelectedDurationIndex={changeSelectedDurationIndex}
+        selectedPackage={selectedPackage}
+        changeSelectedPackage={changePackage}
+        selectedPackageIndex={selectedPackageIndex}
+        changeSelectedPackageIndex={changeSelectedPackageIndex}
+        selectedCity={selectedCity}
+        changeSelectedCity={changeSelectedCity}
+        selectedDate={selectedDate}
+        changeSelectedDate={changeDate}
+        onSearchButtonPress={() => searchCar()}
+        items={filteredStocks}
+        isDriver={withDriver}
+        isPackage={withDriver}
+        onIconLeftPress={() => navigation.goBack()}
+        itemsLoading={stocksWithPriceIsLoading}
+        sortItems={sortItems}
+        selectedSortItem={selectedSortItem}
+        selectedSortIndex={selectedSortIndex}
+        changeSelectedSortItem={(val, index) => {
+          changeSelectedSortIndex(index)
+          changeSelectedSortItem(val)
+        }}
+        onSortPress={() => {
+          sortStocksWithPrice(filteredStocks, selectedSortItem.value)
+          forceUpdate()
+        }}
+        selectedMin={selectedMin}
+        selectedMax={selectedMax}
+        changeSelectedMin={changeSelectedMin}
+        changeSelectedMax={changeSelectedMax}
+        minRange={0}
+        maxRange={2000000}
+        chipItems={chipItems}
+        selectedChipItem={selectedChipItem}
+        selectedChipIndex={selectedChipIndex}
+        onSelectChipItem={(val, index) => {
+          changeSelectedChipItem(val)
+          changeSelectedChipIndex(index)
+        }}
+        onFilterPress={(x, y, z) => {
+          const payloadFilter = {
+            selectedMin: x,
+            selectedMax: y,
+            selectedChipItem: z,
+          }
 
-        console.log('selectedMin', x)
+          console.log('selectedMin', x)
 
-        filterStocksWithPrice(stocksWithPrice, payloadFilter)
-      }}
-    />
+          filterStocksWithPrice(stocksWithPrice, payloadFilter)
+        }}
+      />
+      <CustomAlert
+        visible={alertVisible}
+        title={'KYC Required'}
+        information={'To continue please complete the KYC Form first'}
+        buttonLabel={'Go To KYC'}
+        onPress={() => {
+          changeAlertVisible(false)
+          navigation.dispatch(
+            StackActions.reset({
+              index: 0,
+              actions: [NavigationActions.navigate({ routeName: 'Home' })],
+            })
+          )
+          navigation.navigate('Profile')
+          navigation.navigate('MemberScreen')
+        }}
+      />
+    </Fragment>
   )
 }
 
@@ -507,6 +576,8 @@ CarListScreen.propTypes = {
   changeActiveTab: PropTypes.func,
   changeProductId: PropTypes.func,
   resetState: PropTypes.func,
+  alertVisible: PropTypes.bool,
+  changeAlertVisible: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
@@ -539,6 +610,7 @@ const mapStateToProps = (state) => ({
   endDate: state.filter.endDate,
   activeTab: state.filter.activeTab,
   productId: state.filter.productId,
+  alertVisible: state.carListScreen.alertVisible,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -577,6 +649,7 @@ const mapDispatchToProps = (dispatch) => ({
   changeEndDate: (payload) => dispatch(CarFilterScreenActions.changeEndDate(payload)),
   changeActiveTab: (payload) => dispatch(CarFilterScreenActions.changeActiveTab(payload)),
   changeProductId: (payload) => dispatch(CarFilterScreenActions.changeProductId(payload)),
+  changeAlertVisible: (payload) => dispatch(CarListScreenActions.changeAlertVisible(payload)),
   resetState: () => dispatch(CarFilterScreenActions.resetState()),
 })
 

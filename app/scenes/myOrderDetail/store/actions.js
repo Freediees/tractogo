@@ -1,11 +1,11 @@
 import { createActions } from 'reduxsauce'
 
 const { Types, Creators } = createActions({
-  fetchExample: null,
-  fetchExampleLoading: null,
-  fetchExampleSuccess: ['example'],
-  fetchExampleFailure: ['errorMessage'],
+  fetchPaymentDetail: ['payload'],
+  fetchPaymentDetailLoading: null,
+  fetchPaymentDetailSuccess: ['paymentDetail'],
+  fetchPaymentDetailFailure: ['errorMessage'],
 })
 
-export const ExampleScreenTypes = Types
+export const MyOrderDetailTypes = Types
 export default Creators

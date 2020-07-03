@@ -6,6 +6,7 @@ import Moment from 'moment'
 import { Margin, Fonts, Padding, Colors, Row, Column, Border } from 'theme'
 
 import CustomBottomSheet from 'components/molecules/customBottomSheet'
+import CustomTopSheet from 'components/molecules/customTopSheet'
 import Separator from 'components/atom/separator'
 
 import locationIcon from 'icons/ic-filter1.svg'
@@ -101,6 +102,7 @@ export default function FilterAirport({
   const [airportCoverageModalVisible, changeAirportCoverageModalVisible] = useState(false)
   const [addressModalVisible, changeAddressModalVisible] = useState(false)
   const [selectedIndex, changeSelectedIndex] = useState(0)
+  const [modalCalendar, changeModalCalendar] = useState(false)
 
   const onAirportClick = (airport) => {
     changeSelectedAirport(airport)
@@ -194,7 +196,7 @@ export default function FilterAirport({
 
   const borderStyleWithFooter = {
     width: '100%',
-    flex: 4,
+    flex: 2,
     ...Border.border_light_grey,
     ...Border.border_w_1,
     borderTopLeftRadius: 8,
@@ -212,7 +214,7 @@ export default function FilterAirport({
   }
   const borderStyle = {
     width: '100%',
-    flex: 4,
+    flex: 2,
     ...Border.border_light_grey,
     ...Border.border_w_1,
     ...Border.border_rad_8,
@@ -248,10 +250,10 @@ export default function FilterAirport({
   }
 
   return (
-    <View style={{ ...Row.row_4_5, width: '100%' }}>
+    <View style={{ flex: 1, width: '100%' }}>
       <View style={getBorderStyle()}>
         <View>
-          <View style={{ ...Column.col_8 }}>
+          <View style={{ width: '100%' }}>
             <Text style={{ ...Fonts.f_10, ...Fonts.text_smoky_grey }}>
               {isFromAirport ? 'From ' + airportFilterLabel : 'To ' + airportFilterLabel}
             </Text>
@@ -260,9 +262,9 @@ export default function FilterAirport({
                 changeAirportModalVisible(true)
                 console.log('changeAirportModalVisible(true)')
               }}
-              style={{ ...Margin.mt_12 }}
+              style={{ ...Margin.mt_4 }}
             >
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <SvgXml xml={iconAirport} width={20} height={20} />
                 <TextInput
                   placeholder={placeHolderAirportFilter}
@@ -270,15 +272,24 @@ export default function FilterAirport({
                   onPress={() => {}}
                   value={selectedAirport ? selectedAirport.cityName : ''}
                   placeholderTextColor={Colors.grey}
-                  style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_smoky_grey }}
+                  style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_black, width: '100%'  }}
                 />
               </View>
-              <Separator style={{ ...Margin.mt_8 }} />
+              {/* <Separator /> */}
             </TouchableOpacity>
           </View>
-          {/* <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}> */}
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              alignContent: 'space-around',
+              alignItems: 'center',  
+              justifyContent: 'flex-end',         
+            }}
+          >
+            <Separator style={{width: '90%', }} />
             <ButtonImageCircle onPress={changeIsFromAirport} />
-          {/* </View> */}
+          </View>
           <View style={{ ...Column.col_9 }}>
             <Text style={{ ...Fonts.f_10, ...Fonts.text_smoky_grey }}>
               {isFromAirport ? 'To ' + locationFilterLabel : 'From ' + locationFilterLabel}
@@ -288,9 +299,9 @@ export default function FilterAirport({
                 changeAirportCoverageModalVisible(true)
                 console.log('changeAirportCoverageModalVisible(true)')
               }}
-              style={{ ...Margin.mt_12 }}
+              
             >
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <SvgXml xml={locationIcon} width={20} height={20} />
                 <TextInput
                   placeholder={placeHolderLocationFilter}
@@ -298,10 +309,10 @@ export default function FilterAirport({
                   onPress={() => {}}
                   value={items ? items.description : ''}
                   placeholderTextColor={Colors.grey}
-                  style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_smoky_grey }}
+                  style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_black, width: '100%'  }}
                 />
               </View>
-              <Separator style={{ ...Margin.mt_8 }} />
+              <Separator />
             </TouchableOpacity>
           </View>
         </View>
@@ -320,10 +331,11 @@ export default function FilterAirport({
             </Text>
             <TouchableOpacity
               style={{
-                ...Margin.mt_12,
+                ...Margin.mt_4,
               }}
               onPress={() => {
-                bsDate.open()
+                // bsDate.open()
+                changeModalCalendar(true)
               }}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -333,10 +345,10 @@ export default function FilterAirport({
                   editable={false}
                   placeholderTextColor={Colors.grey}
                   value={selectedDate ? Moment(selectedDate).format('DD MMM YYYY') : ''}
-                  style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_smoky_grey }}
+                  style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_black, width: '100%'  }}
                 />
               </View>
-              <Separator style={{ ...Margin.mt_8 }} />
+              <Separator />
             </TouchableOpacity>
           </View>
         </View>
@@ -355,12 +367,12 @@ export default function FilterAirport({
                   {startTimeLabel}
                 </Text>
                 <TouchableOpacity
-                  style={{ ...Margin.mt_12 }}
+                  style={{ ...Margin.mt_4 }}
                   onPress={() => {
                     bsTimePicker.open()
                   }}
                 >
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <SvgXml xml={startTimeIcon} width={20} height={20} />
                     <TextInput
                       placeholder={placeHolderStartTime}
@@ -368,10 +380,10 @@ export default function FilterAirport({
                       onPress={() => {}}
                       value={`${selectedHour}.${selectedMinute} ${timeSufix}`}
                       placeholderTextColor={Colors.grey}
-                      style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_smoky_grey }}
+                      style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_black, width: '100%'  }}
                     />
                   </View>
-                  <Separator style={{ ...Margin.mt_8 }} />
+                  <Separator />
                 </TouchableOpacity>
               </Fragment>
             )}
@@ -427,15 +439,17 @@ export default function FilterAirport({
         }
         onCloseIconPress={onCloseIconPress}
       />
-      <CustomBottomSheet
+      <CustomTopSheet
+        modalVisible={modalCalendar}
+        changeModalVisible={(val) => {
+          changeModalCalendar(val)
+          onSaveDate()
+        }}
         title={placeHolderStartDate}
-        botSheetRef={(ref) => (bsDate = ref)}
-        rightText={() => renderRightText(1)}
       >
         <CustomCalendarPicker
           onDateChange={(date) => {
             changeSelectedDate(date)
-            bsDate.close()
           }}
           minDate={minDate}
           maxDate={maxDate}
@@ -443,11 +457,11 @@ export default function FilterAirport({
           weekdays={weekdaysLabel}
           months={monthsLabel}
         />
-      </CustomBottomSheet>
+      </CustomTopSheet>
       <CustomBottomSheet
         title={placeHolderStartTime}
         botSheetRef={(ref) => (bsTimePicker = ref)}
-        rightText={() => renderRightText(2)}
+        topRightComponent={() => renderRightText(2)}
       >
         <CustomTimePicker
           okLabel={okLabel}
@@ -463,8 +477,6 @@ export default function FilterAirport({
           }}
           onCancelPress={() => {
             if (bsTimePicker) {
-              changeSelectedHour('00')
-              changeSelectedMinute('00')
               bsTimePicker.close()
               onSaveTime()
             }
@@ -474,7 +486,7 @@ export default function FilterAirport({
       <CustomBottomSheet
         title={placeHolderDuration}
         botSheetRef={(ref) => (bsDuration = ref)}
-        rightText={() => renderRightText(3)}
+        topRightComponent={() => renderRightText(3)}
       >
         <CustomItemPicker
           items={durationData}
@@ -498,9 +510,9 @@ export default function FilterAirport({
         />
       </CustomBottomSheet>
       <CustomBottomSheet
-        title={'Pilih Paket Sewa'}
+        title={'Rental Package'}
         botSheetRef={(ref) => (bsPackage = ref)}
-        rightText={() => renderRightText(4)}
+        topRightComponent={() => renderRightText(4)}
       >
         <CustomItemPicker
           items={rentPackageData}
@@ -532,14 +544,14 @@ FilterAirport.defaultProps = {
   airportFilterLabel: 'Airport',
   placeHolderLocationFilter: 'Pilih Kota Sewa',
   placeHolderAirportFilter: 'Pilih Bandara',
-  startDateLabel: 'Tanggal Mulai',
-  placeHolderStartDate: 'Pilih Tanggal Mulai',
-  durationLabel: 'Durasi',
+  startDateLabel: 'Pick-up Date',
+  placeHolderStartDate: 'Choose Date',
+  startTimeLabel: 'Pick-up Time',
+  placeHolderStartTime: 'Choose Time',
+  durationLabel: 'Duration',
   placeHolderDuration: 'Pilih Durasi',
-  startTimeLabel: 'Waktu Mulai',
-  placeHolderStartTime: 'Pilih Waktu Mulai',
-  packageLabel: 'Paket Sewa',
-  placeHolderPackage: 'Pilih Paket Sewa',
+  packageLabel: 'Rental Package',
+  placeHolderPackage: 'Rental Package',
   airportData: [],
   citiesData: [],
   border: true,
@@ -576,15 +588,15 @@ FilterAirport.defaultProps = {
   ],
   rentPackageData: [
     {
-      leftLabel: '4 Jam',
+      leftLabel: '4 Hour',
       rightLabel: '09.00 - 13.00 WIB',
     },
     {
-      leftLabel: '8 Jam',
+      leftLabel: '8 Hour',
       rightLabel: '09.00 - 17.00 WIB',
     },
     {
-      leftLabel: '10 Jam',
+      leftLabel: '10 Hour',
       rightLabel: '09.00 - 19.00 WIB',
     },
   ],
@@ -600,7 +612,7 @@ FilterAirport.defaultProps = {
   selectedDurationIndex: 0,
   changeSelectedDurationIndex: () => {},
   selectedPackage: {
-    leftLabel: '4 Jam',
+    leftLabel: '4 Hour',
     rightLabel: '09.00 - 13.00 WIB',
   },
   changeSelectedPackage: () => {},
@@ -616,13 +628,13 @@ FilterAirport.defaultProps = {
   changeSelectedDate: () => {},
   endDate: new Date(),
   minDate: new Date(),
-  maxDate: new Date().getTime() + 864000000,
+  maxDate: null,
   timeSufix: 'WIB',
   footer: false,
-  startRentLabel: 'Mulai Sewa',
-  endRentLabel: 'Akhir Sewa',
+  startRentLabel: 'Pick-up',
+  endRentLabel: 'Drop-off',
   searchButtonEnabled: false,
-  searchButtonLabel: 'Cari Mobil',
+  searchButtonLabel: 'Search Car',
   onSearchButtonPress: () => {},
   isStartTime: true,
   isPackage: true,
@@ -632,7 +644,7 @@ FilterAirport.defaultProps = {
   changeKeyword: () => {},
   predictionItemClick: () => {},
   requestSearchPrediction: () => {},
-  keywordPlaceholder: 'Cari Lokasi',
+  keywordPlaceholder: 'Find Location',
   locationPlaceHolder: '-',
   predictions: [
     {
@@ -680,7 +692,7 @@ FilterAirport.defaultProps = {
       place_id: 'ChIJQwx6G_f71y0RgAvi8rajdOA',
     },
   ],
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   onCloseIconPress: () => {},
   isFromAirport: true,
   changeIsFromAirport: () => {},

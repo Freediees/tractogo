@@ -70,7 +70,7 @@ MemberRegistrationScreen.defaultProps = {
   onIconLeftPress: null,
   onButtonPress: null,
   title: 'Daftar Member',
-  instructionTitle1: 'Sewa Mobil Self Drive',
+  instructionTitle1: 'Car Rental Self Drive',
   instructionLabel1: 'Dengan member, anda dapat mengakses layanan Self Drive',
   instructionTitle2: 'Discount Member',
   instructionLabel2: 'Nikmati Discont khusus untuk kamu yang sudah terdaftar member',

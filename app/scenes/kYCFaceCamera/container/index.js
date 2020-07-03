@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React from 'react';
+import React from 'react'
 import {
   StyleSheet,
   Text,
@@ -8,25 +8,24 @@ import {
   Slider,
   TouchableWithoutFeedback,
   Dimensions,
-} from 'react-native';
+} from 'react-native'
 // eslint-disable-next-line import/no-unresolved
-import { RNCamera } from 'react-native-camera';
+import { RNCamera } from 'react-native-camera'
 import { setImage } from 'function'
-import RNFetchBlob from "react-native-fetch-blob";
+import RNFetchBlob from 'react-native-fetch-blob'
 import { connect } from 'react-redux'
 import ModalCamera from 'components/molecules/modalCamera'
 import { Fonts, ImageSize, Margin, Padding, Flex } from 'theme'
 
-
 import ImageAction from 'scenes/kYCImage/store/actions'
-import { SafeAreaView } from 'react-navigation';
+import { SafeAreaView } from 'react-navigation'
 
 const flashModeOrder = {
   off: 'on',
   on: 'auto',
   auto: 'torch',
   torch: 'off',
-};
+}
 
 const wbOrder = {
   auto: 'sunny',
@@ -35,12 +34,12 @@ const wbOrder = {
   shadow: 'fluorescent',
   fluorescent: 'incandescent',
   incandescent: 'auto',
-};
+}
 
-const landmarkSize = 2;
+const landmarkSize = 2
 
 class CameraScreen extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -73,48 +72,65 @@ class CameraScreen extends React.Component {
       modalState: false,
       sequenceImage: 1,
       tempUri: '',
-    };
-
+      noKTP: '',
+      noSIM: '',
+      namaKTP: '',
+      namaSIM: '',
+    }
   }
-  
 
+  onChangeNoKTP = (value) => {
+    this.setState({ noKTP: value })
+  }
+
+  onChangeNoSIM = (value) => {
+    this.setState({ noSIM: value })
+  }
+
+  onChangeNamaKTP = (value) => {
+    this.setState({ namaKTP: value })
+  }
+
+  onChangeNamaSIM = (value) => {
+    this.setState({ namaSIM: value })
+  }
 
   toggleFacing() {
     this.setState({
       type: this.state.type === 'back' ? 'front' : 'back',
-    });
+    })
   }
 
   toggleFlash() {
     this.setState({
       flash: flashModeOrder[this.state.flash],
-    });
+    })
   }
 
   toggleWB() {
     this.setState({
       whiteBalance: wbOrder[this.state.whiteBalance],
-    });
+    })
   }
 
   toggleFocus() {
     this.setState({
       autoFocus: this.state.autoFocus === 'on' ? 'off' : 'on',
-    });
+    })
   }
 
   touchToFocus(event) {
-    const { pageX, pageY } = event.nativeEvent;
-    const screenWidth = Dimensions.get('window').width;
-    const screenHeight = Dimensions.get('window').height;
-    const isPortrait = screenHeight > screenWidth;
+    const { pageX, pageY } = event.nativeEvent
+    const screenWidth = Dimensions.get('window').width
+    const screenHeight = Dimensions.get('window').height
+    const isPortrait = screenHeight > screenWidth
 
-    let x = pageX / screenWidth;
-    let y = pageY / screenHeight;
+    let x = pageX / screenWidth
+    let y = pageY / screenHeight
     // Coordinate transform for portrait. See autoFocusPointOfInterest in docs for more info
     if (isPortrait) {
-      x = pageY / screenHeight;
-      y = -(pageX / screenWidth) + 1;
+      x = pageY / screenHeight
+      y = -(pageX / screenWidth) + 1
     }
 
     this.setState({
@@ -122,42 +138,39 @@ class CameraScreen extends React.Component {
         normalized: { x, y },
         drawRectPosition: { x: pageX, y: pageY },
       },
-    });
+    })
   }
 
   zoomOut() {
     this.setState({
       zoom: this.state.zoom - 0.1 < 0 ? 0 : this.state.zoom - 0.1,
-    });
+    })
   }
 
   zoomIn() {
     this.setState({
       zoom: this.state.zoom + 0.1 > 1 ? 1 : this.state.zoom + 0.1,
-    });
+    })
   }
 
   setFocusDepth(depth) {
     this.setState({
       depth,
-    });
+    })
   }
 
   takePicture = async function() {
     if (this.camera) {
+      const data = await this.camera.takePictureAsync()
+      //console.warn('takePicture ', data)
 
-      const data = await this.camera.takePictureAsync();
-      console.warn('takePicture ', data);
-
-      //let key = this.props.navigation.state.params.key 
-      if(this.state.sequenceImage == 1){
-        setImage('face', data.uri) 
-      }
-      else if(this.state.sequenceImage == 2){
-        setImage('ktp', data.uri) 
-      }
-      else if(this.state.sequenceImage == 3){
-        setImage('sim', data.uri) 
+      //let key = this.props.navigation.state.params.key
+      if (this.state.sequenceImage == 1) {
+        setImage('face', data.uri)
+      } else if (this.state.sequenceImage == 2) {
+        setImage('ktp', data.uri)
+      } else if (this.state.sequenceImage == 3) {
+        setImage('sim', data.uri)
       }
 
       const fs = RNFetchBlob.fs
@@ -167,7 +180,7 @@ class CameraScreen extends React.Component {
       })
         .fetch('GET', data.uri)
         .then((resp) => {
-          imagePath = resp.path()  
+          imagePath = resp.path()
           return resp.readFile('base64')
         })
         .then((base64Data) => {
@@ -175,48 +188,45 @@ class CameraScreen extends React.Component {
           return fs.unlink(imagePath)
         })
 
-        this.setState({ tempUri: data.uri})
+      this.setState({ tempUri: data.uri })
 
-        if(this.state.sequenceImage == 1){
-          this.props.fetchFace(data.uri)
-          //this.props.fetchFace('https://cdn.idntimes.com/content-images/community/2019/02/dz8qvbxwkauiwua-895dcbe77a5a75ed3abeaacf5f548ba9_600x400.jpg')
-        }
-        else if(this.state.sequenceImage == 2){
-          this.props.fetchKtp(data.uri)
-          //this.props.fetchKtp('https://cdn.idntimes.com/content-images/community/2019/02/dz8qvbxwkauiwua-895dcbe77a5a75ed3abeaacf5f548ba9_600x400.jpg')
-        }
-        else if(this.state.sequenceImage == 3){
-          this.props.fetchSim(data.uri)
-          //this.props.fetchSim('https://cdn.idntimes.com/content-images/community/2019/02/dz8qvbxwkauiwua-895dcbe77a5a75ed3abeaacf5f548ba9_600x400.jpg')
-        }
+      if (this.state.sequenceImage == 1) {
+        this.props.fetchFace(data.uri)
+        //this.props.fetchFace('https://cdn.idntimes.com/content-images/community/2019/02/dz8qvbxwkauiwua-895dcbe77a5a75ed3abeaacf5f548ba9_600x400.jpg')
+      } else if (this.state.sequenceImage == 2) {
+        this.props.fetchKtp(data.uri)
+        //this.props.fetchKtp('https://cdn.idntimes.com/content-images/community/2019/02/dz8qvbxwkauiwua-895dcbe77a5a75ed3abeaacf5f548ba9_600x400.jpg')
+      } else if (this.state.sequenceImage == 3) {
+        this.props.fetchSim(data.uri)
+        //this.props.fetchSim('https://cdn.idntimes.com/content-images/community/2019/02/dz8qvbxwkauiwua-895dcbe77a5a75ed3abeaacf5f548ba9_600x400.jpg')
+      }
 
-        //alert("take photo")
-        this.setState({ modalState: true })
-        //this.props.navigation.goBack()
-
-        }
-    };
+      //alert("take photo")
+      this.setState({ modalState: true })
+      //this.props.navigation.goBack()
+    }
+  }
 
   takeVideo = async function() {
     if (this.camera) {
       try {
-        const promise = this.camera.recordAsync(this.state.recordOptions);
+        const promise = this.camera.recordAsync(this.state.recordOptions)
 
         if (promise) {
-          this.setState({ isRecording: true });
-          const data = await promise;
-          this.setState({ isRecording: false });
-          console.warn('takeVideo', data);
+          this.setState({ isRecording: true })
+          const data = await promise
+          this.setState({ isRecording: false })
+          console.warn('takeVideo', data)
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     }
-  };
+  }
 
-  toggle = value => () => this.setState(prevState => ({ [value]: !prevState[value] }));
+  toggle = (value) => () => this.setState((prevState) => ({ [value]: !prevState[value] }))
 
-  facesDetected = ({ faces }) => this.setState({ faces });
+  facesDetected = ({ faces }) => this.setState({ faces })
 
   renderFace = ({ bounds, faceID, rollAngle, yawAngle }) => (
     <View
@@ -239,10 +249,10 @@ class CameraScreen extends React.Component {
       <Text style={styles.faceText}>rollAngle: {rollAngle.toFixed(0)}</Text>
       <Text style={styles.faceText}>yawAngle: {yawAngle.toFixed(0)}</Text>
     </View>
-  );
+  )
 
   renderLandmarksOfFace(face) {
-    const renderLandmark = position =>
+    const renderLandmark = (position) =>
       position && (
         <View
           style={[
@@ -253,7 +263,7 @@ class CameraScreen extends React.Component {
             },
           ]}
         />
-      );
+      )
     return (
       <View key={`landmarks-${face.faceID}`}>
         {renderLandmark(face.leftEyePosition)}
@@ -268,26 +278,26 @@ class CameraScreen extends React.Component {
         {renderLandmark(face.noseBasePosition)}
         {renderLandmark(face.bottomMouthPosition)}
       </View>
-    );
+    )
   }
 
   renderFaces = () => (
     <View style={styles.facesContainer} pointerEvents="none">
       {this.state.faces.map(this.renderFace)}
     </View>
-  );
+  )
 
   renderLandmarks = () => (
     <View style={styles.facesContainer} pointerEvents="none">
       {this.state.faces.map(this.renderLandmarksOfFace)}
     </View>
-  );
+  )
 
   renderTextBlocks = () => (
     <View style={styles.facesContainer} pointerEvents="none">
       {this.state.textBlocks.map(this.renderTextBlock)}
     </View>
-  );
+  )
 
   renderTextBlock = ({ bounds, value }) => (
     <React.Fragment key={value + bounds.origin.x}>
@@ -305,20 +315,20 @@ class CameraScreen extends React.Component {
         ]}
       />
     </React.Fragment>
-  );
+  )
 
-  textRecognized = object => {
-    const { textBlocks } = object;
-    this.setState({ textBlocks });
-  };
+  textRecognized = (object) => {
+    const { textBlocks } = object
+    this.setState({ textBlocks })
+  }
 
-  barcodeRecognized = ({ barcodes }) => this.setState({ barcodes });
+  barcodeRecognized = ({ barcodes }) => this.setState({ barcodes })
 
   renderBarcodes = () => (
     <View style={styles.facesContainer} pointerEvents="none">
       {this.state.barcodes.map(this.renderBarcode)}
     </View>
-  );
+  )
 
   renderBarcode = ({ bounds, data, type }) => (
     <React.Fragment key={data + bounds.origin.x}>
@@ -335,68 +345,88 @@ class CameraScreen extends React.Component {
         <Text style={[styles.textBlock]}>{`${data} ${type}`}</Text>
       </View>
     </React.Fragment>
-  );
+  )
 
-  onCancel=()=>{
-    this.setState({ modalState: false})
+  onCancel = () => {
+    this.setState({ modalState: false })
   }
 
-  onSubmit=()=>{
-    if(this.state.sequenceImage == 1){
+  onSubmit = () => {
+    if (this.state.sequenceImage == 1) {
       //alert('Selfie Saved')
-    }else if(this.state.sequenceImage == 2){
+    } else if (this.state.sequenceImage == 2) {
       //alert('KTP Saved')
-    }else if(this.state.sequenceImage == 3){
+    } else if (this.state.sequenceImage == 3) {
       //alert('SIM Saved')
     }
     //alert(this.state.sequenceImage)
-    if(this.state.sequenceImage < 3){
-      var nextSeq = this.state.sequenceImage + 1
-      this.setState({ sequenceImage: nextSeq })
-    }else if( this.state.sequenceImage == 3){
-      this.props.navigation.navigate('KYCImage')
+    if (this.state.sequenceImage < 3) {
+      if (this.state.sequenceImage == 2) {
+        if (this.state.namaKTP && this.state.noKTP) {
+          var nextSeq = this.state.sequenceImage + 1
+          this.setState({ sequenceImage: nextSeq })
+          this.setState({ modalState: false })
+        } else {
+          alert('Silahkan lengkapi data KTP anda')
+        }
+      } else {
+        var nextSeq = this.state.sequenceImage + 1
+        this.setState({ sequenceImage: nextSeq })
+        this.setState({ modalState: false })
+      }
+    } else if (this.state.sequenceImage == 3) {
+      if (this.state.namaSIM && this.state.noSIM) {
+        let payload = {
+          namaKTP: this.state.namaKTP,
+          namaSIM: this.state.namaSIM,
+          noKTP: this.state.noKTP,
+          noSIM: this.state.noSIM,
+        }
+        //console.log(this.state)
+        this.props.setCardData(payload)
+        this.props.navigation.navigate('KYCImage')
+        this.setState({ modalState: false })
+      } else {
+        alert('Silahkan lengkapi data SIM anda')
+      }
     }
-    this.setState({ modalState: false})
   }
 
-  
-
   renderCamera() {
-    const { canDetectFaces, canDetectText, canDetectBarcode } = this.state;
+    const { canDetectFaces, canDetectText, canDetectBarcode } = this.state
 
     const drawFocusRingPosition = {
       top: this.state.autoFocusPoint.drawRectPosition.y - 32,
       left: this.state.autoFocusPoint.drawRectPosition.x - 32,
-    };
-    const { height, width } = Dimensions.get('window');
-    const maskRowHeight = Math.round((height - 300) / 20);
-    const maskColWidth = (width - 300) / 2;
+    }
+    const { height, width } = Dimensions.get('window')
+    const maskRowHeight = Math.round((height - 300) / 20)
+    const maskColWidth = (width - 300) / 2
 
     const getTitle = () => {
-      if(this.state.sequenceImage == 1){
+      if (this.state.sequenceImage == 1) {
         return 'Selfie'
-      }else if(this.state.sequenceImage == 2){
+      } else if (this.state.sequenceImage == 2) {
         return 'KTP / Paspor'
-      }else if( this.state.sequenceImage == 3){
+      } else if (this.state.sequenceImage == 3) {
         return 'SIM'
       }
     }
 
     const getInfo = () => {
-      if(this.state.sequenceImage == 1){
+      if (this.state.sequenceImage == 1) {
         return 'Posisikan wajah kamu didalam oval'
-      }else if(this.state.sequenceImage == 2){
+      } else if (this.state.sequenceImage == 2) {
         return 'Posisikan KTP / Paspor kamu didalam kotak'
-      }else if( this.state.sequenceImage == 3){
+      } else if (this.state.sequenceImage == 3) {
         return 'Posisikan SIM kamu didalam kotak'
       }
     }
 
-
     return (
       <RNCamera
-        ref={ref => {
-          this.camera = ref;
+        ref={(ref) => {
+          this.camera = ref
         }}
         style={{
           flex: 1,
@@ -410,7 +440,7 @@ class CameraScreen extends React.Component {
         whiteBalance={this.state.whiteBalance}
         ratio={this.state.ratio}
         focusDepth={this.state.depth}
-        type={ this.state.sequenceImage == 1 ? 'front' : 'back'}
+        type={this.state.sequenceImage == 1 ? 'front' : 'back'}
         androidCameraPermissionOptions={{
           title: 'Permission to use camera',
           message: 'We need your permission to use your camera',
@@ -427,8 +457,18 @@ class CameraScreen extends React.Component {
         onGoogleVisionBarcodesDetected={canDetectBarcode ? this.barcodeRecognized : null}
       >
         <View style={StyleSheet.absoluteFill}>
-          <SafeAreaView style={{ marginTop: 40, paddingTop: 10, paddingBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{...Fonts.f_16, ...Fonts.text_white, ...Fonts.semibold}}>{getTitle()}</Text>
+          <SafeAreaView
+            style={{
+              marginTop: 40,
+              paddingTop: 10,
+              paddingBottom: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ ...Fonts.f_16, ...Fonts.text_white, ...Fonts.semibold }}>
+              {getTitle()}
+            </Text>
           </SafeAreaView>
           <View style={[styles.autoFocusBox, drawFocusRingPosition]} />
           <TouchableWithoutFeedback onPress={this.touchToFocus.bind(this)}>
@@ -443,21 +483,30 @@ class CameraScreen extends React.Component {
             flexDirection: 'row',
             justifyContent: 'space-around',
           }}
-        >
-        </View>
+        />
         <View style={styles.maskOutter}>
-            <View style={[{ flex: maskRowHeight  }, styles.maskRow, styles.maskFrame]} />
-             <View style={[{ flex: 30 }, styles.maskCenter]}>
-              <View style={[{ width: maskColWidth }, styles.maskFrame]} />
-              <View style={ this.state.sequenceImage == 1 ? styles.maskInner : styles.maskInnerCard} />
-              <View style={[{ width: maskColWidth }, styles.maskFrame]} />
+          <View style={[{ flex: maskRowHeight }, styles.maskRow, styles.maskFrame]} />
+          <View style={[{ flex: 30 }, styles.maskCenter]}>
+            <View style={[{ width: maskColWidth }, styles.maskFrame]} />
+            <View style={this.state.sequenceImage == 1 ? styles.maskInner : styles.maskInnerCard} />
+            <View style={[{ width: maskColWidth }, styles.maskFrame]} />
           </View>
           <View style={[{ flex: maskRowHeight }, styles.maskRow, styles.maskFrame]} />
         </View>
-        
+
         <View style={{ bottom: '5%' }}>
-          <View style={{ marginBottom: 100, paddingTop: 10, paddingBottom: 10, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{...Fonts.f_12, ...Fonts.text_white, ...Fonts.semibold}}>{getInfo()}</Text>
+          <View
+            style={{
+              marginBottom: 100,
+              paddingTop: 10,
+              paddingBottom: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ ...Fonts.f_12, ...Fonts.text_white, ...Fonts.semibold }}>
+              {getInfo()}
+            </Text>
           </View>
           <View
             style={{
@@ -473,20 +522,41 @@ class CameraScreen extends React.Component {
             }}
           >
             <TouchableOpacity
-              style={[ { height: 50, width: 50, backgroundColor: 'white',  alignSelf: 'flex-end', borderRadius: 40 }]}
+              style={[
+                {
+                  height: 50,
+                  width: 50,
+                  backgroundColor: 'white',
+                  alignSelf: 'flex-end',
+                  borderRadius: 40,
+                },
+              ]}
               onPress={this.takePicture.bind(this)}
             >
               {/* <Text style={styles.flipText}> Capture </Text> */}
             </TouchableOpacity>
           </View>
         </View>
-        <ModalCamera sequence={this.state.sequenceImage} modalVisible={this.state.modalState} changeModalVisible={()=>{}} onCancel={this.onCancel} onSubmit={this.onSubmit} link ={this.state.tempUri} />
+        <ModalCamera
+          sequence={this.state.sequenceImage}
+          modalVisible={this.state.modalState}
+          changeModalVisible={() => {}}
+          onCancel={this.onCancel}
+          onSubmit={this.onSubmit}
+          link={this.state.tempUri}
+          firstValue={this.state.sequenceImage == 2 ? this.state.noKTP : this.state.noSIM}
+          secondValue={this.state.sequenceImage == 2 ? this.state.namaKTP : this.state.namaSIM}
+          onFirstChange={this.state.sequenceImage == 2 ? this.onChangeNoKTP : this.onChangeNoSIM}
+          onSecondChange={
+            this.state.sequenceImage == 2 ? this.onChangeNamaKTP : this.onChangeNamaSIM
+          }
+        />
       </RNCamera>
-    );
+    )
   }
 
   render() {
-    return <View style={styles.container}>{this.renderCamera()}</View>;
+    return <View style={styles.container}>{this.renderCamera()}</View>
   }
 }
 
@@ -592,7 +662,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: 'white',
     borderWidth: 1,
-    borderRadius: 150
+    borderRadius: 150,
   },
   maskInnerCard: {
     width: 350,
@@ -609,8 +679,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   maskCenter: { flexDirection: 'row' },
-});
-
+})
 
 const mapStateToProps = (state) => ({
   kycImage: state.kycImage,
@@ -620,6 +689,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchKtp: (value) => dispatch(ImageAction.fetchKtp(value)),
   fetchSim: (value) => dispatch(ImageAction.fetchSim(value)),
   fetchFace: (value) => dispatch(ImageAction.fetchFace(value)),
+  setCardData: (value) => dispatch(ImageAction.setCardData(value)),
 })
 
 export default connect(

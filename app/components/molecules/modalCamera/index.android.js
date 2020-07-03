@@ -10,7 +10,7 @@ import CustomAccordionCard from 'components/atom/customAccordionCard'
 
 import closeIcon from 'icons/ic-close.svg'
 
-export default function ModalTermsAndCondition({
+export default function ModalCamera({
   children,
   title,
   modalVisible,
@@ -21,24 +21,50 @@ export default function ModalTermsAndCondition({
   link,
   labelInformation,
   sequence,
+  onFirstChange,
+  onSecondChange,
+  firstValue,
+  secondValue,
 }) {
   const renderInputText = () => {
     if (sequence == 2) {
       return (
         <View style={{ pading: 8, margin: 16 }}>
           <Text style={{ ...Fonts.f12, ...Margin.mb_4 }}>No KTP</Text>
-          <TextInput style={{ ...Fonts.f12, ...Margin.mb_16 }} placeholder="Input Nomor KTP" />
+          <TextInput
+            value={firstValue}
+            style={{ ...Fonts.f12, ...Margin.mb_16 }}
+            placeholder="Input Nomor KTP"
+            keyboardType="number-pad"
+            onChangeText={(text) => onFirstChange(text)}
+          />
           <Text style={{ ...Fonts.f12, ...Margin.mb_4 }}>Nama KTP</Text>
-          <TextInput style={{ ...Fonts.f12 }} placeholder="Input Nama KTP" />
+          <TextInput
+            value={secondValue}
+            style={{ ...Fonts.f12 }}
+            placeholder="Input Nama KTP"
+            onChangeText={(text) => onSecondChange(text)}
+          />
         </View>
       )
     } else if (sequence == 3) {
       return (
         <View style={{ pading: 8, margin: 16 }}>
           <Text style={{ ...Fonts.f12, ...Margin.mb_4 }}>No SIM</Text>
-          <TextInput style={{ ...Fonts.f12, ...Margin.mb_16 }} placeholder="Input Nomor SIM" />
+          <TextInput
+            value={firstValue}
+            style={{ ...Fonts.f12, ...Margin.mb_16 }}
+            keyboardType="number-pad"
+            placeholder="Input Nomor SIM"
+            onChangeText={(text) => onFirstChange(text)}
+          />
           <Text style={{ ...Fonts.f12, ...Margin.mb_4 }}>Nama SIM</Text>
-          <TextInput style={{ ...Fonts.f12 }} placeholder="Input Nama SIM" />
+          <TextInput
+            value={secondValue}
+            style={{ ...Fonts.f12 }}
+            placeholder="Input Nama SIM"
+            onChangeText={(text) => onSecondChange(text)}
+          />
         </View>
       )
     } else {
@@ -104,13 +130,12 @@ export default function ModalTermsAndCondition({
                       padding: 10,
                       justifyContent: 'center',
                       alignItems: 'center',
-                      ...Background.white,
+                      ...Background.bg_white,
                       shadowColor: '#000',
                       shadowOffset: { width: 0, height: 0 },
                       shadowOpacity: 0.2,
                       shadowRadius: 5,
                       elevation: 5,
-                      borderWidth: 1,
                       margin: 5,
                     }}
                   >
@@ -144,7 +169,7 @@ export default function ModalTermsAndCondition({
   )
 }
 
-ModalTermsAndCondition.defaultProps = {
+ModalCamera.defaultProps = {
   onCancel: () => {},
   onSubmit: () => {},
   children: null,
@@ -153,9 +178,13 @@ ModalTermsAndCondition.defaultProps = {
   title: 'Syarat dan Ketentuan Sewa',
   link: '',
   labelInformation: 'Mohon pastikan seluruh informasi terlihat dengan jelas',
+  onFirstChange: () => {},
+  onSecondChange: () => {},
+  firstValue: '',
+  secondValue: '',
 }
 
-ModalTermsAndCondition.propTypes = {
+ModalCamera.propTypes = {
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
   children: PropTypes.node,
@@ -164,4 +193,8 @@ ModalTermsAndCondition.propTypes = {
   title: PropTypes.string,
   link: PropTypes.string,
   labelInformation: PropTypes.string,
+  onFirstChange: PropTypes.func,
+  onSecondChange: PropTypes.func,
+  firstValue: PropTypes.string,
+  secondValue: PropTypes.string,
 }

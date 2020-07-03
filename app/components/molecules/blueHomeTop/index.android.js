@@ -64,8 +64,8 @@ export default function BlueHomeTop({ children, welcomeText1, welcomeText2, item
 
 BlueHomeTop.defaultProps = {
   children: null,
-  welcomeText1: 'Halo',
-  welcomeText2: ', Apa yang sedang kamu cari?',
+  welcomeText1: 'Hello',
+  welcomeText2: ', What are you looking for?',
   items: [],
   itemsLoading: true,
 }

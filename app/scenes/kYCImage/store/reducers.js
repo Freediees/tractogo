@@ -26,11 +26,25 @@ export const fetchFace = (state, { payload }) => ({
 export const putImageSuccess = (state) => ({
   ...state,
   imageIsLoading: false,
+  showModal: true,
 })
 
 export const putImageLoading = (state) => ({
   ...state,
   imageIsLoading: true,
+})
+
+export const setCardData = (state, { payload }) => ({
+  ...state,
+  namaKTP: payload.namaKTP,
+  namaSIM: payload.namaSIM,
+  noKTP: payload.noKTP,
+  noSIM: payload.noSIM,
+})
+
+export const toggleModal = (state) => ({
+  ...state,
+  showModal: !showModal,
 })
 
 export const resetImage = (state) => ({
@@ -41,6 +55,11 @@ export const resetImage = (state) => ({
   imageKTP: null,
   imageSIM: null,
   imageFace: null,
+  namaKTP: null,
+  namaSIM: null,
+  noKTP: null,
+  noSIM: null,
+  showModal: false,
 })
 
 export const reducer = createReducer(INITIAL_STATE, {
@@ -49,4 +68,7 @@ export const reducer = createReducer(INITIAL_STATE, {
   [ImageTypes.FETCH_FACE]: fetchFace,
   [ImageTypes.PUT_IMAGE_SUCCESS]: putImageSuccess,
   [ImageTypes.PUT_IMAGE_LOADING]: putImageLoading,
+  [ImageTypes.RESET_IMAGE]: resetImage,
+  [ImageTypes.SET_CARD_DATA]: setCardData,
+  [ImageTypes.TOGGLE_MODAL]: toggleModal,
 })

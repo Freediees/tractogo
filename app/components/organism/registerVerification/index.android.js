@@ -7,6 +7,7 @@ import OTPInput from 'components/atom/oTPInput'
 import TextButton from 'components/atom/textButton'
 import DefaultHeader from 'components/molecules/defaultHeader'
 import DefaultFooter from 'components/molecules/defaultFooter'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 import CountDown from 'react-native-countdown-component'
 
@@ -25,6 +26,8 @@ export default function RegistrationVerification({
   onCodeFilled,
   timer,
   resendCode,
+  isLoading,
+  errorMessage,
 }) {
   const [isTimerRunning, setIsTimerRunning] = useState(true)
   const [timerID, setTimerID] = useState('1')
@@ -37,6 +40,7 @@ export default function RegistrationVerification({
 
   return (
     <View style={{ flex: 1, flexDirection: 'column' }}>
+      <Spinner visible={isLoading} textContent={'Loading...'} />
       <DefaultHeader title={title} iconLeft={backIcon} onIconLeftPress={onIconLeftPress} />
       <View style={{ flex: 9 }}>
         <ScrollView style={{ ...Column.col_12, flexDirection: 'column', paddingHorizontal: '10%' }}>
@@ -61,6 +65,9 @@ export default function RegistrationVerification({
           </View>
           <View style={{ alignItems: 'center' }}>
             <OTPInput onCodeFilled={onCodeFilled} />
+            <Text style={{ ...Fonts.f_10, ...Fonts.text_red, ...Margin.mb_8 }}>
+              {errorMessage ? JSON.stringify(errorMessage) : ''}
+            </Text>
             {isTimerRunning ? (
               <CountDown
                 id={timerID}
@@ -117,6 +124,8 @@ RegistrationVerification.defaultProps = {
     console.log('code resent')
   },
   timer: 60,
+  isLoading: false,
+  errorMessage: '',
 }
 
 RegistrationVerification.propTypes = {
@@ -131,4 +140,6 @@ RegistrationVerification.propTypes = {
   onCodeFilled: PropTypes.func,
   timer: PropTypes.number,
   resendCode: PropTypes.func,
+  isLoading: PropTypes.bool,
+  errorMessage: PropTypes.string,
 }

@@ -12,6 +12,7 @@ export default function SplashScreen(props) {
   useEffect(() => {
     async function initialize() {
       const userToken = await AsyncStorage.getItem('token')
+      const isOnBoard = await AsyncStorage.getItem('onBoard')
       if (userToken && userToken !== '') {
         props.navigation.navigate('routeTwo')
       } else {
@@ -21,7 +22,11 @@ export default function SplashScreen(props) {
           duration: 2000,
           bounciness: 20
         }).start(async () => {
-          props.navigation.replace('WalktroughScreen')
+          if (isOnBoard === '1') {
+            props.navigation.navigate('routeTwo')
+          } else {
+            props.navigation.replace('WalktroughScreen')
+          }
         })
       }
       // messaging.getToken().then((token) => {
@@ -29,7 +34,7 @@ export default function SplashScreen(props) {
       // })
     }
     initialize()
-  })
+  }, [props.navigation])
 
   return (
     <Splash/>

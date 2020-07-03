@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { Config, USER,  NOTIFICATION_BY_USER } from 'config'
+import { Config, USER, NOTIFICATION_BY_USER } from 'config'
 import { is, curryN, gte } from 'ramda'
-import { objectToQueryString } from 'function'
+import { defineHeaders, unAuthenticateCallBack } from 'function/apiRequest'
 import AsyncStorage from '@react-native-community/async-storage'
 import NavigationService from 'services/navigationService'
 
@@ -31,7 +31,7 @@ const userApiClient = axios.create({
 function fetchUser() {
   // Simulate an error 50% of the time just for testing purposes
   if (Math.random() > 0.5) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       resolve(null)
     })
   }
@@ -48,54 +48,26 @@ function fetchUser() {
 }
 
 const getUserProfile = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  console.log(AUTH)
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  console.log(headers)
-  console.log(USER)
+  const headers = await defineHeaders()
   return axios
     .get(`${USER}`, {
       headers,
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
+      console.log('respon: ', response)
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      console.log(err)
+      console.log('Fetch user profile error')
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getNotificationByUser = async (type) => {
-  const AUTH = await AsyncStorage.getItem('token')
   const userFromStorage = await AsyncStorage.getItem('user')
   const user = JSON.parse(userFromStorage)
-  console.log(AUTH)
-  // const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    // 'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  console.log({ user })
+  const headers = await defineHeaders()
   return axios
     .get(`${NOTIFICATION_BY_USER}${user.Id}&Type=${type}`, {
       headers,
@@ -109,16 +81,9 @@ const getNotificationByUser = async (type) => {
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      console.log(err)
+      console.log('Fetch user notification error')
+      return unAuthenticateCallBack(err)
     })
 }
 

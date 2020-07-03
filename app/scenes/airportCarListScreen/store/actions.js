@@ -33,6 +33,7 @@ const { Types, Creators } = createActions({
   fetchAirportStocksWithPriceFailure: ['errorMessage'],
   fetchAirportStocksWithPriceComplete: null,
   changeAirportStocksWithPrice: ['payload'],
+  resetAirportState: null,
 })
 
 export const AirportCarListScreenTypes = Types

@@ -24,6 +24,7 @@ export default function PrimaryButton({
         ...Padding.pv_8,
         ...Padding.ph_8,
         ...Alignment.align_center,
+        height: 48,
         ...{ width: `${widthSize}` },
         ...style,
       }}

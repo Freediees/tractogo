@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { saveFilterFunc, saveFilterObject, getFilterObject, pad } from 'function'
 import { RENTAL_KMBASE, AIRPORT_TRANSFER, AIRPORT_TRANSFER_BUID } from 'config'
 import AirportFilterScreen from 'components/organism/airportFilterScreen'
-import CarListScreenActions from 'scenes/carListScreen/store/actions'
+import CarFilterScreenActions from 'scenes/filter/store/actions'
 
 export function useForceUpdate() {
   const [, setTick] = useState(0)
@@ -49,8 +49,12 @@ const AirportFilterContainer = ({
   fetchZone,
   zone,
   airportPlaceDetail,
+  fetchAdjustmentRetails,
+  adjustmentRetails,
+  adjustmentRetailsIsLoading,
+  adjustmentRetailsErrorMessage,
 }) => {
-  const [selectedDate, changeSelectedDate] = useState(new Date())
+  // const [selectedDate, changeSelectedDate] = useState(new Date())
   const [selectedMinute, changeSelectedMinute] = useState('00')
   const [selectedHour, changeSelectedHour] = useState('10')
   const [selectedAirport, changeSelectedAirport] = useState({})
@@ -60,10 +64,29 @@ const AirportFilterContainer = ({
   const [updated, changeUpdated] = useState(false)
   const [keyword, changeKeyword] = useState('')
   const [isFromAirport, changeIsFromAirport] = useState(true)
+  const [selectedDate, changeSelectedDate] = useState(new Date())
+  const [maxOrderTime, changeMaxOrderTime] = useState('00:00')
+
   const prevSelectedAirport = usePrevious({ selectedAirport })
   const forceUpdate = useForceUpdate()
 
   const onSubmit = () => {
+    console.log({ isFromAirport })
+    const formatedSelectedDate = new Date(selectedDate)
+    formatedSelectedDate.setHours(selectedHour)
+    formatedSelectedDate.setMinutes(selectedMinute)
+    formatedSelectedDate.setSeconds(0)
+
+    const dateNow = new Date()
+    const tempDateNow = new Date()
+    const timeMax = maxOrderTime.split(':')
+    dateNow.setHours(dateNow.getHours() + parseInt(timeMax[0]))
+    dateNow.setMinutes(dateNow.getMinutes() + parseInt(timeMax[1]))
+
+    console.log({ dateNow })
+    console.log({ tempDateNow })
+    console.log({ formatedSelectedDate })
+
     if (!selectedAirport.item) {
       Alert.alert('Please Select an Airport')
       return
@@ -75,8 +98,26 @@ const AirportFilterContainer = ({
     }
 
     if (!selectedAddress.description) {
-      Alert.alert('Please Select Address Information')
+      Alert.alert('Please Fill Address Information')
       return
+    }
+
+    // if (formatedSelectedDate.getTime() > new Date().getTime() === false) {
+    //   Alert.alert('Please Change Date or Time')
+    //   return
+    // }
+
+    if (formatedSelectedDate.getDate() === tempDateNow.getDate()) {
+      if (formatedSelectedDate.getHours() <= tempDateNow.getHours()) {
+        Alert.alert(`Your Pickup Time must above than ${Moment(dateNow).format('MMMM Do, HH:mm')}`)
+        initMaxOrderTime()
+        return
+      }
+      if (formatedSelectedDate.getTime() <= dateNow.getTime()) {
+        Alert.alert(`You have to order above than ${Moment(dateNow).format('MMMM Do, HH:mm')}`)
+        initMaxOrderTime()
+        return
+      }
     }
 
     if (JSON.stringify(zone) === {} || zone === null) {
@@ -91,10 +132,6 @@ const AirportFilterContainer = ({
       return
     }
 
-    const formatedSelectedDate = new Date(selectedDate)
-    formatedSelectedDate.setHours(selectedHour)
-    formatedSelectedDate.setMinutes(selectedMinute)
-    formatedSelectedDate.setSeconds(0)
     console.log('selectedCity', selectedCity)
     let reservationDetails = {
       city: {
@@ -112,6 +149,8 @@ const AirportFilterContainer = ({
       date: { formatedSelectedDate },
     }
 
+    console.log({ reservationDetails })
+
     var stockPayload = {
       payload: {
         BusinessUnitId: AIRPORT_TRANSFER_BUID,
@@ -123,7 +162,7 @@ const AirportFilterContainer = ({
           .format(),
         BranchId: isFromAirport
           ? reservationDetails.airport.BranchId
-          : reservationDetails.city.BranchId,
+          : reservationDetails.city.BranchID,
         IsWithDriver: 1,
         Uom: 'km',
         RentalPackage: reservationDetails.zone.KM,
@@ -148,10 +187,12 @@ const AirportFilterContainer = ({
   useEffect(() => {
     async function initialize() {
       zone = null
+      changeDate(Moment(selectedDate))
       if (airports && airports.length === 0) {
         fetchAirports()
         forceUpdate()
       }
+      initMaxOrderTime()
     }
     initialize()
     // console.log(selectedAddress)
@@ -212,21 +253,46 @@ const AirportFilterContainer = ({
     changeUpdated(true)
   }
 
+  const initMaxOrderTime = async () => {
+    const prdID = await AsyncStorage.getItem('prdID')
+    console.log('prdID', prdID)
+    fetchAdjustmentRetails()
+    adjustmentRetails.forEach((v, i) => {
+      if (v.MsProductId === prdID) {
+        changeMaxOrderTime(v.MaxOrderTime)
+      }
+    })
+  }
+
+  const changeDate = (date) => {
+    console.log('change date')
+    console.log({ date })
+    changeSelectedDate(date._d)
+    console.log(selectedDate)
+    forceUpdate()
+  }
+
   return (
     <AirportFilterScreen
-      changeSelectedDate={changeSelectedDate}
       selectedDate={selectedDate}
+      changeSelectedDate={(date) => {
+        console.log(date)
+        console.log('masuk sini')
+        changeDate(date)
+      }}
       onIconLeftPress={() => navigation.goBack()}
       onSearchButtonPress={() => onSubmit()}
       selectedMinute={selectedMinute}
       changeSelectedMinute={changeSelectedMinute}
       selectedHour={selectedHour}
       changeSelectedHour={changeSelectedHour}
-      placeHolderLocationFilter={'Choose Address'}
-      placeHolderAirportFilter={'Choose Airport'}
+      placeHolderLocationFilter={'Select Address'}
+      placeHolderAirportFilter={'Select Airport'}
       airportData={airports}
       changeSelectedAirport={async (v) => {
         changeSelectedAirport(v)
+        changeSelectedCity('')
+        changeSelectedAddress('')
       }}
       selectedAirport={selectedAirport}
       citiesData={Object.keys(selectedAirport).length === 0 ? [] : airportCoverages}
@@ -309,6 +375,13 @@ AirportFilterContainer.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  selectedDate: PropTypes.date,
+  changeSelectedDate: PropTypes.func,
+  fetchAdjustmentRetails: PropTypes.func,
+  adjustmentRetails: PropTypes.arrayOf(PropTypes.shape({})),
+  adjustmentRetailsIsLoading: PropTypes.bool,
+  adjustmentRetailsErrorMessage: PropTypes.string,
+  rentPackages: PropTypes.arrayOf(PropTypes.shape({})),
 }
 
 const mapStateToProps = (state) => ({
@@ -327,6 +400,10 @@ const mapStateToProps = (state) => ({
   distanceBetweenOriginAndDestination: state.airportFilter.distanceBetweenOriginAndDestination,
   zone: state.airportFilter.zone,
   airportPlaceDetail: state.airportFilter.airportPlaceDetail,
+  selectedDate: state.airportFilter.selectedDate,
+  adjustmentRetails: state.filter.adjustmentRetails,
+  adjustmentRetailsIsLoading: state.filter.adjustmentRetailsIsLoading,
+  adjustmentRetailsErrorMessage: state.filter.adjustmentRetailsErrorMessage,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -342,6 +419,10 @@ const mapDispatchToProps = (dispatch) => ({
   fetchDistanceBetweenOriginAndDestination: (payload) =>
     dispatch(AirportFilterContainerAction.fetchDistanceBetweenOriginAndDestination(payload)),
   fetchZone: (payload) => dispatch(AirportFilterContainerAction.fetchZone(payload)),
+  changeSelectedDate: (payload) =>
+    dispatch(AirportFilterContainerAction.changeSelectedDate(payload)),
+
+  fetchAdjustmentRetails: () => dispatch(CarFilterScreenActions.fetchAdjustmentRetails()),
 })
 
 export default connect(

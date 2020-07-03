@@ -188,7 +188,7 @@ export default function SortFilterButton({
 }
 
 SortFilterButton.defaultProps = {
-  sortLabel: 'Urutkan',
+  sortLabel: 'Sort',
   filterLabel: 'Filter',
   onSortPress: () => {},
   onFilterPress: () => {},
@@ -218,7 +218,7 @@ SortFilterButton.defaultProps = {
   },
   selectedSortIndex: 0,
   changeSelectedSortItem: () => {},
-  buttonCloseLabel: 'Tutup',
+  buttonCloseLabel: 'Save',
   selectedMin: 200000,
   selectedMax: 400000,
   changeSelectedMin: () => {},
@@ -228,7 +228,7 @@ SortFilterButton.defaultProps = {
   chipItems: [
     {
       value: 0,
-      label: 'Semua',
+      label: 'All',
     },
     {
       value: 1,
@@ -245,11 +245,11 @@ SortFilterButton.defaultProps = {
   ],
   selectedChipItem: {
     value: 0,
-    label: 'Semua',
+    label: 'All',
   },
   selectedChipIndex: 0,
   onSelectChipItem: () => {},
-  sortTitleLabel: 'Urutkan Berdasarkan',
+  sortTitleLabel: 'Sort By',
   filterTitleLabel: 'Filter',
   rangeFilterLabel: 'Kisaran Harga per Hari',
   chipPickerLabel: 'Kapasitas Penumpang',

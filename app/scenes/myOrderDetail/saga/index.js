@@ -1,19 +1,20 @@
 import { call, put } from 'redux-saga/effects'
-import { getCartDetailsRequest } from 'services/orderService'
-import ExampleScreenAction from 'scenes/cartScreen/store/actions'
+import { orderService } from 'services/orderService'
+import MyOrderDetailAction from 'scenes/myOrderDetail/store/actions'
 
-function* fetchExample() {
-  yield put(ExampleScreenAction.fetchExampleLoading())
+function* fetchPaymentDetail(reservasiId) {
+  yield put(MyOrderDetailAction.fetchPaymentDetailLoading())
   try {
-    const json = yield call(getCartDetailsRequest)
+    const json = yield call(orderService.getOrdersPaymentRequest, reservasiId)
     if (json) {
+      console.log(`test` + json.Data)
       if (json.Data) {
-        yield put(ExampleScreenAction.fetchExampleSuccess(json.Data))
+        yield put(MyOrderDetailAction.fetchPaymentDetailSuccess(json.Data))
       }
     }
   } catch (error) {
-    yield put(ExampleScreenAction.fetchExampleFailure(error))
+    yield put(MyOrderDetailAction.fetchPaymentDetailFailure(error))
   }
 }
 
-export { fetchExample }
+export { fetchPaymentDetail }

@@ -109,7 +109,7 @@ export default function CheckOutFooter({
 }
 
 CheckOutFooter.defaultProps = {
-  selectedLabel: 'Semua',
+  selectedLabel: 'All',
   isCheckOut: true,
   amountLabel: 'Total',
   amountValue: 'Rp. 350.000',

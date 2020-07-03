@@ -20,10 +20,19 @@ function* fetchExtrasSelfDrive({ payload }) {
     // create the object here
     const dataArr = []
     if (json.Data) {
+      console.log(json.Data)
       json.Data.forEach((item) => {
         let newData = {
           name: item.extras.Name,
-          value: parseInt(item.Price ? item.Price.replace('.00', '') : 0),
+          value:
+            item.extras.Name === 'Add Hours'
+              ? parseInt(
+                  payload.item.priceInformation.configuration_price_product_retail_details[0].AdditionalPrice.replace(
+                    '.00',
+                    ''
+                  )
+                )
+              : parseInt(item.Price ? item.Price.replace('.00', '') : 0),
           count: 0,
           total: 0,
           type: item.extras.ValueType,
@@ -33,16 +42,25 @@ function* fetchExtrasSelfDrive({ payload }) {
           unit: item.extras.ValueType === 'boolean' ? 'Hari' : 'Item',
         }
         if (item.Status === '1') {
+          if (newData.item.Price === null) {
+            newData.item.Price = 0
+          }
           dataArr.push(newData)
         }
       })
-      if (payload.item.priceInformation.PriceDiscount) {
+      if (
+        payload.item.priceInformation.PriceDiscount &&
+        payload.item.priceInformation.PriceDiscount.category_name
+      ) {
         dataArr.push({
           name: payload.item.priceInformation.PriceDiscount.category_name,
           value: payload.item.priceAmount - payload.item.discountedPrice,
           unit: 'Item',
           count: 1,
-          total: (payload.item.priceAmount - payload.item.discountedPrice) * -1,
+          total:
+            (payload.item.priceAmount - payload.item.discountedPrice) *
+            -1 *
+            parseInt(payload.item.duration),
           type: 'discount',
           stockType: '0',
           availability: 0,
@@ -68,6 +86,7 @@ function* fetchExtrasSelfDrive({ payload }) {
         stockType: '0',
         availability: 0,
       })
+      console.log(dataArr)
     }
     yield put(OrderDetailSelfDriveAction.changeAdditionalItems(dataArr))
     yield put(OrderDetailSelfDriveAction.fetchExtrasSelfDriveSuccess(dataArr))

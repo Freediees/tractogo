@@ -12,10 +12,14 @@ import {
   MY_ORDERS_ACTIVE,
   MY_ORDERS_COMPLETE,
   MY_ORDERS_CANCEL,
+  MY_ORDERS_PAYMENT,
   CHECKOUT,
   CART_CHECKOUT,
   MY_ORDERS_CANCEL_MASTER_REASON,
+  RESERVATION_CANCEL,
+  CART,
 } from 'config'
+import { defineHeaders, unAuthenticateCallBack } from 'function/apiRequest'
 import { objectToQueryString } from 'function'
 import NavigationService from 'services/navigationService'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -23,14 +27,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 const getStockRequest = async (payload) => {
   const tempParam =
     '?BusinessUnitId=0104&BranchId=SR01&CityId=KTID-3606&StartDate=2020-04-21T07:00:00.000Z&EndDate=2020-04-21T07:00:00.000Z&IsWithDriver=1&RentalDuration=4&RentalPackage=4&Uom=hr&ServiceTypeId=STID-003&ValidateAttribute=1'
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-    'App-Key': SM_APP_KEY,
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
+  headers['App-Key'] = SM_APP_KEY
   const url = `${LIST_STOCK}?${objectToQueryString(payload)}`
   const tempUrl = `${LIST_STOCK}${tempParam}`
   return axios
@@ -38,70 +36,30 @@ const getStockRequest = async (payload) => {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getStockPriceCarRentalRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  console.log(`${PRICE_PRODUCT_CAR_RENTAL}?${objectToQueryString(payload)}`)
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   const url = `${PRICE_PRODUCT_CAR_RENTAL}?${objectToQueryString(payload)}`
   return axios
     .get(url, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log('err', err)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getExtrasRequest = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   const url = `${EXTRAS}?${objectToQueryString(payload)}`
   console.log(url)
   return axios
@@ -109,420 +67,223 @@ const getExtrasRequest = async (payload) => {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const postAddCart = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .post(ADD_CART, payload, {
       headers,
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log(err)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const deleteCartDetails = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .delete(DELETE_CART, {
       headers,
       data: payload,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getPriceExpedition = async (payload) => {
   const buID = await AsyncStorage.getItem('buID')
   const prdID = await AsyncStorage.getItem('prdID')
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(PRICE_EXPEDITION(buID, prdID, payload.distance), {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getCartDetailsRequest = async () => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
   const cartHeaderId = await AsyncStorage.getItem('cartHeaderId')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  console.log(cartHeaderId)
+  const headers = await defineHeaders()
   if (cartHeaderId) {
     return axios
       .get(CART_DETAIL(cartHeaderId), {
         headers,
       })
       .then((response) => {
-        console.log(response)
-        if (response.status === 401) {
-          // refresh token here
-          AsyncStorage.removeItem('token')
-        }
         return response.data
       })
       .catch((err) => {
-        if (err.response) {
-          if (err.response.status === 401) {
-            NavigationService.logout()
-          } else {
-            const error = {
-              message: 'Please Contact Customer Support',
-            }
-            return error
-          }
-        }
+        return unAuthenticateCallBack(err)
       })
   } else {
     return { Data: [] }
   }
 }
 
+const getCartRequest = async () => {
+  console.log('cart request')
+  const headers = await defineHeaders()
+  console.log(CART)
+  return axios
+    .get(CART, {
+      headers,
+    })
+    .then((response) => {
+      console.log(response)
+      return response.data
+    })
+    .catch((err) => {
+      console.log(err)
+      return unAuthenticateCallBack(err)
+    })
+}
+
 const postCheckoutValidation = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  console.log('checkout validate')
+  const headers = await defineHeaders()
+  console.log(CHECKOUT_VALIDATION)
+  console.log('validate api')
+  console.log(payload)
   return axios
     .post(CHECKOUT_VALIDATION, payload, {
       headers,
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log(err)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const postCheckoutWithoutCart = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  console.log('checkout without cart')
-  console.log(CHECKOUT)
-  console.log(payload)
+  const headers = await defineHeaders()
   return axios
     .post(CHECKOUT, payload, {
       headers,
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log({ err })
-      console.log(err.response)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const postCheckout = async (payload) => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
-  console.log('checkout with cart')
-  console.log(payload)
-  console.log(CART_CHECKOUT)
+  const headers = await defineHeaders()
   return axios
     .post(CART_CHECKOUT, payload, {
       headers,
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log(err)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getOrdersActiveRequest = async () => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(MY_ORDERS_ACTIVE, {
       headers,
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log(err.response)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getOrdersCompleteRequest = async () => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(MY_ORDERS_COMPLETE, {
       headers,
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log(err.response)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getOrdersCancelRequest = async () => {
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(MY_ORDERS_CANCEL, {
       headers,
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log(err.response)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
+    })
+}
+
+const getOrdersPaymentRequest = async (reservasiId) => {
+  console.log(reservasiId.payload)
+  const headers = await defineHeaders()
+  return axios
+    .get(MY_ORDERS_PAYMENT(reservasiId.payload), {
+      headers,
+    })
+    .then((response) => {
+      console.log(response)
+      return response.data
+    })
+    .catch((err) => {
+      return unAuthenticateCallBack(err)
     })
 }
 
 const getMasterReason = async () => {
-
-  const AUTH = await AsyncStorage.getItem('token')
-  const LANG = await AsyncStorage.getItem('lang')
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept-Language': LANG || 'id',
-  }
-  if (AUTH) headers.Authorization = `Bearer ${AUTH}`
+  const headers = await defineHeaders()
   return axios
     .get(MY_ORDERS_CANCEL_MASTER_REASON, {
       headers,
     })
     .then((response) => {
-      if (response.status === 401) {
-        // refresh token here
-        AsyncStorage.removeItem('token')
-      }
       return response.data
     })
     .catch((err) => {
-      console.log(err.response)
-      if (err.response) {
-        if (err.response.status === 401) {
-          NavigationService.logout()
-        } else {
-          const error = {
-            message: 'Please Contact Customer Support',
-          }
-          return error
-        }
-      }
+      return unAuthenticateCallBack(err)
+    })
+}
+
+const postReservationCancel = async (payload) => {
+  const headers = await defineHeaders()
+  return axios
+    .put(RESERVATION_CANCEL, payload, {
+      headers,
+    })
+    .then((response) => {
+      return response.data
+    })
+    .catch((err) => {
+      return unAuthenticateCallBack(err)
     })
 }
 
@@ -538,7 +299,10 @@ export const orderService = {
   getOrdersActiveRequest,
   getOrdersCompleteRequest,
   getOrdersCancelRequest,
+  getOrdersPaymentRequest,
   postCheckout,
   postCheckoutWithoutCart,
   getMasterReason,
+  postReservationCancel,
+  getCartRequest,
 }

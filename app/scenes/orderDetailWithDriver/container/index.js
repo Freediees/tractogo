@@ -1,18 +1,35 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Platform, Text, View, Button, ActivityIndicator, Image, Alert } from 'react-native'
+import React, { useState, useEffect, useCallback, Fragment } from 'react'
+import {
+  Platform,
+  Text,
+  View,
+  Button,
+  ActivityIndicator,
+  Image,
+  Alert,
+  BackHandler,
+} from 'react-native'
 import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
 import I18n from 'react-native-i18n'
 import Moment from 'moment'
 import { NavigationActions, StackActions } from 'react-navigation'
 import OrderDetailWithDriverAction from 'scenes/orderDetailWithDriver/store/actions'
+
+import { Margin, Fonts, Background, Padding } from 'theme'
+import CartItem from 'components/atom/cartItem'
+import PrimaryButton from 'components/atom/primaryButton'
+import CustomBottomSheet from 'components/molecules/customBottomSheet'
+
 import CarFilterScreenActions from 'scenes/filter/store/actions'
 import CartScreenActions from 'scenes/cartScreen/store/actions'
 import DetailItemWithDriver from 'components/organism/detailItemWithDriver'
 import AsyncStorage from '@react-native-community/async-storage'
 import { RENTAL_TIMEBASE, SERVICE_ID_WITH_DRIVER } from 'config'
 import { getFilterObject, getUserProfileObject, pad } from 'function'
+import { doResolveLoginRoute } from 'function/apiRequest'
 import { generateAddCartPayload, generateCheckoutPayload } from 'function/payloadGenerator'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 export function useForceUpdate() {
   const [, setTick] = useState(0)
@@ -21,6 +38,8 @@ export function useForceUpdate() {
   }, [])
   return update
 }
+
+let bsAddToCart = null
 
 const OrderDetailWithDriverScreen = ({
   navigation,
@@ -36,13 +55,20 @@ const OrderDetailWithDriverScreen = ({
   changeInitialize,
   additionalItems,
   changeAdditionalItems,
+  fetchCartDetails,
+  cartDetails,
+  cartDetailsIsLoading,
+  cartDetailsErrorMessage,
 }) => {
   const { item } = navigation.state.params
 
   const [updated, changeUpdated] = useState(false)
   const [initReady, changeInitReady] = useState(false)
 
-  const [totalAmount, changeTotalAmount] = useState(item.discountedPrice || item.priceAmount)
+  const [totalAmount, changeTotalAmount] = useState(
+    parseInt(item.discountedPrice) * parseInt(item.duration) ||
+      parseInt(item.priceAmount) * parseInt(item.duration)
+  )
   const [additionPersonName, changeAdditionPersonName] = useState('')
   const [additionPersonPhone, changeAdditionPersonPhone] = useState('')
   const [startDate, changeStartDate] = useState(new Date())
@@ -57,6 +83,9 @@ const OrderDetailWithDriverScreen = ({
   const [schedules, changeSchedules] = useState([])
   const [checkedAdditionPerson, changeCheckedAdditionPerson] = useState(false)
   const [isValid, changeIsValid] = useState(false)
+  const [frontEndValidate, changeFrontEndValidate] = useState(true)
+  const [goToCart, changeGoToCart] = useState(false)
+  const [errorCartMessage, changeErrorCartMessage] = useState('')
   const forceUpdate = useForceUpdate()
 
   const refreshLocations = (newLocations) => {
@@ -97,6 +126,7 @@ const OrderDetailWithDriverScreen = ({
       // BranchId
       // MsProductId
       // ProductServiceId
+      await fetchCartDetails()
       const prdID = await AsyncStorage.getItem('prdID')
       const payload = {
         payload: {
@@ -149,6 +179,31 @@ const OrderDetailWithDriverScreen = ({
     console.log(extras)
   }
 
+  const validateOnFrontEnd = () => {
+    let checkValidate = true
+    changeFrontEndValidate(true)
+    let tempProductId = ''
+    if (!cartDetailsIsLoading && cartDetails.length > 0) {
+      cartDetails.forEach((v) => {
+        if (tempProductId !== '' && tempProductId !== v.item.MsProductId) {
+          checkValidate = false
+          console.log('multiple product')
+          changeErrorCartMessage('There is still item on your cart, please checkout first')
+          Alert.alert('There is still item on your cart, please checkout first')
+          return false
+        } else {
+          tempProductId = v.item.MsProductId
+        }
+      })
+      return checkValidate
+    }
+    if (!cartDetailsIsLoading && cartDetails.length >= 5) {
+      changeErrorCartMessage('Cart is full, please checkout first')
+      Alert.alert('Cart is full, please checkout first')
+      return false
+    }
+  }
+
   /*
   if (!addCartIsLoading) {
     if (addCartErrorMessage) {
@@ -160,189 +215,255 @@ const OrderDetailWithDriverScreen = ({
   }
   */
 
+  if (goToCart && addCartErrorMessage && !addCartIsLoading) {
+    changeGoToCart(false)
+    Alert.alert(addCartErrorMessage)
+  } else if (goToCart && addCartSuccessMessage && !addCartErrorMessage && !addCartIsLoading) {
+    console.log('trigger alert')
+    changeGoToCart(false)
+    if (bsAddToCart) {
+      bsAddToCart.open()
+    }
+    fetchCartDetails()
+  }
+
   return (
-    <DetailItemWithDriver
-      onAddToCartPress={() => {
-        navigation.dispatch(
-          StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Home' })],
-          })
-        )
-        navigation.navigate('Cart')
-      }}
-      onCancelFooterPress={async () => {
-        if (checkedAdditionPerson) {
-          if (additionPersonPhone === '' || additionPersonName === '') {
+    <Fragment>
+      <DetailItemWithDriver
+        onCancelFooterPress={async () => {
+          if (checkedAdditionPerson) {
+            if (additionPersonPhone === '' || additionPersonName === '') {
+              changeIsValid(false)
+              Alert.alert('Informasi penumpang belum lengkap, silahkan periksa kembali')
+              return false
+            }
+          } else {
+            changeIsValid(true)
+          }
+          if (
+            !pickUpLocations ||
+            pickUpLocations.length === 0 ||
+            pickUpLocations[0].location.name === null
+          ) {
             changeIsValid(false)
-            Alert.alert('Informasi penumpang belum lengkap, silahkan periksa kembali')
+            Alert.alert('Select Location pick up terlebih dahulu')
             return false
           }
-        } else {
+          let tempProductId = ''
+          if (!cartDetailsIsLoading && cartDetails.length > 0) {
+            cartDetails.forEach((v) => {
+              if (tempProductId !== '' && tempProductId !== v.item.MsProductId) {
+                console.log('multiple product')
+                changeErrorCartMessage('There is still item on your cart, please checkout first')
+                Alert.alert('There is still item on your cart, please checkout first')
+                changeIsValid(false)
+                return false
+              } else {
+                tempProductId = v.item.MsProductId
+              }
+            })
+          }
+          if (!cartDetailsIsLoading && cartDetails.length >= 5) {
+            changeErrorCartMessage('Cart is full, please checkout first')
+            Alert.alert('Cart is full, please checkout first')
+            return false
+          }
           changeIsValid(true)
-        }
-        if (!pickUpLocations || pickUpLocations.length === 0) {
-          changeIsValid(false)
-          Alert.alert('Pilih lokasi pick up terlebih dahulu')
-          return false
-        }
-        forceUpdate()
-        changeIsValid(true)
-        let tempPriceExtra = 0
-        let tempPriceExpedition = 0
-        additionalItems.forEach((v) => {
-          if (v.type !== '-' && v.type !== 'discount') {
-            tempPriceExtra = tempPriceExtra + v.total
-          } else {
-            if (v.type !== 'discount') {
-              tempPriceExpedition = tempPriceExpedition + v.total
+          let tempPriceExtra = 0
+          let tempPriceExpedition = 0
+          additionalItems.forEach((v) => {
+            if (v.type !== '-' && v.type !== 'discount') {
+              tempPriceExtra = tempPriceExtra + v.total
+            } else {
+              if (v.type !== 'discount') {
+                tempPriceExpedition = tempPriceExpedition + v.total
+              }
+            }
+          })
+          let tempPriceDiscount = item.discountedPrice || item.priceAmount
+          let tempSubtotal =
+            parseInt(tempPriceDiscount) * item.duration + tempPriceExtra + tempPriceExpedition
+          const payload = {
+            item: item,
+            isWithDriver: true,
+            startDate: new Date(startDate._d),
+            endDate: new Date(endDate),
+            pickUpLocations: pickUpLocations,
+            dropLocations: pickUpLocations,
+            reservationExtras: additionalItems,
+            totalAmount: totalAmount,
+            hour: selectedHour,
+            minute: selectedMinute,
+            city: city,
+            PriceExtras: tempPriceExtra,
+            PriceExpedition: tempPriceExpedition,
+            PriceDiscount: item.discountedPrice || 0,
+            SubTotal: tempSubtotal,
+            additionalPersonName: checkedAdditionPerson ? additionPersonName : null,
+            additionalPersonPhone: checkedAdditionPerson ? additionPersonPhone : null,
+            reservationPromo: [item.priceInformation.PriceDiscount || null],
+            duration:
+              rentalPackage && rentalPackage.item && rentalPackage.item.Duration
+                ? rentalPackage.item.Duration
+                : '0',
+          }
+          const newPayload = await generateAddCartPayload(payload)
+          addCart(newPayload)
+          changeGoToCart(true)
+        }}
+        onOkFooterPress={async () => {
+          console.log(item)
+          console.log('testtt checkout')
+          const userProfile = await getUserProfileObject()
+          console.log('testtt checkout')
+          if (checkedAdditionPerson) {
+            if (additionPersonPhone === '' || additionPersonName === '') {
+              changeIsValid(false)
+              Alert.alert('Informasi penumpang belum lengkap, silahkan periksa kembali')
+              return
             }
           }
-        })
-        let tempPriceDiscount = item.discountedPrice
-        let tempSubtotal = item.discountedPrice + tempPriceExtra + tempPriceExpedition
-        const payload = {
-          item: item,
-          isWithDriver: true,
-          startDate: new Date(startDate._d),
-          endDate: new Date(endDate),
-          pickUpLocations: pickUpLocations,
-          dropLocations: pickUpLocations,
-          reservationExtras: additionalItems,
-          totalAmount: totalAmount,
-          hour: selectedHour,
-          minute: selectedMinute,
-          city: city,
-          PriceExtras: tempPriceExtra,
-          PriceExpedition: tempPriceExpedition,
-          PriceDiscount: item.discountedPrice,
-          SubTotal: tempSubtotal,
-          additionalPersonName: checkedAdditionPerson ? additionPersonName : null,
-          additionalPersonPhone: checkedAdditionPerson ? additionPersonPhone : null,
-          reservationPromo: [item.priceInformation.PriceDiscount || null],
-          duration:
-            rentalPackage && rentalPackage.item && rentalPackage.item.Duration
-              ? rentalPackage.item.Duration
-              : '0',
-        }
-        const newPayload = await generateAddCartPayload(payload)
-        console.log(newPayload)
-        addCart(newPayload)
-        if (addCartErrorMessage) {
-          Alert.alert(addCartErrorMessage)
-          return false
-        } else {
-          // changeInitialize(true)
-          return true
-        }
-      }}
-      onOkFooterPress={async () => {
-        console.log('testtt checkout')
-        const userProfile = await getUserProfileObject()
-        console.log('testtt checkout')
-        if (checkedAdditionPerson) {
-          if (additionPersonPhone === '' || additionPersonName === '') {
+          if (
+            !pickUpLocations ||
+            pickUpLocations.length === 0 ||
+            pickUpLocations[0].location.name === null
+          ) {
             changeIsValid(false)
-            Alert.alert('Informasi penumpang belum lengkap, silahkan periksa kembali')
-            return
+            Alert.alert('Select Location pick up terlebih dahulu')
+            return false
           }
-        }
-        if (
-          !pickUpLocations ||
-          pickUpLocations.length === 0 ||
-          pickUpLocations[0].location.name === null
-        ) {
-          changeIsValid(false)
-          Alert.alert('Pilih lokasi pick up terlebih dahulu')
-          return false
-        }
-        console.log('testtt valid')
-        changeIsValid(true)
-        let tempPriceExtra = 0
-        let tempPriceExpedition = 0
-        additionalItems.forEach((v) => {
-          if (v.type !== '-' && v.type !== 'discount') {
-            tempPriceExtra = tempPriceExtra + v.total
-          } else {
-            if (v.type !== 'discount') {
-              tempPriceExpedition = tempPriceExpedition + v.total
+          console.log('testtt valid')
+          changeIsValid(true)
+          let tempPriceExtra = 0
+          let tempPriceExpedition = 0
+          additionalItems.forEach((v) => {
+            if (v.type !== '-' && v.type !== 'discount') {
+              tempPriceExtra = tempPriceExtra + v.total
+            } else {
+              if (v.type !== 'discount') {
+                tempPriceExpedition = tempPriceExpedition + v.total
+              }
             }
+          })
+          let tempPriceDiscount = item.discountedPrice || item.priceAmount
+          let tempSubtotal =
+            parseInt(tempPriceDiscount) * item.duration + tempPriceExtra + tempPriceExpedition
+          const payload = {
+            item: item,
+            isWithDriver: true,
+            startDate: new Date(startDate._d),
+            endDate: new Date(endDate),
+            pickUpLocations: pickUpLocations,
+            dropLocations: pickUpLocations,
+            reservationExtras: additionalItems,
+            totalAmount: totalAmount,
+            hour: selectedHour,
+            minute: selectedMinute,
+            city: city,
+            PriceExtras: tempPriceExtra,
+            PriceExpedition: tempPriceExpedition,
+            PriceDiscount: item.discountedPrice || 0,
+            SubTotal: tempSubtotal,
+            additionalPersonName: checkedAdditionPerson ? additionPersonName : null,
+            additionalPersonPhone: checkedAdditionPerson ? additionPersonPhone : null,
+            reservationPromo: [item.priceInformation.PriceDiscount || null],
+            duration:
+              rentalPackage && rentalPackage.item && rentalPackage.item.Duration
+                ? rentalPackage.item.Duration
+                : '0',
           }
-        })
-        let tempPriceDiscount = item.discountedPrice
-        let tempSubtotal = item.discountedPrice + tempPriceExtra + tempPriceExpedition
-        const payload = {
-          item: item,
-          isWithDriver: true,
-          startDate: new Date(startDate._d),
-          endDate: new Date(endDate),
-          pickUpLocations: pickUpLocations,
-          dropLocations: pickUpLocations,
-          reservationExtras: additionalItems,
-          totalAmount: totalAmount,
-          hour: selectedHour,
-          minute: selectedMinute,
-          city: city,
-          PriceExtras: tempPriceExtra,
-          PriceExpedition: tempPriceExpedition,
-          PriceDiscount: item.discountedPrice,
-          SubTotal: tempSubtotal,
-          additionalPersonName: checkedAdditionPerson ? additionPersonName : null,
-          additionalPersonPhone: checkedAdditionPerson ? additionPersonPhone : null,
-          reservationPromo: [item.priceInformation.PriceDiscount || null],
-          duration:
-            rentalPackage && rentalPackage.item && rentalPackage.item.Duration
-              ? rentalPackage.item.Duration
-              : '0',
-        }
-        console.log(payload)
-        const newPayload = await generateCheckoutPayload(payload)
-        console.log(newPayload)
-        navigation.navigate('CheckoutScreen', { checkout: newPayload })
-        // addCart(newPayload)
-      }}
-      isValid={isValid}
-      personName={personName}
-      personEmail={personEmail}
-      city={city.cityName}
-      startDate={startDate}
-      endDate={endDate}
-      rentHour={`${
-        rentalPackage && rentalPackage.item && rentalPackage.item.Duration
-          ? rentalPackage.item.Duration
-          : '0'
-      }`}
-      additionPersonName={additionPersonName}
-      additionPersonPhone={additionPersonPhone}
-      onChangeAdditionPersonName={changeAdditionPersonName}
-      onChangeAdditionPersonPhone={changeAdditionPersonPhone}
-      totalAmount={totalAmount}
-      changeTotalAmount={changeTotalAmount}
-      additionalItems={additionalItems}
-      changeAdditionalItems={changeAdditionalItems}
-      item={item}
-      onIconLeftPress={() => navigation.goBack()}
-      pickUpLocations={schedules}
-      onCheckedAdditionPerson={() => {
-        changeCheckedAdditionPerson(!checkedAdditionPerson)
-        changeAdditionPersonName('')
-        changeAdditionPersonPhone('')
-      }}
-      onPressPickUpCTA={() => {
-        navigation.navigate('LocationPickScreen', {
-          locations: schedules,
-          city: city,
-          saveLocations: refreshLocations,
-        })
-      }}
-      onEditPress={() => {
-        navigation.navigate('LocationPickScreen', {
-          locations: schedules,
-          city: city,
-          saveLocations: refreshLocations,
-        })
-      }}
-    />
+          console.log(payload)
+          const newPayload = await generateCheckoutPayload(payload)
+          console.log(newPayload)
+          navigation.navigate('CheckoutScreen', { checkout: newPayload })
+          // addCart(newPayload)
+        }}
+        isValid={isValid}
+        personName={personName}
+        personEmail={personEmail}
+        city={city.cityName}
+        startDate={startDate}
+        endDate={endDate}
+        rentHour={`${
+          rentalPackage && rentalPackage.item && rentalPackage.item.Duration
+            ? rentalPackage.item.Duration
+            : '0'
+        }`}
+        additionPersonName={additionPersonName}
+        additionPersonPhone={additionPersonPhone}
+        onChangeAdditionPersonName={changeAdditionPersonName}
+        onChangeAdditionPersonPhone={changeAdditionPersonPhone}
+        totalAmount={totalAmount}
+        changeTotalAmount={changeTotalAmount}
+        additionalItems={additionalItems}
+        changeAdditionalItems={changeAdditionalItems}
+        item={item}
+        onIconLeftPress={() => navigation.goBack()}
+        pickUpLocations={schedules}
+        onCheckedAdditionPerson={() => {
+          changeCheckedAdditionPerson(!checkedAdditionPerson)
+          changeAdditionPersonName('')
+          changeAdditionPersonPhone('')
+        }}
+        onPressPickUpCTA={() => {
+          navigation.navigate('LocationPickScreen', {
+            locations: schedules,
+            city: city,
+            saveLocations: refreshLocations,
+          })
+        }}
+        onEditPress={() => {
+          navigation.navigate('LocationPickScreen', {
+            locations: schedules,
+            city: city,
+            saveLocations: refreshLocations,
+          })
+        }}
+      />
+      <Spinner visible={goToCart} textContent={'Loading...'} />
+      <CustomBottomSheet
+        title={'Success Adding Package'}
+        botSheetRef={(ref) => (bsAddToCart = ref)}
+      >
+        <View
+          style={{
+            flexDirection: 'column',
+            justifyContent: 'center',
+            ...Padding.ph_20,
+            ...Padding.pv_20,
+          }}
+        >
+          <CartItem
+            city={city.cityName}
+            startDate={startDate}
+            endDate={endDate}
+            rentHour={`${
+              rentalPackage && rentalPackage.item && rentalPackage.item.Duration
+                ? rentalPackage.item.Duration
+                : '0'
+            }`}
+            totalAmount={totalAmount}
+            carName={item && item.cardTitle ? item.cardTitle : 'TEST'}
+          />
+          <View style={{ width: '100%', ...Margin.mt_20 }}>
+            <PrimaryButton
+              style={{ height: 48, ...Padding.pv_12, ...Margin.mt_20 }}
+              text={'Go To Cart'}
+              onPress={() => {
+                bsAddToCart.close()
+                navigation.dispatch(
+                  StackActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: 'Home' })],
+                  })
+                )
+                navigation.navigate('Cart')
+              }}
+            />
+          </View>
+        </View>
+      </CustomBottomSheet>
+    </Fragment>
   )
 }
 
@@ -361,6 +482,10 @@ OrderDetailWithDriverScreen.propTypes = {
   changeInitialize: PropTypes.func,
   additionalItems: PropTypes.arrayOf(PropTypes.shape({})),
   changeAdditionalItems: PropTypes.func,
+  fetchCartDetails: PropTypes.func,
+  cartDetails: PropTypes.arrayOf(PropTypes.shape({})),
+  cartDetailsIsLoading: PropTypes.bool,
+  cartDetailsErrorMessage: PropTypes.string,
 }
 
 const mapStateToProps = (state) => ({
@@ -371,6 +496,9 @@ const mapStateToProps = (state) => ({
   addCartErrorMessage: state.orderDetailWithDriver.addCartErrorMessage,
   addCartSuccessMessage: state.orderDetailWithDriver.addCartSuccessMessage,
   additionalItems: state.orderDetailWithDriver.additionalItems,
+  cartDetails: state.cartScreen.cartDetails,
+  cartDetailsIsLoading: state.cartScreen.cartDetailsIsLoading,
+  cartDetailsErrorMessage: state.cartScreen.cartDetailsErrorMessage,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -380,6 +508,7 @@ const mapDispatchToProps = (dispatch) => ({
   changeInitialize: (payload) => dispatch(OrderDetailWithDriverAction.changeInitialize(payload)),
   changeAdditionalItems: (payload) =>
     dispatch(OrderDetailWithDriverAction.changeAdditionalItems(payload)),
+  fetchCartDetails: () => dispatch(CartScreenActions.fetchCartDetails()),
 })
 
 export default connect(

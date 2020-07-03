@@ -28,6 +28,7 @@ export default function HomeScreen({
   memberCTATitle,
   memberCTADescription,
   isMember,
+  isLogin,
 }) {
   return (
     <View style={{ flex: 20 }}>
@@ -50,7 +51,7 @@ export default function HomeScreen({
           promos={promos}
           promosLoading={promosLoading}
         />
-        {isMember == 0 ? (
+        {isMember == 0 && isLogin ? (
           <View style={{ flex: 1, ...Padding.ph_20, ...Margin.mv_20 }}>
             <MemberCTA
               onPress={onMemberCTAPress}
@@ -65,7 +66,7 @@ export default function HomeScreen({
         <CarouselTitle
           onMorePress={onMorePromosPress}
           style={{ ...Padding.pl_20, ...Margin.ml_12 }}
-          title={'Berita Terkini'}
+          title={'News'}
         />
         <CategoryCarousel
           style={{ ...Margin.mb_20, paddingLeft: 20, flex: 1, ...Row.row_3, ...Column.col_5 }}
@@ -78,6 +79,7 @@ export default function HomeScreen({
 }
 
 HomeScreen.defaultProps = {
+  isLogin: false,
   isMember: 0,
   onChatPress: null,
   onNotifPress: null,
@@ -90,13 +92,14 @@ HomeScreen.defaultProps = {
   promosLoading: true,
   categories: [],
   categoriesLoading: true,
-  welcomeText1: 'Halo',
-  welcomeText2: ', Apa yang sedang kamu cari?',
+  welcomeText1: 'Hello',
+  welcomeText2: ', What are you looking for?',
   memberCTATitle: 'Daftar Member',
   memberCTADescription: 'Cukup siapkan KTP & SIM, Dapatkan banyaknya banefit dari kami!',
 }
 
 HomeScreen.propTypes = {
+  isLogin: PropTypes.bool,
   isMember: PropTypes.number,
   onChatPress: PropTypes.func,
   onNotifPress: PropTypes.func,

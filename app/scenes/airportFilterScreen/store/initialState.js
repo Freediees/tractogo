@@ -17,4 +17,5 @@ export const INITIAL_STATE = {
   zone: null,
   zoneIsLoading: false,
   zoneErrorMessage: null,
+  selectedDate: new Date(),
 }

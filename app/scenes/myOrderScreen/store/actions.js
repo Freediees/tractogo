@@ -13,6 +13,7 @@ const { Types, Creators } = createActions({
   fetchOrdersCancelLoading: null,
   fetchOrdersCancelSuccess: ['ordersCancel'],
   fetchOrdersCancelFailure: ['errorMessage'],
+  resetState: null,
 })
 
 export const MyOrderScreenTypes = Types

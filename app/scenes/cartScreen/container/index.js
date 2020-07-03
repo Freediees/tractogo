@@ -10,6 +10,8 @@ import CartScreen from 'components/organism/cartScreen'
 import AsyncStorage from '@react-native-community/async-storage'
 import { saveFilterFunc, saveFilterObject, getFilterObject, pad } from 'function'
 import { RENTAL_TIMEBASE } from 'config'
+import { doResolveLoginRouteTab } from 'function/apiRequest'
+import NavigationService from 'services/navigationService'
 
 export function useForceUpdate() {
   const [, setTick] = useState(0)
@@ -45,21 +47,22 @@ const CartContainer = ({
 
   const [frontEndValidate, changeFrontEndValidate] = useState(true)
 
-  useEffect(() => {
-    async function initialize() {
+  const callback = () => {
+    navigation.popToTop()
+  }
+
+  async function initialize() {
+    if (doResolveLoginRouteTab(callback)) {
       fetchCartDetails()
       validateOnFrontEnd()
     }
-    const unsubscribe = navigation.addListener('willFocus', async () => {
-      // The screen is focused
-      // Call any action
-      fetchCartDetails()
-      validateOnFrontEnd()
-    })
+  }
+  useEffect(() => {
     initialize()
-
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe
+    const unsubscribe = navigation.addListener('didFocus', () => {
+      console.log('focus')
+      initialize()
+    })
   }, [navigation])
 
   const validateOnFrontEnd = async () => {
@@ -70,6 +73,7 @@ const CartContainer = ({
       cartDetails.forEach((v) => {
         if (tempProductId !== '' && tempProductId !== v.MsProductId) {
           checkValidate = false
+          console.log('multiple product')
         } else {
           tempProductId = v.MsProductId
         }

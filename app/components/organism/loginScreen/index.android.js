@@ -28,13 +28,14 @@ export default function LoginScreen({
   phoneNumber,
   onChangeText,
   onSignup,
+  isPhoneNumberValid
 }) {
   return (
-      <View style={{ flexDirection: 'column', flex: 1 }}>
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ ...Fonts.f_14, ...Fonts.bold, ...Fonts.text_black }}>{title}</Text>
-        </View>
-        <KeyboardAwareScrollView style={{ flex: 1}}>
+    <View style={{ flexDirection: 'column', flex: 1 }}>
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ ...Fonts.f_14, ...Fonts.bold, ...Fonts.text_black }}>{title}</Text>
+      </View>
+      <KeyboardAwareScrollView style={{ flex: 1 }}>
         <View style={{ flexDirection: 'column', width: '100%' }}>
           <CenterView>
             <Image
@@ -43,7 +44,14 @@ export default function LoginScreen({
             />
           </CenterView>
           <CenterView>
-            <PhoneFieldInput phoneNumber={phoneNumber} onChangeText={onChangeText} />
+            <PhoneFieldInput
+              phoneNumber={phoneNumber}
+              onChangeText={onChangeText}
+              placeholder={'Phone Number'}
+            />
+            <Text style={{ ...Fonts.f_10, ...Fonts.text_red, ...Margin.mb_8 }}>
+              {!isPhoneNumberValid ? 'Invalid Phone Numver' : ''}
+            </Text>
             <View style={{ ...Margin.mt_20, ...Margin.mb_20, width: '100%' }}>
               <PrimaryButton
                 onPress={onLogin}
@@ -64,17 +72,17 @@ export default function LoginScreen({
             </View>
           </CenterView>
         </View>
-        </KeyboardAwareScrollView>
-      </View>
+      </KeyboardAwareScrollView>
+    </View>
   )
 }
 
 LoginScreen.defaultProps = {
-  Masuk: 'Masuk',
-  labelSignin: 'Masuk',
-  labelSeprator: 'Atau dengan',
-  labelSignUpDesc: 'Belum punya akun?',
-  labelSignUp: 'Daftar',
+  Masuk: 'Sign In',
+  labelSignin: 'Sign In',
+  labelSeprator: 'Or With',
+  labelSignUpDesc: "Don't have an account yet ?",
+  labelSignUp: 'Register',
   onLogin: null,
   onLoginError: null,
   onLoginSuccess: false,
@@ -88,6 +96,7 @@ LoginScreen.defaultProps = {
   onSignup: () => {
     console.log('onSignup')
   },
+  isPhoneNumberValid: true,
 }
 
 LoginScreen.propTypes = {
@@ -105,4 +114,5 @@ LoginScreen.propTypes = {
   phoneNumber: PropTypes.string,
   onChangeText: PropTypes.func,
   onSignup: PropTypes.func,
+  isPhoneNumberValid: PropTypes.bool,
 }

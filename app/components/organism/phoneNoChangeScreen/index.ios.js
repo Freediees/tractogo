@@ -102,7 +102,7 @@ export default function ProfileEditorScreen({
           // title={placeHolderStartDate}
           title="Ubah No Handphone"
           botSheetRef={(ref) => (bsPhone = ref)}
-          // rightText={() => renderRightText(1)}
+          // topRightComponent={() => renderRightText(1)}
           onClose={() => bsPhone.close()}
           rBSheetHeight={100}
         >

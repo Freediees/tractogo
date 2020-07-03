@@ -4,6 +4,7 @@ const { Types, Creators } = createActions({
   fetchRegisterLoading: null,
   fetchRegisterSuccess: ['register'],
   fetchRegisterFailure: ['errorMessage'],
+  updateRegisterGoogle: ['payload'],
 })
 
 export const RegisterTypes = Types

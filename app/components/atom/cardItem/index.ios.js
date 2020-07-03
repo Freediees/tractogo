@@ -190,7 +190,7 @@ export default function CardItem({
                   {isCart ? 'Total' : basePriceLabel}
                 </Text>
                 <View style={{ ...Margin.mt_8, flexDirection: 'row', alignItems: 'center' }}>
-                  {discountPercent && (
+                  {/* {discountPercent && (
                     <Fragment>
                       <Text
                         style={{
@@ -201,7 +201,7 @@ export default function CardItem({
                         }}
                       >{`${discountPercent} %`}</Text>
                     </Fragment>
-                  )}
+                  )} */}
                   {discountedPrice && (
                     <LabelNumberFormat
                       number={priceAmount}
@@ -374,7 +374,7 @@ export default function CardItem({
                   {isCart ? 'Total' : basePriceLabel}
                 </Text>
                 <View style={{ ...Margin.mt_8, flexDirection: 'row', alignItems: 'center' }}>
-                  {discountPercent && (
+                  {discountPercent && discountPercent !== '0' && (
                     <Fragment>
                       <Text
                         style={{
@@ -452,7 +452,7 @@ CardItem.defaultProps = {
   onCheck: () => {},
   onPress: () => {},
   cardTitle: 'TOYOTA ALPHARD',
-  carRentalLabel: 'Sewa Mobil',
+  carRentalLabel: 'Car Rental',
   rentalDriverLabel: 'Tanpa Supir',
   placeLabel: 'Bandung',
   dateLabel: '26 - 27 Januari 2020',
@@ -461,15 +461,15 @@ CardItem.defaultProps = {
   driverLabel: 'Driver',
   suitcaseAmount: 3,
   suitcaseLabel: 'Suitcase',
-  basePriceLabel: 'Harga Dasar',
+  basePriceLabel: 'Basic Price',
   priceAmount: 1000000,
   priceUnit: ' / Hari',
   totalLabel: ' Total',
   itemImage: require('images/alphard-11.png'),
   uriImage: null,
-  quality: '< 4 tahun pemakaian',
+  quality: 'vehicle age < 4 years',
   isAssurance: true,
-  assuranceLabel: 'Asuransi Kendaraan',
+  assuranceLabel: 'Vehicle Insurance',
   style: {},
   noBorderTop: false,
   transmision: 'Manual',

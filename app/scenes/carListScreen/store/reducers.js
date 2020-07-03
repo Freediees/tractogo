@@ -86,6 +86,14 @@ export const resetState = (state) => ({
   prices: [],
   stocks: [],
   stocksWithPrice: [],
+  pricesIsLoading: true,
+  stocksWithPriceIsLoading: true,
+  stocksIsLoading: true,
+})
+
+export const changeAlertVisible = (state, { payload }) => ({
+  ...state,
+  alertVisible: payload,
 })
 
 /**
@@ -103,5 +111,6 @@ export const reducer = createReducer(INITIAL_STATE, {
   [CarListScreenTypes.FETCH_STOCKS_WITH_PRICE_FAILURE]: fetchStocksWithPriceFailure,
   [CarListScreenTypes.FETCH_STOCKS_WITH_PRICE_COMPLETE]: fetchStocksWithPriceComplete,
   [CarListScreenTypes.CHANGE_STOCKS_WITH_PRICE]: changeStocksWithPrice,
+  [CarListScreenTypes.CHANGE_ALERT_VISIBLE]: changeAlertVisible,
   [CarListScreenTypes.RESET_STATE]: resetState,
 })

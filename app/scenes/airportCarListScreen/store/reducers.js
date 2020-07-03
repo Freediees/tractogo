@@ -82,6 +82,14 @@ export const changeAirportStocksWithPrice = (state, { payload }) => ({
   filteredStocks: payload,
 })
 
+export const resetAirportState = (state) => ({
+  ...state,
+  filteredStocks: [],
+  prices: [],
+  stocks: [],
+  stocksWithPrice: [],
+})
+
 /**
  * @see https://github.com/infinitered/reduxsauce#createreducer
  */
@@ -97,4 +105,5 @@ export const reducer = createReducer(INITIAL_STATE, {
   [AirportCarListScreenTypes.FETCH_AIRPORT_STOCKS_WITH_PRICE_FAILURE]: fetchAirportStocksWithPriceFailure,
   [AirportCarListScreenTypes.FETCH_AIRPORT_STOCKS_WITH_PRICE_COMPLETE]: fetchAirportStocksWithPriceComplete,
   [AirportCarListScreenTypes.CHANGE_AIRPORT_STOCKS_WITH_PRICE]: changeAirportStocksWithPrice,
+  [AirportCarListScreenTypes.RESET_AIRPORT_STATE]: resetAirportState,
 })

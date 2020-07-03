@@ -1,7 +1,7 @@
 /*
  * @format
  */
-console.disableYellowBox = true;
+console.disableYellowBox = true
 
 import { AppRegistry } from 'react-native'
 import App from './app/app'
@@ -12,4 +12,4 @@ import { name as appName } from './app.json'
 // })
 AppRegistry.registerComponent(appName, () => App)
 
-// export default from './storybook';
+//export default from './storybook'

@@ -1,13 +1,14 @@
 import { responsiveWidth } from 'react-native-responsive-dimensions'
-import { Fonts, ImageSize, Margin, Padding } from 'theme';
+import { Fonts, ImageSize, Margin, Padding } from 'theme'
 
 export default {
   contentHeader: {
-    backgroundColor: '#FFF',
     flex: 1,
+    width: '100%',
     flexDirection: 'column',
-    elevation: 3,
-    shadowRadius: 5,
+    elevation: 0,
+    //shadowRadius: 5,
+    borderBottomRadius: 100,
   },
   contentlayer: {
     ...Padding.ph_8,

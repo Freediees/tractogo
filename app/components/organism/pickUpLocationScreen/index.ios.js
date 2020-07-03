@@ -72,7 +72,7 @@ export default function PickUpLocationScreen({
 
 PickUpLocationScreen.defaultProps = {
   onIconLeftPress: () => {},
-  title: 'Lokasi Penjemputan',
+  title: 'Pick-up location',
   items: [
     {
       date: new Date(),
@@ -134,7 +134,7 @@ PickUpLocationScreen.defaultProps = {
   style: {},
   locationDetailLabel: 'Detail Lokasi',
   notesPlaceholder: 'Notes',
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   placeHolderStartTime: 'Pilih Waktu Jemput',
   timeSufix: 'WIB',
   okLabel: 'Simpan',
@@ -145,7 +145,7 @@ PickUpLocationScreen.defaultProps = {
   changeKeyword: () => {},
   predictionItemClick: () => {},
   requestSearchPrediction: () => {},
-  keywordPlaceholder: 'Cari Lokasi',
+  keywordPlaceholder: 'Find Location',
   predictions: [
     {
       description:

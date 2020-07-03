@@ -8,17 +8,25 @@ import ImageAction from 'scenes/kYCImage/store/actions'
 import MemberScreen from 'components/organism/memberScreen'
 import MemberRegistrationScreen from 'components/organism/memberRegistrationScreen'
 import VerifikasiKYC from 'components/organism/verifikasiKYC'
+import NavigationService from 'services/navigationService'
 
-function Member({ navigation, resetImage }) {
+function Member({ navigation, resetImage, user }) {
   const [data, setdata] = useState({})
+  const [statusKYC, setStatusKYC] = useState()
+  const [info, setInfo] = useState()
 
   const onBack = () => {
     navigation.goBack()
   }
 
+  const retakePhoto = () => {
+    NavigationService.navigateAndReset('ProfileScreen')
+    navigation.navigate('CameraScreen')
+  }
+
   const moveToImage = () => {
     resetImage()
-    if (data.InReviewKYC == 1) {
+    if (user.InReviewKYC == 1) {
       // alert('In Review KYC')
       navigation.navigate('CameraScreen')
     } else {
@@ -28,14 +36,16 @@ function Member({ navigation, resetImage }) {
 
   useEffect(() => {
     async function initialize() {
-      let dataJson = await getUserProfileObject()
-      console.log(dataJson)
-      setdata(dataJson)
+      console.log(user)
+      // let dataJson = await getUserProfileObject()
+      //console.log(dataJson.ApprovalKYC.Status)
+      // setdata(user)
+      // setStatusKYC(user.ApprovalKYC.Status)
+      // setInfo(user.ApprovalKYC.Description)
     }
     initialize()
   }, [])
-
-  if (data.InReviewKYC == 0) {
+  if (user && user.IsMember == 0 && user.InReviewKYC == 0) {
     return (
       <MemberRegistrationScreen
         onButtonPress={moveToImage}
@@ -43,12 +53,27 @@ function Member({ navigation, resetImage }) {
         onIconLeftPress={onBack}
       />
     )
-  } else if (data.InReviewKYC != 0) {
-    if (data.IsMember == 1) {
-      return <MemberScreen onBack={onBack} />
-    } else {
-      return <VerifikasiKYC onBack={onBack} onFooterPress={onBack} />
-    }
+  } else if (user && user.IsMember == 0 && user.InReviewKYC == 1) {
+    return (
+      <VerifikasiKYC
+        onBack={onBack}
+        onFooterPress={
+          user.ApprovalKYC.Status && user.ApprovalKYC.Status == 0
+            ? () => {
+                moveToImage()
+              }
+            : onBack
+        }
+        statusKYC={user.InReviewKYC}
+        informationLabel={
+          (user.ApprovalKYC && user.ApprovalKYC.Description) ||
+          'Our system is cheking the data that you have sent'
+        }
+        footerLabel={user.ApprovalKYC && user.ApprovalKYC.Status == 0 ? 'Retake Photo' : 'Back'}
+      />
+    )
+  } else if (user && user.IsMember == 1) {
+    return <MemberScreen onBack={onBack} />
   } else {
     return <View />
   }
@@ -58,7 +83,9 @@ Member.defaultProps = {}
 
 Member.propTypes = {}
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  user: state.home.user,
+})
 
 const mapDispatchToProps = (dispatch) => ({
   resetImage: () => dispatch(ImageAction.resetImage()),

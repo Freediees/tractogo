@@ -59,7 +59,7 @@ export default function CustomBorderlessAccordion({ title, children }) {
 }
 
 CustomBorderlessAccordion.defaultProps = {
-  title: 'Informasi Layanan',
+  title: 'Service Information',
   children: null,
 }
 

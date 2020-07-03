@@ -91,6 +91,7 @@ export default function CustomLocationArrived({
                     style={{
                       width: '100%',
                       ...Fonts.f_10,
+                      ...Fonts.text_black,
                       ...Margin.ml_12,
                       borderBottomColor: Colors.grey,
                       borderBottomWidth: 1,
@@ -127,6 +128,7 @@ export default function CustomLocationArrived({
                     style={{
                       width: '100%',
                       ...Fonts.f_10,
+                      ...Fonts.text_black,
                       ...Margin.ml_12,
                       borderBottomColor: Colors.grey,
                       borderBottomWidth: 1,
@@ -155,7 +157,7 @@ CustomLocationArrived.defaultProps = {
   onEditPress: () => {},
   style: {},
   airportName: 'Bandar Soekarno Hatta',
-  placeholderNumber: 'Example : Gate Number Arrived',
+  placeholderNumber: 'Example : Terminal 3',
   placeholderFlight: 'Flight Number',
   gateNumber: 'G-19',
   flightNumber: 'BA192',

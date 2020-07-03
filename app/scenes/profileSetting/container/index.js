@@ -10,17 +10,24 @@ import { localStorageDecrypt } from 'function/storage'
 
 function EditProfile({ navigation, putProfile, user, updateProfile }) {
   const [onLoad, setonLoad] = useState(true)
+  const [gender, setGender] = useState()
 
   useEffect(() => {
-    const initialize = async() => {
+    const initialize = async () => {
+      setGender(user.Gender)
       console.log(user)
     }
 
     initialize()
   }, [])
 
+  const toggleGender = (value) => {
+    //console.log('MRx', value)
+    setGender(value)
+  }
+
   const moveToEdit = () => {
-    navigation.navigate("EditPhoneScreen")
+    navigation.navigate('EditPhoneScreen')
   }
 
   const getProfile = async () => {
@@ -29,26 +36,29 @@ function EditProfile({ navigation, putProfile, user, updateProfile }) {
   }
 
   const updateUser = async (value) => {
+    console.log(value)
     let token = await localStorageDecrypt('token')
     let user = await getProfile()
-    
+
     var name = value.name.split(' ')
     var firstName = name[0]
-    var lastName = value.name.split(' ').slice(1).join(' ')
+    var lastName = value.name
+      .split(' ')
+      .slice(1)
+      .join(' ')
 
     var dataPayload = {
       firstName: firstName,
       lastName: lastName,
       birthDateContent: value.birthDateContent,
-      nameTitle: value.nameTitle,
+      nameTitle: gender,
       Id: user.Id,
     }
 
-    let obj = {dataPayload, user}
-    
+    let obj = { dataPayload, user }
+
     putProfile(obj)
   }
-
 
   if (user)
     return (
@@ -63,7 +73,8 @@ function EditProfile({ navigation, putProfile, user, updateProfile }) {
         onSubmit={updateUser}
         onEditPhone={moveToEdit}
         isLoading={updateProfile.profileIsLoading}
-        gender={user.Gender}
+        gender={gender}
+        toggleGender={toggleGender}
       />
     )
 

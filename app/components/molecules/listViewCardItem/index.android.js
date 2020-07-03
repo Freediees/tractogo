@@ -26,6 +26,11 @@ export default function ListViewCardItem({ items, changeItems, isLoading, isDriv
         width: '100%',
       }}
     >
+      {!isLoading && items && items.length === 0 && (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={{ ...Fonts.f_16, ...Fonts.text_blue, ...Fonts.semibold }}>No Cars Available</Text>
+          </View>
+        )}
       <ScrollView
         style={{
           ...Column.col_12,

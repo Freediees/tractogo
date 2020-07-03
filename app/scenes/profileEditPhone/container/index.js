@@ -7,61 +7,77 @@ import ProfileAction from 'scenes/home/store/actions'
 import ProfileEditPhoneAction from 'scenes/profileEditPhone/store/actions'
 //import { ProfileEditPhoneTypes } from '../store/actions'
 
-
-
-function ProfileEditPhone({ navigation, fetchUser, user, userIsLoading, userErrorMessage, putPhone, phoneNumber, fetchPhoneNumber }) {
+function ProfileEditPhone({
+  navigation,
+  fetchUser,
+  user,
+  userIsLoading,
+  userErrorMessage,
+  putPhone,
+  phoneNumber,
+  fetchPhoneNumber,
+  editPhone,
+  fetchPhoneNumberFailure,
+  fetchPhoneNumberLoading,
+}) {
   useEffect(() => {
     async function init() {
-      console.log(await phoneNumber)
+      fetchPhoneNumberFailure()
+      console.log('pohne: ', await phoneNumber)
+      console.log('user: ', await user)
     }
     init()
   }, [])
   const [verification, setVerification] = useState(false)
-  const onSave = (otpCode, noHandphone, updateNoHandphone) => {
-    toggleModal()
-    //alert('Saved')
-    fetchPhoneNumber({
-      OtpCode: otpCode, 
+  const onSave = async (otpCode, noHandphone, updateNoHandphone) => {
+    await fetchPhoneNumber({
+      OtpCode: otpCode,
       NoHandphone: noHandphone,
       UpdateNoHandphone: updateNoHandphone,
       user,
-      })
+    })
   }
 
   const toggleModal = () => {
     setVerification(!verification)
   }
 
-
   const onBack = () => {
     navigation.goBack()
   }
-  return <ProfileEditPhoneScreen onBack={onBack} onSave={onSave} phoneNumber={user.NoHandphone} email={user.EmailPersonal} verification={verification} onToggleModal={toggleModal}/>
+  return (
+    <ProfileEditPhoneScreen
+      onBack={onBack}
+      onSave={onSave}
+      phoneNumber={user.NoHandphone}
+      email={user.EmailPersonal}
+      verification={verification}
+      onToggleModal={toggleModal}
+      errorMessage={''}
+      isLoading={phoneNumber.phoneNumberIsLoading}
+    />
+  )
 }
 
-ProfileEditPhone.defaultProps = {
-
-}
+ProfileEditPhone.defaultProps = {}
 
 ProfileEditPhone.propTypes = {
   fetchUser: PropTypes.func.isRequired,
-  userIsLoading: PropTypes.bool,
-  userErrorMessage: PropTypes.string,
-  phoneNumberIsLoading: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => ({
   user: state.home.user,
-  userIsLoading: state.home.userIsLoading,
-  userErrorMessage: state.home.userErrorMessage,
+  //userIsLoading: state.home.userIsLoading,
+  //userErrorMessage: state.home.userErrorMessage,
   //phoneNumberIsLoading: state.editPhone.phoneNumberIsLoading,
-  phoneNumber: state.editPhone,
+  phoneNumber: state.editPhones,
 })
 
 const mapDispatchToProps = (dispatch) => ({
   fetchUser: (value) => dispatch(ProfileAction.fetchUser(value)),
-  //fetchPhoneNumberLoading: () => dispatch(ProfileEditPhoneAction.fetchPhoneNumberLoading()),
+  fetchPhoneNumberLoading: () => dispatch(ProfileEditPhoneAction.fetchPhoneNumberLoading()),
   fetchPhoneNumber: (value) => dispatch(ProfileEditPhoneAction.fetchPhoneNumber(value)),
+  fetchPhoneNumberFailure: () => dispatch(ProfileEditPhoneAction.fetchPhoneNumberFailure()),
 })
 
 export default connect(

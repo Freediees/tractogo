@@ -7,6 +7,7 @@ import HomeActions from 'scenes/home/store/actions'
 import HomeScreen from 'components/organism/homeScreen'
 import { CAR_RENTAL, AIRPORT_TRANSFER, BUS_RENTAL } from 'config'
 import AsyncStorage from '@react-native-community/async-storage'
+import NavigationService from 'services/navigationService'
 
 const HomeContainer = ({
   navigation,
@@ -31,6 +32,7 @@ const HomeContainer = ({
   const [promoInit, changePromoInit] = useState(false)
   const [newsInit, changeNewsInit] = useState(false)
   const [isMember, setIsMember] = useState(0)
+  const [isLogin, setIsLogin] = useState(false)
 
   useEffect(() => {
     async function initialize() {
@@ -39,6 +41,13 @@ const HomeContainer = ({
       fetchNews()
       fetchUser()
 
+      const loginCheck = await AsyncStorage.getItem('token')
+
+      if (loginCheck) {
+        setIsLogin(true)
+      } else {
+        setIsLogin(false)
+      }
       setIsMember(user.IsMember)
     }
     initialize()
@@ -48,6 +57,10 @@ const HomeContainer = ({
     navigation.navigate('NotificationListScreen', {})
   }
 
+  const onMemberCTAPress = () => {
+    navigation.navigate('Profile')
+    navigation.navigate('MemberScreen')
+  }
 
   return (
     <HomeScreen
@@ -58,7 +71,9 @@ const HomeContainer = ({
       items={products}
       itemsLoading={productsIsLoading}
       isMember={isMember}
+      isLogin={isLogin}
       onNotifPress={onNotifPress}
+      onMemberCTAPress={onMemberCTAPress}
     />
   )
 }

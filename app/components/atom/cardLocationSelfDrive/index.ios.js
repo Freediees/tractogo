@@ -22,8 +22,6 @@ import { LabelNumberFormat } from 'function/numberFormat'
 
 import icFilterLocation from 'icons/ic-filter1.svg'
 
-
-
 export function useForceUpdate() {
   const [, setTick] = useState(0)
   const update = useCallback(() => {
@@ -69,13 +67,13 @@ export default function CardLocationSelfDrive({
         <Text
           style={{
             ...Fonts.f_12,
+            ...Fonts.text_black,
             ...Fonts.bold,
             ...Padding.ph_4,
             ...Margin.mv_12,
           }}
         >
-          {`${Moment(date)
-            .format('dddd, DD MMMM YYYY')} | ${hourSufix} ${hour}:${minute}`}
+          {`${Moment(date).format('dddd, DD MMMM YYYY')} | ${hourSufix} ${hour}:${minute}`}
         </Text>
       </View>
       <View
@@ -92,7 +90,7 @@ export default function CardLocationSelfDrive({
             return (
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ ...Fonts.f_12 }}>{poolLabel}</Text>
+                  <Text style={{ ...Fonts.f_12, ...Fonts.text_black }}>{poolLabel}</Text>
                 </View>
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
                   {isNumeric(poolPrice) && parseInt(poolPrice) > 0 ? (
@@ -138,8 +136,10 @@ export default function CardLocationSelfDrive({
               <IconMapView location={poolLocation} />
             </View>
             <View style={{ flex: 3, flexDirection: 'column' }}>
-              <Text style={{ ...Fonts.semibold, ...Fonts.f_12 }}>{poolLocation.name}</Text>
-              <Text style={{ ...Fonts.f_12, ...Margin.mt_4 }}>{poolLocation.address}</Text>
+              <Text style={{ ...Fonts.semibold, ...Fonts.f_12,
+                ...Fonts.text_black, }}>{poolLocation.name}</Text>
+              <Text style={{ ...Fonts.f_12, ...Margin.mt_4,
+                ...Fonts.text_black, }}>{poolLocation.address}</Text>
             </View>
           </View>
         </CustomLeftCheckAccordion>
@@ -148,7 +148,8 @@ export default function CardLocationSelfDrive({
             return (
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ ...Fonts.f_12 }}>{anotherLocationLabel}</Text>
+                  <Text style={{ ...Fonts.f_12, 
+                ...Fonts.text_black, }}>{anotherLocationLabel}</Text>
                 </View>
                 <View style={{ flex: 1, alignItems: 'flex-end' }}>
                   {isNumeric(anotherLocationPrice) && parseInt(anotherLocationPrice) > 0 ? (
@@ -224,7 +225,7 @@ export default function CardLocationSelfDrive({
                       value={location ? location.name : null}
                       onPress={() => {}}
                       placeholderTextColor={Colors.grey}
-                      style={{ ...Fonts.f_12, ...Margin.ml_8 }}
+                      style={{ ...Fonts.f_12, ...Margin.ml_8, ...Fonts.text_black }}
                     />
                   </View>
                 </View>
@@ -235,12 +236,13 @@ export default function CardLocationSelfDrive({
                 placeholder={notesPlaceholder}
                 editable={true}
                 value={notes}
-                onChange={(value) => {
+                onChangeText={(value) => {
                   onNoteChange(value)
                 }}
                 placeholderTextColor={Colors.grey}
                 style={{
                   ...Fonts.f_12,
+                  ...Fonts.text_black,
                   ...Padding.ph_4,
                   ...Padding.pb_8,
                   ...Border.border_b_1,
@@ -270,12 +272,12 @@ CardLocationSelfDrive.defaultProps = {
     lon: 106.816666,
   },
   notesPlaceholder: 'Notes',
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   date: new Date(),
   notes: null,
   onNoteChange: () => {},
   style: {},
-  hourSufix: 'Jam',
+  hourSufix: 'Hour',
   hour: '10',
   minute: '00',
   changeLocation: () => {},

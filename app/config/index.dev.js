@@ -194,6 +194,7 @@ export const USER_PROFILE_UPDATE = `${BASE_URL_BTC(
 export const CHANGE_PASSWORD = `${BASE_URL_BTC('authorization')}/authorization/change-password/`
 export const CREDIT_CARD = `${BASE_URL_BTC('authorization')}/authorization/credit-card-account`
 ;('GET: /get-by-user/, SAVE: /save, UPDATE: /update, DELETE: /delete, SET PRIMARY: /set-primary ')
+export const SEND_DEVICE_TOKEN = `${BASE_URL_BTC('authorization')}/authorization/device-token`
 
 // MASTER
 export const LIST_CAR_TYPE = `${BASE_URL_BTC('configuration')}/configuration/car-type/get-by-param`

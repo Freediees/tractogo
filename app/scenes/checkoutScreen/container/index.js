@@ -84,11 +84,14 @@ const CheckoutScreen = ({
   useEffect(() => {
     async function initialize() {
       changeSelectedPayment(null)
+      changePaymentDetailItems(null)
+      changePaymentDetailItemsTemp(null)
       resetVoucher()
       const tempDetailPayment = []
       let voucherParam = {}
       let totalAmount = 0
       if (typeof checkout !== 'undefined' && checkout) {
+        console.log(checkout)
         if (checkout.ReservationDetail && checkout.ReservationDetail[0]) {
           const item = checkout.ReservationDetail[0]
           totalAmount = parseInt(item.SubTotal) || item.Price
@@ -98,7 +101,7 @@ const CheckoutScreen = ({
           let cartTitle = ''
           let carRentalLabel = ''
           if (item.MsProductId === CAR_RENTAL) {
-            carRentalLabel = 'Sewa Mobil'
+            carRentalLabel = 'Car Rental'
           } else if (item.MsProductId === AIRPORT_TRANSFER) {
             carRentalLabel = 'Airport Transfer'
           } else if (item.MsProductId === BUS_RENTAL) {
@@ -106,9 +109,9 @@ const CheckoutScreen = ({
           }
           let rentalDriverLabel = ''
           if (item.MsProductServiceId === SERVICE_ID_WITH_DRIVER) {
-            rentalDriverLabel = 'Dengan Sopir'
+            rentalDriverLabel = 'With Driver'
           } else if (item.MsProductServiceId === SERVICE_ID_SELF_DRIVE) {
-            rentalDriverLabel = 'Tanpa Sopir'
+            rentalDriverLabel = 'Self Drive'
           }
           if (rentalDriverLabel !== '') {
             cartTitle = `${carRentalLabel} - ${rentalDriverLabel}`
@@ -119,7 +122,7 @@ const CheckoutScreen = ({
             cardTitle: item.UnitTypeName,
             startDate: item.StartDate[0],
             endDate: item.EndDate[item.EndDate.length - 1],
-            totalAmount: item.SubTotal || item.Price,
+            totalAmount: item.SubTotal,
             rentHour: item.MsProductId === AIRPORT_TRANSFER ? '' : item.Duration,
             rentHourSuffix: item.MsProductId === AIRPORT_TRANSFER ? '' : 'Hours',
             city: item.CityName,
@@ -133,6 +136,24 @@ const CheckoutScreen = ({
             name: newItem.cardTitle,
             total: newItem.totalAmount,
           })
+          if (item.PriceExtras !== '0' && item.PriceExtras !== 0) {
+            tempDetailPayment.push({
+              name: 'Additional Items',
+              total: item.PriceExtras,
+            })
+          }
+          if (item.PriceExpedition !== '0' && item.PriceExpedition !== 0) {
+            tempDetailPayment.push({
+              name: 'Expedition Price',
+              total: item.PriceExpedition,
+            })
+          }
+          if (item.PriceDiscount !== '0' && item.PriceDiscount !== 0) {
+            tempDetailPayment.push({
+              name: 'Discount Price',
+              total: item.PriceDiscount,
+            })
+          }
         }
       } else if (typeof cartItem !== 'undefined' && cartItem) {
         voucherParam.business_unit_id = cartItem.BusinessUnitId
@@ -145,7 +166,7 @@ const CheckoutScreen = ({
             let cartTitle = ''
             let carRentalLabel = ''
             if (item.MsProductId === CAR_RENTAL) {
-              carRentalLabel = 'Sewa Mobil'
+              carRentalLabel = 'Car Rental'
             } else if (item.MsProductId === AIRPORT_TRANSFER) {
               carRentalLabel = 'Airport Transfer'
             } else if (item.MsProductId === BUS_RENTAL) {
@@ -153,9 +174,9 @@ const CheckoutScreen = ({
             }
             let rentalDriverLabel = ''
             if (item.MsProductServiceId === SERVICE_ID_WITH_DRIVER) {
-              rentalDriverLabel = 'Dengan Sopir'
+              rentalDriverLabel = 'With Driver'
             } else if (item.MsProductServiceId === SERVICE_ID_SELF_DRIVE) {
-              rentalDriverLabel = 'Tanpa Sopir'
+              rentalDriverLabel = 'Self Drive'
             }
             if (rentalDriverLabel !== '') {
               cartTitle = `${carRentalLabel} - ${rentalDriverLabel}`
@@ -166,7 +187,7 @@ const CheckoutScreen = ({
               cardTitle: item.UnitTypeName,
               startDate: item.StartDate[0],
               endDate: item.EndDate[item.EndDate.length - 1],
-              totalAmount: item.SubTotal || item.Price,
+              totalAmount: item.SubTotal,
               rentHour: item.MsProductId === AIRPORT_TRANSFER ? '' : item.Duration,
               rentHourSuffix: item.MsProductId === AIRPORT_TRANSFER ? '' : 'Hours',
               city: item.CityName,
@@ -178,12 +199,31 @@ const CheckoutScreen = ({
               name: newItem.cardTitle,
               total: newItem.totalAmount,
             })
+            if (item.PriceExtras !== '0' && item.PriceExtras !== 0) {
+              tempDetailPayment.push({
+                name: 'Additional Items',
+                total: item.PriceExtras,
+              })
+            }
+            if (item.PriceExpedition !== '0' && item.PriceExpedition !== 0) {
+              tempDetailPayment.push({
+                name: 'Expedition Price',
+                total: item.PriceExpedition,
+              })
+            }
+            if (item.PriceDiscount !== '0' && item.PriceDiscount !== 0) {
+              tempDetailPayment.push({
+                name: 'Discount Price',
+                total: item.PriceDiscount,
+              })
+            }
           })
           changeCartItems(newArr)
         }
       }
       const user = await getUserProfileObject()
       voucherParam.user_id = user.Id
+      console.log(tempDetailPayment)
       changeTotal(totalAmount)
       changeVoucherParam(voucherParam)
       changePaymentDetailItems(tempDetailPayment)
@@ -192,6 +232,8 @@ const CheckoutScreen = ({
       // fetchPaymentMethods()
     }
     initialize()
+    console.log('postCheckoutIsLoading', postCheckoutIsLoading)
+    console.log('postCheckoutWithoutCartIsLoading', postCheckoutWithoutCartIsLoading)
   }, [])
 
   const changePayment = (payload) => {
@@ -207,83 +249,106 @@ const CheckoutScreen = ({
         Alert.alert('Please read the terms and conditions, and check before proceed.')
         return
       }
-      if (selectedPayment.PaymentMethodId === 'PYM-0002') {
-        let cardInfo = selectedPayment
-        cardInfo.totalAmount = total
-        navigation.navigate('CreditCardScreen', {
-          creditCardInfo: cardInfo,
-          checkout: checkout,
-          cartItem: cartItem,
-        })
+      if (checkout) {
+        console.log(checkout)
+        const newPayload = checkout
+        checkout.CartDetail = newPayload.ReservationDetail
+        await checkoutValidation(checkout)
+        console.log('after validation')
       } else {
-        if (checkout) {
-          console.log(checkout)
-          checkoutValidation(checkout)
-        } else {
-          const payload = await AsyncStorage.getItem('cartInfos')
-          checkoutValidation(payload)
+        const payload = await AsyncStorage.getItem('cartInfos')
+        await checkoutValidation(payload)
+        console.log('after validation')
+      }
+      if (!checkoutValidationIsLoading && checkoutValidationErrorMessage) {
+        console.log('invalid')
+        Alert.alert('Invalid Cart, Please Edit the Cart before continue')
+        const tempCarts = cartItems
+        if (checkoutValidationErrorMessage.backDateError) {
+          const error = checkoutValidationErrorMessage.backDateError
+          if (error && error.length > 0) {
+            error.forEach((v) => {
+              if (!tempCarts[v.index].errors.includes(v.message)) {
+                tempCarts[v.index].errors.push(v.message)
+              }
+            })
+          }
         }
-        if (!checkoutValidationIsLoading && checkoutValidationErrorMessage) {
-          Alert.alert('Invalid Cart, Please Edit the Cart before continue')
-          const tempCarts = cartItems
-          if (checkoutValidationErrorMessage.backDateError) {
-            const error = checkoutValidationErrorMessage.backDateError
-            if (error && error.length > 0) {
-              error.forEach((v) => {
-                if (!tempCarts[v.index].errors.includes(v.message)) {
-                  tempCarts[v.index].errors.push(v.message)
-                }
-              })
-            }
+        if (checkoutValidationErrorMessage.discountError) {
+          const error = checkoutValidationErrorMessage.discountError
+          if (error && error.length > 0) {
+            error.forEach((v) => {
+              if (!tempCarts[v.index].errors.includes(v.message)) {
+                tempCarts[v.index].errors.push(v.message)
+              }
+            })
           }
-          if (checkoutValidationErrorMessage.discountError) {
-            const error = checkoutValidationErrorMessage.discountError
-            if (error && error.length > 0) {
-              error.forEach((v) => {
-                if (!tempCarts[v.index].errors.includes(v.message)) {
-                  tempCarts[v.index].errors.push(v.message)
-                }
-              })
-            }
+        }
+        if (checkoutValidationErrorMessage.priceError) {
+          const error = checkoutValidationErrorMessage.priceError
+          if (error && error.length > 0) {
+            error.forEach((v) => {
+              if (!tempCarts[v.index].errors.includes(v.message)) {
+                tempCarts[v.index].errors.push(v.message)
+              }
+            })
           }
-          if (checkoutValidationErrorMessage.priceError) {
-            const error = checkoutValidationErrorMessage.priceError
-            if (error && error.length > 0) {
-              error.forEach((v) => {
-                if (!tempCarts[v.index].errors.includes(v.message)) {
-                  tempCarts[v.index].errors.push(v.message)
-                }
-              })
-            }
+        }
+        if (checkoutValidationErrorMessage.stockError) {
+          const error = checkoutValidationErrorMessage.stockError
+          if (error && error.length > 0) {
+            error.forEach((v) => {
+              if (!tempCarts[v.index].errors.includes(v.message)) {
+                tempCarts[v.index].errors.push(v.message)
+              }
+            })
           }
-          if (checkoutValidationErrorMessage.stockError) {
-            const error = checkoutValidationErrorMessage.stockError
-            if (error && error.length > 0) {
-              error.forEach((v) => {
-                if (!tempCarts[v.index].errors.includes(v.message)) {
-                  tempCarts[v.index].errors.push(v.message)
-                }
-              })
-            }
-          }
-          changeCartItems(tempCarts)
-          // navigateToCheckout()
-        } else if (!checkoutValidationIsLoading && checkoutValidationErrorMessage === null) {
-          const voucherArr = []
+        }
+        changeCartItems(tempCarts)
+        forceUpdate()
+        // navigateToCheckout()
+      } else if (!checkoutValidationIsLoading && checkoutValidationErrorMessage === null) {
+        const voucherArr = []
+        if (checkVoucherSuccessMessage) {
+          voucherArr.push(checkVoucherSuccessMessage)
+        }
+        console.log('after validate')
+        console.log(checkout)
+        if (checkout) {
           if (checkVoucherSuccessMessage) {
-            voucherArr.push(checkVoucherSuccessMessage)
+            console.log('voucher')
+            console.log(checkVoucherSuccessMessage)
+            checkout.ReservationDetail[0].ReservationPromo.push(checkVoucherSuccessMessage)
           }
-          if (checkout) {
+          if (selectedPayment.PaymentMethodId === 'PYM-0002') {
+            let cardInfo = selectedPayment
+            cardInfo.totalAmount = total
+            console.log(checkout)
+            navigation.navigate('CreditCardScreen', {
+              creditCardInfo: cardInfo,
+              checkout: checkout,
+              cartItem: null,
+              reservationPromo: null,
+            })
+          } else {
             const payload = checkout
             payload.PaymentMethod = {
               PaymentMethodId: selectedPayment.PaymentMethodId,
               MsBankId: selectedPayment.MsBankId,
             }
-            if (checkVoucherSuccessMessage) {
-              checkout.ReservationDetail[0].ReservationPromo.push(checkVoucherSuccessMessage)
-            }
             payload.image = selectedPayment.imageUri
             postCheckoutWithoutCart(payload)
+          }
+        } else {
+          if (selectedPayment.PaymentMethodId === 'PYM-0002') {
+            let cardInfo = selectedPayment
+            cardInfo.totalAmount = total
+            navigation.navigate('CreditCardScreen', {
+              creditCardInfo: cardInfo,
+              checkout: null,
+              cartItem: cartItem,
+              reservationPromo: voucherArr,
+            })
           } else {
             const payload = {
               PaymentMethod: selectedPayment,
@@ -293,30 +358,35 @@ const CheckoutScreen = ({
               PaymentMethodId: selectedPayment.PaymentMethodId,
               MsBankId: selectedPayment.MsBankId,
             }
+            console.log(payload)
             payload.image = selectedPayment.imageUri
             postCheckout(payload)
           }
-          // buat payload di sini
-          // post checkout
-          // navigateToCheckout()
         }
+        // buat payload di sini
+        // post checkout
+        // navigateToCheckout()
       }
-
-      
     }
   }
 
-  const checkVoucherPress = async () => {
-    const payload = {
-      payload: {
-        voucher: voucherValue,
-        params: voucherParam,
-      },
-      checkout: checkout,
-      cartItem: cartItem,
-      paymentItems: paymentDetailItemsTemp,
+  const checkVoucherPress = () => {
+    console.log('voucher press')
+    console.log(paymentDetailItemsTemp)
+    if (voucherValue && voucherValue !== '') {
+      const payload = {
+        payload: {
+          voucher: voucherValue,
+          params: voucherParam,
+        },
+        checkout: checkout,
+        cartItem: cartItem,
+        paymentItems: paymentDetailItemsTemp,
+      }
+      checkVoucher(payload)
+    } else {
+      alert('Voucher is empty')
     }
-    checkVoucher(payload)
   }
 
   return (
@@ -344,7 +414,9 @@ const CheckoutScreen = ({
       totalAmount={total}
       items={cartItems}
       voucherError={checkVoucherErrorMessage}
-      isLoading={postCheckoutIsLoading || postCheckoutWithoutCartIsLoading || checkVoucherIsLoading}
+      isLoadingVoucher={checkVoucherIsLoading}
+      isLoadingCheckout={postCheckoutIsLoading}
+      isLoadingValidation={checkoutValidationIsLoading}
       termsChecked={termsChecked}
       changeChecked={changeChecked}
     />
@@ -356,7 +428,7 @@ CheckoutScreen.defaultProps = {}
 CheckoutScreen.propTypes = {
   postCheckout: PropTypes.func,
   postCheckoutIsLoading: PropTypes.bool,
-  postCheckoutErrorMessage: PropTypes.string,
+  postCheckoutErrorMessage: PropTypes.any,
   postCheckoutSuccessMessage: PropTypes.string,
   paymentMethods: PropTypes.arrayOf(PropTypes.shape({})),
   paymentMethodsIsLoading: PropTypes.bool,

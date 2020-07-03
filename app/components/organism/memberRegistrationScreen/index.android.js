@@ -24,44 +24,47 @@ export default function MemberRegistrationScreen({
   return (
     <View style={{ flex: 1, flexDirection: 'column' }}>
       <DefaultBlueHeader title={title} iconLeft={closeIcon} onIconLeftPress={onIconLeftPress} />
-      <View style={{ flex: 9 }}>
-        <ScrollView style={{ ...Column.col_12, flexDirection: 'column' }}>
-          <Image
-            source={require('images/illustration-trac-04.png')}
-            style={{ ...Margin.mb_20, resizeMode: 'stretch', width: '100%', height: '110%' }}
+      <View style={{ flex: 9, justifyContent: 'flex-start' }}>
+        <Image
+          source={require('images/illustration-trac-04.png')}
+          style={{
+            width: '100%',
+            height: '50%',
+            resizeMode: 'stretch',
+          }}
+        />
+
+        <Text
+          style={{
+            ...Margin.mt_20,
+            ...Fonts.f_14,
+            ...Fonts.semibold,
+            textAlign: 'center',
+            paddingHorizontal: '16%',
+          }}
+        >
+          {subtitle}
+        </Text>
+        <View style={{ flex: 1, padding: 16 }}>
+          <BorderlessDefaultCardViewStatic
+            icon={require('images/banefit-member-09.png')}
+            title={instructionTitle1}
+            description={instructionLabel1}
           />
-          <View>
-            <Text
-              style={{
-                ...Fonts.f_14,
-                ...Fonts.semibold,
-                textAlign: 'center',
-                paddingHorizontal: '15%',
-              }}
-            >
-              {subtitle}
-            </Text>
+          <View style={{ justifyContent: 'center', padding: '5%', width: '100%' }}>
+            <Separator />
           </View>
-          <View style={{ flex: 1, padding: '10%' }}>
-            <BorderlessDefaultCardViewStatic
-              icon={require('images/banefit-member-09.png')}
-              title={instructionTitle1}
-              description={instructionLabel1}
-            />
-            <View style={{ justifyContent: 'center', padding: '5%', width: '100%' }}>
-              <Separator />
-            </View>
-            <BorderlessDefaultCardViewStatic
-              icon={require('images/banefit-member-10.png')}
-              title={instructionTitle2}
-              description={instructionLabel2}
-            />
-          </View>
-        </ScrollView>
+          <BorderlessDefaultCardViewStatic
+            icon={require('images/banefit-member-10.png')}
+            title={instructionTitle2}
+            description={instructionLabel2}
+          />
+        </View>
+
+        <View />
       </View>
-      <View style={{ flex: 2 }}>
-        <DefaultFooter buttonText={buttonLabel} onButtonPress={onButtonPress} />
-      </View>
+
+      <DefaultFooter buttonText={buttonLabel} onButtonPress={onButtonPress} />
     </View>
   )
 }
@@ -70,7 +73,7 @@ MemberRegistrationScreen.defaultProps = {
   onIconLeftPress: null,
   onButtonPress: null,
   title: 'Daftar Member',
-  instructionTitle1: 'Sewa Mobil Self Drive',
+  instructionTitle1: 'Car Rental Self Drive',
   instructionLabel1: 'Dengan member, anda dapat mengakses layanan Self Drive',
   instructionTitle2: 'Discount Member',
   instructionLabel2: 'Nikmati Discont khusus untuk kamu yang sudah terdaftar member',

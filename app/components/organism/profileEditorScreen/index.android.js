@@ -11,6 +11,8 @@ import ListViewCardLocation from 'components/molecules/listViewCardLocation'
 import DatePicker from 'react-native-date-picker'
 import CustomBottomSheet from 'components/molecules/customBottomSheet'
 import OkCancelButton from 'components/molecules/okCancelButton'
+import avatar from 'icons/ic-deafult profile.svg'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 import { Column, Margin, Fonts, Colors, Padding, Row, Alignment, ImageSize, Flex } from 'theme'
 
@@ -34,6 +36,8 @@ export default function ProfileEditorScreen({
   firstName,
   lastName,
   gender,
+  toggleGender,
+  isLoading,
 }) {
   var month = new Array()
   month[0] = 'Januari'
@@ -49,15 +53,13 @@ export default function ProfileEditorScreen({
   month[10] = 'November'
   month[11] = 'Desember'
 
-
-
-
   const onSaveDate = (value) => {
-    var date = value.getDate()
+    var date = ('0' + value.getDate()).slice(-2)
     var monthName = month[value.getMonth()]
     var year = value.getFullYear()
+    var months = ('0' + (value.getMonth() + 1)).slice(-2)
 
-    var day = date + ' ' + monthName + ' ' + year
+    var day = year + '-' + months + '-' + date
 
     // alert(day)
     setBirthdateContent(day)
@@ -68,14 +70,14 @@ export default function ProfileEditorScreen({
     var obj = {
       name,
       nameTitle,
-      birthDateContent
+      birthDateContent,
     }
 
     onSubmit(obj)
     //console.log("call API update name, nameTitle, birthdate")
   }
 
-  const onNameChange = (val) =>{
+  const onNameChange = (val) => {
     setName(val)
   }
 
@@ -106,6 +108,7 @@ export default function ProfileEditorScreen({
         backgroundColor: Colors.white_grey,
       }}
     >
+      <Spinner visible={isLoading} textContent={'Loading...'} />
       <DefaultHeader border={true} title={title} iconLeft={backIcon} onIconLeftPress={onBack} />
       <View
         style={{
@@ -116,7 +119,7 @@ export default function ProfileEditorScreen({
           backgroundColor: Colors.white,
         }}
       >
-        <Image
+        {/* <Image
           source={require('images/TOM.png')}
           style={{
             ...ImageSize.img_xs,
@@ -124,7 +127,8 @@ export default function ProfileEditorScreen({
             backgroundColor: Colors.white,
             borderRadius: ImageSize.img_xs.width,
           }}
-        />
+        /> */}
+        <SvgXml xml={avatar} width={60} height={60} />
       </View>
 
       <View style={{ ...Flex.flex_10, width: '100%' }}>
@@ -140,8 +144,9 @@ export default function ProfileEditorScreen({
         >
           <TextWithPicker
             onNameChange={onNameChange}
-            onSelectTitle={onSelectTitle}
+            onSelectTitle={toggleGender}
             value={name}
+            title={gender}
           />
 
           <View style={{ width: '100%', ...Padding.pb_8, ...Margin.mt_8 }}>
@@ -235,33 +240,34 @@ export default function ProfileEditorScreen({
         </View>
       </CustomBottomSheet>
       <View style={{ ...Margin.mt_20 }}>
-         <DefaultFooter buttonText={labelSubmit} onButtonPress={onSimpan.bind(this)} />
+        <DefaultFooter buttonText={labelSubmit} onButtonPress={onSimpan.bind(this)} />
       </View>
-      </KeyboardAwareScrollView>
+    </KeyboardAwareScrollView>
   )
 }
 
 ProfileEditorScreen.defaultProps = {
   gender: 0,
-  title: 'Pengaturan Akun',
+  title: 'Account Setting',
   thumbnails: require('images/TOM.png'),
-  labelName: 'Nama',
-  firtsName: 'firtsName',
+  labelName: 'Name',
+  firtsName: '-',
   onPress: () => {},
   placeholderName: 'cth : Name',
-  valueName: '',
+  lastName: '',
   onchangeName: () => {},
-  phoneNumber: '+628581763645',
-  email: 'Frdaus@gmail.com',
-  labelSubmit: 'Simpan',
+  phoneNumber: ' ',
+  email: ' ',
+  labelSubmit: 'Save',
   onBack: () => {},
   onEditPhone: () => {},
   birthDateLabel: 'Birth Date',
   // birthDateContent: "17 Agustus 1990",
-  emailLabel: 'Email dan Telepon',
+  emailLabel: 'Email and Phone',
   emailContent: 'email@gmail.com',
   phoneContent: '+62',
-  onSubmit: ()=>{}
+  onSubmit: () => {},
+  toggleGender: () => {},
 }
 
 ProfileEditorScreen.propTypes = {
@@ -284,5 +290,6 @@ ProfileEditorScreen.propTypes = {
   emailLabel: PropTypes.string,
   emailContent: PropTypes.string,
   phoneContent: PropTypes.string,
-  onSubmit: PropTypes.func
+  onSubmit: PropTypes.func,
+  toggleGender: PropTypes.func,
 }

@@ -8,10 +8,11 @@ import TextButton from 'components/atom/textButton'
 import DefaultHeader from 'components/molecules/defaultHeader'
 import DefaultFooter from 'components/molecules/defaultFooter'
 import PrimaryButton from 'components/atom/primaryButton'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 import CountDown from 'react-native-countdown-component'
 
-import { Column, Margin, Fonts, Background } from 'theme'
+import { Column, Margin, Fonts, Background, Padding } from 'theme'
 
 import backIcon from 'icons/ic-back.svg'
 
@@ -27,6 +28,8 @@ export default function RegistrationVerification({
   timer,
   resendCode,
   verificationIsLoading,
+  isLoading,
+  errorMessage,
 }) {
   const [isTimerRunning, setIsTimerRunning] = useState(true)
   const [timerID, setTimerID] = useState('1')
@@ -39,7 +42,9 @@ export default function RegistrationVerification({
 
   return (
     <View style={{ flex: 1, flexDirection: 'column' }}>
+      <Spinner visible={isLoading} textContent={'Loading...'} />
       <DefaultHeader title={title} iconLeft={backIcon} onIconLeftPress={onIconLeftPress} />
+
       <View style={{ flex: 9 }}>
         <ScrollView style={{ ...Column.col_12, flexDirection: 'column', paddingHorizontal: '10%' }}>
           <View>
@@ -63,6 +68,9 @@ export default function RegistrationVerification({
           </View>
           <View style={{ alignItems: 'center' }}>
             <OTPInput onCodeFilled={onCodeFilled} />
+            <Text style={{ ...Fonts.f_10, ...Fonts.text_red, ...Margin.mb_8 }}>
+              {errorMessage ? JSON.stringify(errorMessage) : ''}
+            </Text>
             {isTimerRunning ? (
               <CountDown
                 id={timerID}
@@ -96,7 +104,7 @@ export default function RegistrationVerification({
           </View>
         </ScrollView>
       </View>
-      <View style={({ flex: 2 }, Margin.mh_12, Margin.mv_8)}>
+      <View style={{ flex: 2, paddingHorizontal: '10%' }}>
         <PrimaryButton
           onPress={onButtonPress}
           disable={verificationIsLoading}
@@ -109,6 +117,7 @@ export default function RegistrationVerification({
 }
 
 RegistrationVerification.defaultProps = {
+  errorMessage: '',
   onIconLeftPress: null,
   onButtonPress: null,
   phoneNumber: '628123456789',
@@ -125,9 +134,11 @@ RegistrationVerification.defaultProps = {
   },
   timer: 60,
   verificationIsLoading: false,
+  isLoading: false,
 }
 
 RegistrationVerification.propTypes = {
+  errorMessage: PropTypes.string,
   onIconLeftPress: PropTypes.func,
   onButtonPress: PropTypes.func,
   phoneNumber: PropTypes.string,
@@ -140,4 +151,5 @@ RegistrationVerification.propTypes = {
   timer: PropTypes.number,
   resendCode: PropTypes.func,
   verificationIsLoading: PropTypes.bool,
+  isLoading: PropTypes.bool,
 }

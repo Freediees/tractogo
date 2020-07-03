@@ -62,7 +62,9 @@ export default function RatingStar({ onStar1, onStar2, onStar3, onStar4, onStar5
   }
 
   return (
-    <View style={{ ...Padding.pv_8, ...Padding.ph_8, flexDirection: 'row', justifyContent: 'center' }}>
+    <View
+      style={{ ...Padding.pv_8, ...Padding.ph_8, flexDirection: 'row', justifyContent: 'center' }}
+    >
       <TouchableWithoutFeedback
         onPress={disabled ? null : onPressStar1.bind(this)}
         style={{ height: 50, width: 50, margin: 5, justifyContent: 'center', alignItems: 'center' }}
@@ -74,7 +76,7 @@ export default function RatingStar({ onStar1, onStar2, onStar3, onStar4, onStar5
         />
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
-        onPress={onPressStar2.bind(this)}
+        onPress={disabled ? null : onPressStar2.bind(this)}
         style={{ height: 50, width: 50, margin: 5, justifyContent: 'center', alignItems: 'center' }}
       >
         <Image
@@ -84,7 +86,7 @@ export default function RatingStar({ onStar1, onStar2, onStar3, onStar4, onStar5
         />
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
-        onPress={onPressStar3.bind(this, 2)}
+        onPress={disabled ? null : onPressStar3.bind(this, 2)}
         style={{ height: 50, width: 50, margin: 5, justifyContent: 'center', alignItems: 'center' }}
       >
         <Image
@@ -94,7 +96,7 @@ export default function RatingStar({ onStar1, onStar2, onStar3, onStar4, onStar5
         />
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
-        onPress={onPressStar4.bind(this, 3)}
+        onPress={disabled ? null : onPressStar4.bind(this, 3)}
         style={{ height: 50, width: 50, margin: 5, justifyContent: 'center', alignItems: 'center' }}
       >
         <Image
@@ -104,7 +106,7 @@ export default function RatingStar({ onStar1, onStar2, onStar3, onStar4, onStar5
         />
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
-        onPress={onPressStar5.bind(this, 4)}
+        onPress={disabled ? null : onPressStar5.bind(this, 4)}
         style={{ height: 50, width: 50, margin: 5, justifyContent: 'center', alignItems: 'center' }}
       >
         <Image
@@ -118,11 +120,12 @@ export default function RatingStar({ onStar1, onStar2, onStar3, onStar4, onStar5
 }
 
 RatingStar.defaultProps = {
-  onStar1: ()=>{},
-  onStar2: ()=>{},
-  onStar3: ()=>{},
-  onStar4: ()=>{},
-  onStar5: ()=>{},
+  onStar1: () => {},
+  onStar2: () => {},
+  onStar3: () => {},
+  onStar4: () => {},
+  onStar5: () => {},
+  disabled: false,
 }
 
 RatingStar.propTypes = {
@@ -131,4 +134,5 @@ RatingStar.propTypes = {
   onStar3: PropTypes.func,
   onStar4: PropTypes.func,
   onStar5: PropTypes.func,
+  disabled: PropTypes.bool,
 }

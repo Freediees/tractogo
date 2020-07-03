@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Platform, Text, View, Button, ActivityIndicator, Image } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Platform, Text, View, Button, ActivityIndicator, Image, BackHandler } from 'react-native'
 import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
 import I18n from 'react-native-i18n'
@@ -7,7 +7,10 @@ import CenterView from 'components/molecules/centerView'
 // import { liveInEurope } from 'app/Stores/Example/Selectors'
 import LoginForm from 'components/organism/loginScreen'
 import LoginAction from '../store/actions'
+import { addNavCounter, getNavCounter } from 'function'
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin'
+import { checkAuth } from 'function/apiRequest'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 const Login = ({
   navigation,
@@ -17,16 +20,89 @@ const Login = ({
   loginIsLoading,
 }) => {
   // 8123491376
-  const [phoneNumber, setPhoneNumber] = useState('8123491376')
+  const { params } = navigation.state
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [isLoading, changeIsLoading] = useState(false)
+  const [isPhoneNumberValid, changeIsPhoneNumberValid] = useState(true)
+
+  useEffect(() => {
+    async function initialize() {
+      if ((await checkAuth()) === true) {
+        navigation.pop()
+      }
+      changeIsLoading(false)
+    }
+    const unsubscribe = navigation.addListener('didFocus', () => {
+      changeIsLoading(true)
+      initialize()
+    })
+  }, [navigation])
+
+  const phoneFormatter = (phone) => {
+    if (phone.substring(0, 1) === '0') {
+      return phone.substring(1, phone.length)
+    } else {
+      return phone
+    }
+  }
 
   const onSubmit = () => {
     let values = {
-      NoHandphone: '+62' + phoneNumber,
+      NoHandphone: '+62' + phoneFormatter(phoneNumber),
     }
-
-    // fetchLogin(values)
+    // if (params) {
+    //   if (params.loginAction) {
+    //     const newPayload = {
+    //       payload: {
+    //         payload: values,
+    //         callback: params.loginAction,
+    //       },
+    //     }
+    //   } else {
+    //     const newPayload = {
+    //       payload: {
+    //         payload: values,
+    //         callback: null,
+    //       },
+    //     }
+    //   }
+    // } else {
+    //   const newPayload = {
+    //     payload: {
+    //       payload: values,
+    //       callback: null,
+    //     },
+    //   }
+    // }
+    // fetchLogin(newPayload)
     // if (props.loginSucces)
-    navigation.navigate('LoginVerifyScreen')
+    if (
+      phoneNumber.length >= 9 &&
+      phoneNumber.length <= 12 &&
+      phoneNumber.substring(0, 1) === '8'
+    ) {
+      changeIsPhoneNumberValid(true)
+      console.log({ params })
+      if (params) {
+        if (typeof params.loginAction !== 'undefined' && params.loginAction) {
+          addNavCounter()
+          navigation.navigate('LoginVerifyScreen', {
+            loginAction: params.loginAction || null,
+            payload: values,
+          })
+        } else {
+          navigation.navigate('LoginVerifyScreen', { payload: values })
+        }
+      } else {
+        // changeIsLoading(true)
+        navigation.navigate('LoginVerifyScreen', {
+          payload: values,
+        })
+      }
+    } else {
+      console.log('error')
+      changeIsPhoneNumberValid(false)
+    }
   }
 
   // sementara
@@ -39,8 +115,34 @@ const Login = ({
     try {
       await GoogleSignin.hasPlayServices()
       const userInfo = await GoogleSignin.signIn()
-      console.log(userInfo.user)
-      fetchLoginSocialite(userInfo.user)
+      console.log('userInfo: ', userInfo.user)
+      if (params) {
+        if (params.loginAction) {
+          const newPayload = {
+            payload: {
+              payload: userInfo.user,
+              callback: params.loginAction,
+            },
+          }
+          fetchLoginSocialite(newPayload)
+        } else {
+          const newPayload = {
+            payload: {
+              payload: userInfo.user,
+              callback: null,
+            },
+          }
+          fetchLoginSocialite(newPayload)
+        }
+      } else {
+        const newPayload = {
+          payload: {
+            payload: userInfo.user,
+            callback: null,
+          },
+        }
+        fetchLoginSocialite(newPayload)
+      }
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('IN_PROGRESS :', JSON.stringify(error))
@@ -58,8 +160,16 @@ const Login = ({
     }
   }
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Spinner visible={isLoading} textContent={'Loading...'} />
+      </View>
+    )
+  }
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center'}}>
+    <View style={{ flex: 1, justifyContent: 'center' }}>
       <LoginForm
         phoneNumber={phoneNumber}
         onChangeText={(phoneNumber) => {
@@ -67,7 +177,19 @@ const Login = ({
         }}
         onLogin={() => onSubmit()}
         onGoogleLogin={onGoogleSigin}
-        onSignup={() => navigation.navigate('RegisterScreen')}
+        isPhoneNumberValid={isPhoneNumberValid}
+        onSignup={() => {
+          if (params) {
+            if (typeof params.loginAction !== 'undefined' && params.loginAction) {
+              addNavCounter()
+              navigation.navigate('RegisterScreen', { loginAction: params.loginAction || null })
+            } else {
+              navigation.navigate('RegisterScreen')
+            }
+          } else {
+            navigation.navigate('RegisterScreen')
+          }
+        }}
       />
     </View>
   )
@@ -85,11 +207,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchLoginSocialite: (value) => dispatch(LoginAction.fetchLoginSocialite(value)),
 })
 
-Login.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
-}
+Login.propTypes = {}
 
 export default connect(
   mapStateToProps,

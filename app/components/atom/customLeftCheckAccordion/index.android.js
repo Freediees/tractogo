@@ -15,8 +15,9 @@ export default function CustomLeftCheckAccordion({
   renderHeader,
   onChecklistPress,
   children,
+  checked,
+  changeChecked,
 }) {
-  const [checked, changeChecked] = useState(false)
 
   return (
     <View
@@ -60,10 +61,14 @@ CustomLeftCheckAccordion.defaultProps = {
   },
   onChecklistPress: () => {},
   children: null,
+  checked: false,
+  changeChecked: () => {},
 }
 
 CustomLeftCheckAccordion.propTypes = {
   renderHeader: PropTypes.func,
   onChecklistPress: PropTypes.func,
   children: PropTypes.node,
+  checked: PropTypes.bool,
+  changeChecked: PropTypes.func,
 }

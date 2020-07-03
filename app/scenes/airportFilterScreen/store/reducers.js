@@ -136,6 +136,12 @@ export const fetchZoneFailure = (state, { errorMessage }) => ({
   zoneIsLoading: false,
   zoneErrorMessage: errorMessage,
 })
+
+export const changeSelectedDate = (state, { payload }) => ({
+  ...state,
+  selectedDate: payload,
+})
+
 /**
  * @see https://github.com/infinitered/reduxsauce#createreducer
  */
@@ -158,4 +164,5 @@ export const reducer = createReducer(INITIAL_STATE, {
   [AirportFilterScreenTypes.FETCH_ZONE_LOADING]: fetchZoneLoading,
   [AirportFilterScreenTypes.FETCH_ZONE_SUCCESS]: fetchZoneSuccess,
   [AirportFilterScreenTypes.FETCH_ZONE_FAILURE]: fetchZoneFailure,
+  [AirportFilterScreenTypes.CHANGE_SELECTED_DATE]: changeSelectedDate,
 })

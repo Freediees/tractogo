@@ -78,7 +78,7 @@ CustomTopSheet.defaultProps = {
   children: null,
   modalVisible: true,
   changeModalVisible: () => {},
-  title: 'Ubah Pencarian',
+  title: 'Change Search',
 }
 
 CustomTopSheet.propTypes = {

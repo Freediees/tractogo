@@ -105,6 +105,7 @@ export default function ListViewCardLocation({
                 changeLocation={(location) => {
                   changeItemLocation(i, location)
                 }}
+                checked={v.toggle}
                 changeToggle={(val) => {
                   changeItemToggle(i, val)
                 }}
@@ -209,7 +210,7 @@ ListViewCardLocation.defaultProps = {
   style: {},
   locationDetailLabel: 'Detail Lokasi',
   notesPlaceholder: 'Notes',
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   placeHolderStartTime: 'Pilih Waktu Jemput',
   timeSufix: 'WIB',
   okLabel: 'Simpan',
@@ -220,7 +221,7 @@ ListViewCardLocation.defaultProps = {
   changeKeyword: () => {},
   predictionItemClick: () => {},
   requestSearchPrediction: () => {},
-  keywordPlaceholder: 'Cari Lokasi',
+  keywordPlaceholder: 'Find Location',
   locationPlaceHolder: '-',
   predictions: [
     {

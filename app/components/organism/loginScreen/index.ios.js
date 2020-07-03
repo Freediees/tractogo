@@ -27,6 +27,7 @@ export default function LoginScreen({
   phoneNumber,
   onChangeText,
   onSignup,
+  isPhoneNumberValid,
 }) {
   return (
     <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -41,7 +42,14 @@ export default function LoginScreen({
           />
         </CenterView>
         <CenterView>
-          <PhoneFieldInput phoneNumber={phoneNumber} onChangeText={onChangeText} />
+          <PhoneFieldInput
+            phoneNumber={phoneNumber}
+            onChangeText={onChangeText}
+            placeholder={'Phone Number'}
+          />
+          <Text style={{ ...Fonts.f_10, ...Fonts.text_red, ...Margin.mb_8 }}>
+            {!isPhoneNumberValid ? 'Invalid Phone Number' : ''}
+          </Text>
           <View style={{ ...Margin.mt_20, ...Margin.mb_20, width: '100%' }}>
             <PrimaryButton
               onPress={onLogin}
@@ -67,11 +75,11 @@ export default function LoginScreen({
 }
 
 LoginScreen.defaultProps = {
-  Masuk: 'Masuk',
-  labelSignin: 'Masuk',
-  labelSeprator: 'Atau dengan',
-  labelSignUpDesc: 'Belum punya akun?',
-  labelSignUp: 'Daftar',
+  Masuk: 'Sign In',
+  labelSignin: 'Sign In',
+  labelSeprator: 'Or With',
+  labelSignUpDesc: "Don't have an account yet ?",
+  labelSignUp: 'Register',
   onLogin: null,
   onLoginError: null,
   onLoginSuccess: false,
@@ -85,6 +93,7 @@ LoginScreen.defaultProps = {
   onSignup: () => {
     console.log('onSignup')
   },
+  isPhoneNumberValid: true,
 }
 
 LoginScreen.propTypes = {
@@ -102,4 +111,5 @@ LoginScreen.propTypes = {
   phoneNumber: PropTypes.string,
   onChangeText: PropTypes.func,
   onSignup: PropTypes.func,
+  isPhoneNumberValid: PropTypes.bool,
 }

@@ -52,8 +52,9 @@ export default function CardLocation({
   dateBeforeLabel,
   dateBefore,
   locationBefore,
+  checked,
+  changeChecked,
 }) {
-  const [checked, changeChecked] = useState(true)
 
   let bsTimePicker = null
 
@@ -75,6 +76,7 @@ export default function CardLocation({
       <Text
         style={{
           ...Fonts.f_12,
+          ...Fonts.text_black,
           ...Fonts.bold,
           ...Padding.ph_20,
           ...Padding.pv_16,
@@ -157,7 +159,8 @@ export default function CardLocation({
                     value={location ? location.name : null}
                     onPress={() => {}}
                     placeholderTextColor={Colors.grey}
-                    style={{ ...Fonts.f_12, ...Margin.ml_8 }}
+                    style={{ ...Fonts.f_12, ...Margin.ml_8,
+                      ...Fonts.text_black, }}
                   />
                 </View>
               </View>
@@ -192,7 +195,8 @@ export default function CardLocation({
                         onPress={() => {}}
                         value={`${selectedHour}.${selectedMinute} ${timeSufix}`}
                         placeholderTextColor={Colors.grey}
-                        style={{ ...Fonts.f_12, ...Margin.ml_8 }}
+                        style={{ ...Fonts.f_12, ...Margin.ml_8,
+                          ...Fonts.text_black, }}
                       />
                     </View>
                     <Separator style={{ ...Margin.mt_8 }} />
@@ -206,12 +210,13 @@ export default function CardLocation({
               placeholder={notesPlaceholder}
               editable={true}
               value={notes}
-              onChange={(value) => {
+              onChangeText={(value) => {
                 onNoteChange(value)
               }}
               placeholderTextColor={Colors.grey}
               style={{
                 ...Fonts.f_12,
+                ...Fonts.text_black,
                 ...Padding.ph_4,
                 ...Padding.pb_8,
                 ...Border.border_b_1,
@@ -264,7 +269,8 @@ export default function CardLocation({
                     value={location ? location.name : null}
                     onPress={() => {}}
                     placeholderTextColor={Colors.grey}
-                    style={{ ...Fonts.f_12, ...Margin.ml_8 }}
+                    style={{ ...Fonts.f_12, ...Margin.ml_8,
+                      ...Fonts.text_black, }}
                   />
                 </View>
               </View>
@@ -299,7 +305,8 @@ export default function CardLocation({
                         onPress={() => {}}
                         value={`${selectedHour}.${selectedMinute} ${timeSufix}`}
                         placeholderTextColor={Colors.grey}
-                        style={{ ...Fonts.f_12, ...Margin.ml_8 }}
+                        style={{ ...Fonts.f_12, ...Margin.ml_8,
+                          ...Fonts.text_black, }}
                       />
                     </View>
                     <Separator style={{ ...Margin.mt_8 }} />
@@ -313,12 +320,13 @@ export default function CardLocation({
               placeholder={notesPlaceholder}
               editable={true}
               value={notes}
-              onChange={(value) => {
+              onChangeText={(value) => {
                 onNoteChange(value)
               }}
               placeholderTextColor={Colors.grey}
               style={{
                 ...Fonts.f_12,
+                ...Fonts.text_black,
                 ...Padding.ph_4,
                 ...Padding.pb_8,
                 ...Border.border_b_1,
@@ -362,7 +370,7 @@ CardLocation.defaultProps = {
     lon: 106.816666,
   },
   notesPlaceholder: 'Notes',
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   date: new Date(),
   notes: null,
   onNoteChange: () => {},
@@ -383,6 +391,8 @@ CardLocation.defaultProps = {
   locationBefore: null,
   changeLocation: () => {},
   changeToggle: () => {},
+  checked: true,
+  changeChecked: () => {},
 }
 
 CardLocation.propTypes = {
@@ -411,4 +421,6 @@ CardLocation.propTypes = {
   locationBefore: PropTypes.shape({}),
   changeLocation: PropTypes.func,
   changeToggle: PropTypes.func,
+  checked: PropTypes.bool,
+  changeChecked: PropTypes.func,
 }

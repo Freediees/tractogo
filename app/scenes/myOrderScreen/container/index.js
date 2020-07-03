@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
 import MyOrderScreenActions from 'scenes/myOrderScreen/store/actions'
 import MyOrderListScreen from 'components/organism/myOrderListScreen'
+import { doResolveLoginRouteTab } from 'function/apiRequest'
+import NavigationService from 'services/navigationService'
 
 export function useForceUpdate() {
   const [, setTick] = useState(0)
@@ -26,17 +28,29 @@ const MyOrderContainer = ({
   fetchOrdersActive,
   fetchOrdersComplete,
   fetchOrdersCancel,
+  resetState,
 }) => {
   const forceUpdate = useForceUpdate()
 
-  useEffect(() => {
-    async function initialize() {
+  const callback = () => {
+    navigation.popToTop()
+  }
+
+  async function initialize() {
+    if (doResolveLoginRouteTab(callback)) {
       fetchOrdersActive()
       fetchOrdersComplete()
       fetchOrdersCancel()
     }
+  }
+
+  useEffect(() => {
     initialize()
-  }, [])
+    const unsubscribe = navigation.addListener('didFocus', () => {
+      resetState()
+      initialize()
+    })
+  }, [navigation])
 
   return (
     <MyOrderListScreen
@@ -69,6 +83,7 @@ MyOrderContainer.propTypes = {
   fetchOrdersActive: PropTypes.func,
   fetchOrdersCancel: PropTypes.func,
   fetchOrdersComplete: PropTypes.func,
+  resetState: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
@@ -87,6 +102,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchOrdersActive: () => dispatch(MyOrderScreenActions.fetchOrdersActive()),
   fetchOrdersComplete: () => dispatch(MyOrderScreenActions.fetchOrdersComplete()),
   fetchOrdersCancel: () => dispatch(MyOrderScreenActions.fetchOrdersCancel()),
+  resetState: () => dispatch(MyOrderScreenActions.resetState()),
 })
 
 export default connect(

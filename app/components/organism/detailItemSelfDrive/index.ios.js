@@ -102,7 +102,7 @@ export default function DetailItemSelfDrive({
   let bsAddToCart = null
 
   const calculateTotal = () => {
-    let val = parseInt(item.priceAmount)
+    let val = parseInt(item.priceAmount) * parseInt(item.duration)
     additionalItems.forEach((v, index) => {
       val = parseInt(val) + parseInt(v.total)
     })
@@ -113,13 +113,13 @@ export default function DetailItemSelfDrive({
     let newArr = [...additionalItems]
     if (newArr[index].type.toLowerCase() === 'counter') {
       newArr[index].count = number
-      newArr[index].total = number * newArr[index].value
+      newArr[index].total = number * newArr[index].value * parseInt(item.duration)
       changeAdditionalItems(newArr)
       calculateTotal()
     } else if (newArr[index].type.toLowerCase() === 'boolean') {
       if (newArr[index].count === 1) newArr[index].count = 0
       else newArr[index].count = 1
-      newArr[index].total = newArr[index].count * newArr[index].value
+      newArr[index].total = newArr[index].count * newArr[index].value * parseInt(item.duration)
       changeAdditionalItems(newArr)
       calculateTotal()
     } else if (newArr[index].type.toLowerCase() === 'nominal') {
@@ -353,7 +353,7 @@ export default function DetailItemSelfDrive({
             items={termsModalItems}
           />
           <CustomBottomSheet
-            rightText={() => renderRightText(1)}
+            topRightComponent={() => renderRightText(1)}
             title={paymentDetailLabel}
             botSheetRef={(ref) => (bsPaymentDetail = ref)}
           >
@@ -363,7 +363,7 @@ export default function DetailItemSelfDrive({
                   ...[
                     {
                       name: item.cardTitle,
-                      total: item.priceAmount,
+                      total: parseInt(item.priceAmount) * parseInt(item.duration),
                     },
                   ],
                   ...additionalItems,
@@ -407,15 +407,15 @@ export default function DetailItemSelfDrive({
 
 DetailItemSelfDrive.defaultProps = {
   onIconLeftPress: () => {},
-  title: 'Sewa Mobil di ',
+  title: 'Cars in ',
   city: 'Bandung',
   startDate: new Date(),
   endDate: new Date().getTime() + 86400000,
   rentHour: 12,
-  rentHourSuffix: 'Jam',
-  subtitle: 'Senin, 26 Jan - 27 Jan 2020 | 12 Jam',
-  serviceInfoLabel: 'Informasi Layanan',
-  termsLabel: 'Syarat & Ketentuan',
+  rentHourSuffix: 'Hour',
+  subtitle: 'Senin, 26 Jan - 27 Jan 2020 | 12 Hour',
+  serviceInfoLabel: 'Service Information',
+  termsLabel: 'Terms and Conditions',
   facilitiesLabel: 'Fasilitas',
   additionalLabel: 'Additional',
   nominalList: [
@@ -444,26 +444,26 @@ DetailItemSelfDrive.defaultProps = {
     driverLabel: 'Driver',
     suitcaseAmount: 3,
     suitcaseLabel: 'Suitcase',
-    basePriceLabel: 'Harga Dasar',
+    basePriceLabel: 'Basic Price',
     priceAmount: 1000000,
     priceUnit: ' / Hari',
     totalLabel: ' Total',
     isAssurance: true,
-    assuranceLabel: 'Asuransi Kendaraan',
-    quality: '< 4 tahun pemakaian',
+    assuranceLabel: 'Vehicle Insurance',
+    quality: 'vehicle age < 4 years',
     itemImage: require('images/alphard-11.png'),
   },
   facilities: [
     {
-      name: 'Layanan Darurat 24 Jam',
+      name: '24-Hour Emergency Service',
       image: iconCallCenter,
     },
     {
-      name: 'Kendaraan Pengganti',
+      name: 'Breakdown replacement car',
       image: iconReplacement,
     },
     {
-      name: 'Asuransi Jiwa',
+      name: 'Life Insurance',
       image: iconAsuransi,
     },
   ],
@@ -498,7 +498,7 @@ DetailItemSelfDrive.defaultProps = {
         'E. Total Lost, asuransi untuk kehilangan unit. PENYEWA juga wajib menanggung Biaya Resiko Kehilangan (Total Lost Risk) sebesar Rp 6.000.000,- (enam juta rupiah) bila Mobil tersebut hilang.',
     },
   ],
-  moreButtonLabel: 'selengkapnya',
+  moreButtonLabel: 'Read more',
   additionalItems: [
     {
       name: 'Penggunaan Luar Kota',
@@ -556,9 +556,9 @@ DetailItemSelfDrive.defaultProps = {
   onChangeAdditionPersonName: () => {},
   onChangeAdditionPersonPhone: () => {},
   paymentItems: [],
-  totalLabel: 'Harga Total',
+  totalLabel: 'Total Price',
   okFooterLabel: 'Checkout',
-  cancelFooterLabel: 'Masukkan Keranjang',
+  cancelFooterLabel: 'Add To Cart',
   onOkFooterPress: () => {},
   onCancelFooterPress: () => {},
   totalAmount: 500000,
@@ -566,13 +566,13 @@ DetailItemSelfDrive.defaultProps = {
   paymentDetailLabel: 'Detail Order',
   onAddToCartPress: () => {},
   addToCartLabel: 'Paket berhasil ditambahkan',
-  cartTitle: 'Sewa Mobil - Dengan Sopir',
+  cartTitle: 'Car Rental - With Driver',
   addToCartButtonLabel: 'Lihat Keranjang',
-  pickupLocationLabel: 'Lokasi Penjemputan',
+  pickupLocationLabel: 'Pick-up location',
   pickUpLocationDescription: 'Masukkan detail lokasi penjemputan',
   onPressPickUpCTA: () => {},
-  returnLocationLabel: 'Lokasi Pengembalian',
-  returnLocationDescription: 'Masukkan Detail Lokasi Pengembalian',
+  returnLocationLabel: 'Return location',
+  returnLocationDescription: 'Masukkan Detail Return location',
   onPressReturnCTA: () => {},
   isValid: false,
   returnToggle: false,

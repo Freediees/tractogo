@@ -6,7 +6,7 @@ import Moment from 'moment/min/moment-with-locales'
 import CardItem from 'components/atom/cardItem'
 import IconButton from 'components/atom/iconButton'
 import DefaultHeader from 'components/molecules/defaultHeader'
-import RatingStar from 'components/molecules/ratingStar'
+import RatingStarView from 'components/molecules/ratingStarView'
 import Separator from 'components/atom/separator'
 import CustomBorderlessAccordion from 'components/atom/customBorderlessAccordion'
 import DetailInfoSection from 'components/molecules/detailInfoSection'
@@ -18,16 +18,18 @@ import CustomLocationInformationCard from 'components/atom/customLocationInforma
 import TimelineMolecule from 'components/molecules/timelineMolecule'
 import DatePickupView from 'components/molecules/datePickupView'
 
-import { Flex, Row, Margin, Fonts, Background, Padding } from 'theme'
+import { Flex, Row, Margin, Fonts, Background, Padding, Colors } from 'theme'
 
 import { SvgXml } from 'react-native-svg'
 
 import backIcon from 'icons/ic-back.svg'
+import ctaIcon from 'icons/ic-CTA.svg'
 import icCancel from 'icons/ic-cancel.svg'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { TouchableHighlight } from 'react-native-gesture-handler'
 
 export default function DetailItemOrderProgress({
   onIconLeftPress,
+  onRatingPress,
   title,
   item,
   helpCenterLabel,
@@ -52,6 +54,7 @@ export default function DetailItemOrderProgress({
   currentActivity,
 }) {
   const [modalTerms, changeModalTerms] = useState(false)
+  const [selectedIndex, changeSelectedIndex] = useState(0)
 
   return (
     <View
@@ -73,30 +76,33 @@ export default function DetailItemOrderProgress({
           <View
             style={{
               ...Background.bg_white,
+              flexDirection: 'row',
             }}
           >
-            <CardItem
-              style={{ ...Margin.mt_4, ...Background.bg_light_grey }}
-              cardTitle={item[0].cardTitle}
-              seatAmount={item[0].seatAmount}
-              seatLabel={item[0].seatLabel}
-              driverLabel={item[0].driverLabel}
-              suitcaseAmount={item[0].suitcaseAmount}
-              suitcaseLabel={item[0].suitcaseLabel}
-              basePriceLabel={item[0].basePriceLabel}
-              priceAmount={item[0].priceAmount}
-              priceUnit={item[0].priceUnit}
-              totalLabel={item[0].totalLabel}
-              itemImage={item[0].itemImage}
-              quality={item[0].quality}
-              isAssurance={item[0].isAssurance}
-              noBorderTop={true}
-              isDriver={item[0].IsWithDriver === '1'}
-              uriImage={item[0].uriImage}
-              duration={item[0].duration}
-              discountedPrice={item[0].discountedPrice}
-              discountPercent={item[0].discountPercent}
-            />
+            <View style={{ flex: 10 }}>
+              <CardItem
+                style={{ ...Margin.mt_4, ...Background.bg_light_grey }}
+                cardTitle={item[selectedIndex].item.UnitTypeName}
+                seatAmount={item[selectedIndex].seatAmount}
+                seatLabel={item[selectedIndex].seatLabel}
+                driverLabel={item[selectedIndex].driverLabel}
+                suitcaseAmount={item[selectedIndex].suitcaseAmount}
+                suitcaseLabel={item[selectedIndex].suitcaseLabel}
+                basePriceLabel={item[selectedIndex].basePriceLabel}
+                priceAmount={item[selectedIndex].priceAmount}
+                priceUnit={item[selectedIndex].priceUnit}
+                totalLabel={item[selectedIndex].totalLabel}
+                itemImage={item[selectedIndex].itemImage}
+                quality={item[selectedIndex].quality}
+                isAssurance={item[selectedIndex].isAssurance}
+                noBorderTop={true}
+                isDriver={item[selectedIndex].IsWithDriver === '1'}
+                uriImage={item[selectedIndex].uriImage}
+                duration={item[selectedIndex].duration}
+                discountedPrice={item[selectedIndex].discountedPrice}
+                discountPercent={item[selectedIndex].discountPercent}
+              />
+            </View>
           </View>
           <View
             style={{
@@ -107,29 +113,43 @@ export default function DetailItemOrderProgress({
           >
             <TimelineMolecule stepCount={5} currentPosition={currentActivity}>
               <View style={{ width: '100%', alignItems: 'center', padding: 8 }}>
-                <Text style={{ ...Fonts.f_12, ...Fonts.semibold }}>{titleLabel}</Text>
-                <Text style={{ ...Fonts.f_10, ...Margin.mt_4 }}>{infoLabel}</Text>
-                {
-                  currentActivity == 4
-                  ? 
-                      <RatingStar disabled={true} onContainerPress={()=>{alert('Touched')}}/>
-                  : <View />
-                }
+                <Text style={{ ...Fonts.f_12, ...Fonts.semibold }}>
+                  {item[selectedIndex].activityName}
+                </Text>
+                <Text style={{ ...Fonts.f_10, ...Margin.mt_4 }}>
+                  {item[selectedIndex].cardTitle}
+                </Text>
+                {item[selectedIndex].activityStatus === 5 ? (
+                  <TouchableHighlight
+                    underlayColor={Colors.light_grey}
+                    style={{
+                      ...Padding.pv_20,
+                      ...Padding.ph_20,
+                    }}
+                    onPress={() => onRatingPress(selectedIndex)}
+                  >
+                    <RatingStarView disabled={true} />
+                  </TouchableHighlight>
+                ) : (
+                  <View />
+                )}
               </View>
             </TimelineMolecule>
           </View>
-          <View
-            style={{
-              ...Background.bg_white,
-              ...Margin.mt_4,
-              ...Margin.mh_4,
-            }}
-          >
-            <ContactDriverCenter
-              driverNameValue={item[0].driver}
-              plateNumberValue={item[0].licensePlate}
-            />
-          </View>
+          {item[selectedIndex].licensePlate !== '' && (
+            <View
+              style={{
+                ...Background.bg_white,
+                ...Margin.mt_4,
+                ...Margin.mh_4,
+              }}
+            >
+              <ContactDriverCenter
+                driverNameValue={item[selectedIndex].driver}
+                plateNumberValue={item[selectedIndex].licensePlate}
+              />
+            </View>
+          )}
           <View
             style={{
               ...Background.bg_white,
@@ -140,10 +160,10 @@ export default function DetailItemOrderProgress({
           >
             <DatePickupView
               title={'Tanggal Mulai dan selesai'}
-              startDateValue={item[0].startDate}
-              endDateValue={item[0].endDate}
-              packageStartValue={item[0].duration}
-              packageEndValue={item[0].duration}
+              startDateValue={Moment(item[selectedIndex].startDate).format('DD MMMM YYYY')}
+              endDateValue={Moment(item[selectedIndex].endDate).format('DD MMMM YYYY')}
+              packageStartValue={item[selectedIndex].duration}
+              packageEndValue={item[selectedIndex].duration}
             />
           </View>
           <View
@@ -156,9 +176,11 @@ export default function DetailItemOrderProgress({
             <CustomLocationInformationCard
               title={pickupLocationLabel}
               style={{ ...Margin.mt_8 }}
-              timeString={`${pickUpLocations[0].hour}.${pickUpLocations[0].minute}`}
-              dateString={Moment(pickUpLocations[0].Time).format('dddd, DD MMMM YYYY')}
-              locationName={pickUpLocations[0].Alamat}
+              timeString={Moment(item[selectedIndex].pickupLocations.Time).format('HH:mm')}
+              dateString={Moment(item[selectedIndex].pickupLocations.Time).format(
+                'dddd, DD MMMM YYYY'
+              )}
+              locationName={item[selectedIndex].pickupLocations.Alamat}
             />
           </View>
           <View style={{ ...Margin.mb_4, ...Background.bg_white }}>
@@ -167,8 +189,8 @@ export default function DetailItemOrderProgress({
                 ...Padding.ph_16,
               }}
               title={personDataTitle}
-              personName={item[0].passengers.Name}
-              personEmail={item[0].passengers.Email}
+              personName={item[selectedIndex].passenger.Name}
+              personEmail={item[selectedIndex].passenger.Email}
             />
           </View>
           <View style={{ flex: 1 }}>
@@ -183,7 +205,7 @@ export default function DetailItemOrderProgress({
             items={termsModalItems}
           />
           {/* <CustomBottomSheet
-            rightText={() => renderRightText(1)}
+            topRightComponent={() => renderRightText(1)}
             title={paymentDetailLabel}
             botSheetRef={(ref) => (bsPaymentDetail = ref)}
           >
@@ -210,6 +232,7 @@ export default function DetailItemOrderProgress({
 
 DetailItemOrderProgress.defaultProps = {
   onIconLeftPress: () => {},
+  onRatingPress: () => {},
   title: 'Order Detail',
   helpCenterLabel: 'Help Center',
   additionalLabel: 'Additional',
@@ -281,13 +304,13 @@ DetailItemOrderProgress.defaultProps = {
     driverLabel: 'Driver',
     suitcaseAmount: 3,
     suitcaseLabel: 'Suitcase',
-    basePriceLabel: 'Harga Dasar',
+    basePriceLabel: 'Basic Price',
     priceAmount: 1000000,
     priceUnit: ' / Hari',
     totalLabel: ' Total',
     isAssurance: true,
-    assuranceLabel: 'Asuransi Kendaraan',
-    quality: '< 4 tahun pemakaian',
+    assuranceLabel: 'Vehicle Insurance',
+    quality: 'vehicle age < 4 years',
     itemImage: require('images/alphard-11.png'),
   },
   reservation: {},
@@ -328,12 +351,13 @@ DetailItemOrderProgress.defaultProps = {
   changeTotalAmount: () => {},
   onPressPickUpCTA: () => {},
   personDataTitle: 'Passanger Data',
-  pickupLocationLabel: 'Lokasi Penjemputan',
+  pickupLocationLabel: 'Pick-up location',
   pickUpLocationDescription: 'Masukkan detail lokasi penjemputan',
 }
 
 DetailItemOrderProgress.propTypes = {
   onIconLeftPress: PropTypes.func,
+  onRatingPress: PropTypes.func,
   title: PropTypes.string,
   helpCenterLabel: PropTypes.string,
   additionalLabel: PropTypes.string,

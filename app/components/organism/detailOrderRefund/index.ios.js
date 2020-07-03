@@ -59,23 +59,23 @@ export default function DetailOrderRefund({
             }}
           >
             <CardSimpleOrder
-              onPress={item.onPressDetail}
-              cardTitle={item.cardTitle}
+              cardTitle={item[selectedIndex].cardTitle}
               style={styleOrder}
-              city={item.placeLabel}
-              startDate={item.startDate}
-              endDate={item.endDate}
-              rentHour={item.rentHour}
-              rentHourSuffix={item.rentHourSuffix}
-              totalAmount={item.totalAmount}
-              carName={item.carName}
-              noReservasiLabel={item.noReservasiLabel}
+              city={item[selectedIndex].placeLabel}
+              startDate={item[selectedIndex].startDate}
+              endDate={item[selectedIndex].endDate}
+              rentHour={item[selectedIndex].rentHour}
+              rentHourSuffix={item[selectedIndex].rentHourSuffix}
+              totalAmount={item[selectedIndex].totalAmount}
+              carName={item[selectedIndex].carName}
+              noReservasiLabel={item[selectedIndex].noReservasiLabel}
               orderCount={3}
-              paymentStatusLabel={item.paymentStatusLabel}
-              paymentStatusId={item.paymentStatusId}
-              countDown={item.countDown}
-              icCarRental={item.icCarRental}
+              paymentStatusLabel={item[selectedIndex].paymentStatusLabel}
+              paymentStatusId={item[selectedIndex].paymentStatusId}
+              countDown={item[selectedIndex].countDown}
+              icCarRental={item[selectedIndex].icCarRental}
               isMultiOrder={false}
+              isAirport={item[selectedIndex].details[0].MsProductId === "PRD0007" ? true : false}
             />
           </View>
           <View
@@ -124,7 +124,7 @@ export default function DetailOrderRefund({
             items={termsModalItems}
           />
           {/* <CustomBottomSheet
-            rightText={() => renderRightText(1)}
+            topRightComponent={() => renderRightText(1)}
             title={paymentDetailLabel}
             botSheetRef={(ref) => (bsPaymentDetail = ref)}
           >
@@ -159,28 +159,33 @@ DetailOrderRefund.defaultProps = {
   noReservasiValue: 'Rsv /xxhg/83738420',
   priceLabel: 'Price Detail',
   item: {
-    onPress: () => {},
-    cardTitle: 'TOYOTA ALPHARD',
-    seatAmount: 5,
-    seatLabel: 'Seat',
-    driverLabel: 'Driver',
-    suitcaseAmount: 3,
-    suitcaseLabel: 'Suitcase',
-    basePriceLabel: 'Harga Dasar',
-    priceAmount: 1000000,
-    priceUnit: ' / Hari',
-    totalLabel: ' Total',
-    isAssurance: true,
-    assuranceLabel: 'Asuransi Kendaraan',
-    quality: '< 4 tahun pemakaian',
-    itemImage: require('images/alphard-11.png'),
+    cardTitle: 'Car Rental - With Driver',
+    city: 'Bandung',
+    startDate: new Date(),
+    endDate: new Date().getTime() + 86400000,
+    rentHour: 12,
+    rentHourSuffix: 'Hour',
+    noReservasiLabel: '1234567',
+    totalAmount: 500000,
+    carName: 'TOYOTA ALPHARD',
+    showMoreLabel: 'Show More 3 Orders',
+    paymentStatusLabel: 'Payment Success',
+    orderStatusLabel: 'Penjemputan Pada Tanggal 20',
+    countDownLabel: '42:05',
+    icOptions: require('icons/ic-options.png'),
+    paymentStatusId: 1,
+    isMultiOrder: true,
+    style: {
+      flex: 1,
+      ...Row.row_2_2_5,
+    },
   },
   reservation: {},
   styleMultiOrder: {
     flex: 1,
     ...Padding.pt_8,
     ...Margin.mv_8,
-    ...Row.row_2,
+    ...Row.row_2_2_5,
   },
   styleOrder: {
     flex: 1,

@@ -1,135 +1,66 @@
 import { call, put } from 'redux-saga/effects'
 import RatingAction from '../store/actions'
-import { fetchUpdateProfile } from 'services/profileService'
+import { fetchRatingData } from 'services/profileService'
 
 export function* fetchRatingInfo(payload) {
-  console.log('Get rating information')
+  //console.log('Get rating information')
+
+  var infoSopir = []
+  var infoUnit = []
+
+  const json = yield call(fetchRatingData)
+  console.log(json)
+  if (json) {
+    if (json.Error) {
+    } else {
+      if (json.data) {
+        for (var i = 0; i < json.data.Data[0].ms_star.length; i++) {
+          console.log(json.data.Data[0].ms_star[i].Description)
+          var generalInfo = json.data.Data[0].ms_star[i].Description
+          var generalLabel = json.data.Data[0].ms_star[i].ms_question.QuestionDesc
+          var detailInfo = []
+          var rating = json.data.Data[0].ms_star[i].ValueStar
+          for (var j = 0; j < json.data.Data[0].ms_star[i].ms_stardetail.length; j++) {
+            var obj = { title: json.data.Data[0].ms_star[i].ms_stardetail[j].Description }
+            detailInfo.push(obj)
+          }
+
+          infoSopir.push({
+            generalInfo,
+            generalLabel,
+            detailInfo,
+            rating,
+          })
+        }
+
+        for (var i = 0; i < json.data.Data[1].ms_star.length; i++) {
+          var generalInfo = json.data.Data[1].ms_star[i].Description
+          var generalLabel = json.data.Data[1].ms_star[i].ms_question.QuestionDesc
+          var detailInfo = []
+          var rating = json.data.Data[1].ms_star[i].ValueStar
+          for (var j = 0; j < json.data.Data[1].ms_star[i].ms_stardetail.length; j++) {
+            var obj = { title: json.data.Data[1].ms_star[i].ms_stardetail[j].Description }
+            detailInfo.push(obj)
+          }
+
+          infoUnit.push({
+            generalInfo,
+            generalLabel,
+            detailInfo,
+            rating,
+          })
+        }
+      }
+    }
+  } else {
+  }
+
+  console.log(infoSopir)
+  console.log(infoUnit)
 
   const data = {
-    sopir: [
-      {
-        rating: 1,
-        generalLabel: 'Beritahu kami apa yang salah dari sopir',
-        generalInfo: 'Sopir sangat buruk',
-        detailInfo: [
-          { title: 'Terlambat menjemput' },
-          { title: 'Penampilan tidak rapih' },
-          { title: 'Tidak bisa membaca navigasi' },
-          { title: 'Menyetir tidak aman' },
-          { title: 'Komunikasi buruk' },
-          { title: 'Sikap yang buruk' },
-        ],
-      },
-      {
-        rating: 2,
-        generalLabel: 'Beritahu kami apa yang salah dari sopir',
-        generalInfo: 'Sopir buruk',
-        detailInfo: [
-          { title: 'Terlambat menjemput' },
-          { title: 'Penampilan tidak rapih' },
-          { title: 'Tidak bisa membaca navigasi' },
-          { title: 'Menyetir tidak aman' },
-          { title: 'Komunikasi buruk' },
-          { title: 'Sikap yang buruk' },
-        ],
-      },
-      {
-        rating: 3,
-        generalLabel: 'Apa yang dapat sopir tingkatkan',
-        generalInfo: 'Sopir cukup baik',
-        detailInfo: [
-          { title: 'Tepat waktu' },
-          { title: 'Penampilan sopir' },
-          { title: 'Membaca navigasi' },
-          { title: 'Keamanan menyetir' },
-          { title: 'Komunikasi sopir' },
-          { title: 'Sikap sopir' },
-        ],
-      },
-      {
-        rating: 4,
-        generalLabel: 'Apa yang menurut anda baik dari sopir',
-        generalInfo: 'Sopir baik',
-        detailInfo: [
-          { title: 'Tepat waktu' },
-          { title: 'Penampilan sopir' },
-          { title: 'Membaca navigasi' },
-          { title: 'Keamanan menyetir' },
-          { title: 'Komunikasi sopir' },
-          { title: 'Sikap sopir' },
-        ],
-      },
-      {
-        rating: 5,
-        generalLabel: 'Apa yang menurut anda baik dari sopir',
-        generalInfo: 'Sopir sangat baik',
-        detailInfo: [
-          { title: 'Tepat waktu' },
-          { title: 'Penampilan sopir' },
-          { title: 'Membaca navigasi' },
-          { title: 'Keamanan menyetir' },
-          { title: 'Komunikasi sopir' },
-          { title: 'Sikap sopir' },
-        ],
-      },
-    ],
-    kendaraan: [
-      {
-        rating: 1,
-        generalLabel: 'Beritahu kami apa yang salah dari kendaraan',
-        generalInfo: 'Kendaraan sangat buruk',
-        detailInfo: [
-          { title: 'Kendaraan Buruk banget' },
-          { title: 'Kendaraan Buruk' },
-          { title: 'Kasih bintang satu' },
-          { title: 'Mengemudi ugal-ugalan' },
-        ],
-      },
-      {
-        rating: 2,
-        generalLabel: 'Beritahu kami apa yang salah dari kendaraan',
-        generalInfo: 'Kendaraan sangat buruk',
-        detailInfo: [
-          { title: 'Kendaraan Buruk banget' },
-          { title: 'Kendaraan Buruk' },
-          { title: 'Kasih bintang satu' },
-          { title: 'Mengemudi ugal-ugalan' },
-        ],
-      },
-      {
-        rating: 3,
-        generalLabel: 'Beritahu kami apa yang salah dari kendaraan',
-        generalInfo: 'Kendaraan sangat buruk',
-        detailInfo: [
-          { title: 'Kendaraan Buruk banget' },
-          { title: 'Kendaraan Buruk' },
-          { title: 'Kasih bintang satu' },
-          { title: 'Mengemudi ugal-ugalan' },
-        ],
-      },
-      {
-        rating: 4,
-        generalLabel: 'Beritahu kami apa yang salah dari kendaraan',
-        generalInfo: 'Kendaraan sangat buruk',
-        detailInfo: [
-          { title: 'Kendaraan Buruk banget' },
-          { title: 'Kendaraan Buruk' },
-          { title: 'Kasih bintang satu' },
-          { title: 'Mengemudi ugal-ugalan' },
-        ],
-      },
-      {
-        rating: 5,
-        generalLabel: 'Beritahu kami apa yang salah dari kendaraan',
-        generalInfo: 'Kendaraan sangat buruk',
-        detailInfo: [
-          { title: 'Kendaraan Buruk banget' },
-          { title: 'Kendaraan Buruk' },
-          { title: 'Kasih bintang satu' },
-          { title: 'Mengemudi ugal-ugalan' },
-        ],
-      },
-    ],
+    sopir: infoSopir,
+    kendaraan: infoUnit,
   }
 
   // console.log(data)

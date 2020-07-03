@@ -93,13 +93,14 @@ export default function DetailItemWithDriver({
   editLabel,
   onEditPress,
   isValid,
+  nominalList,
 }) {
   const [modalTerms, changeModalTerms] = useState(false)
   let bsPaymentDetail = null
   let bsAddToCart = null
 
   const calculateTotal = () => {
-    let val = parseInt(item.priceAmount)
+    let val = parseInt(item.priceAmount) * parseInt(item.duration)
     additionalItems.forEach((v, index) => {
       val = parseInt(val) + parseInt(v.total)
     })
@@ -110,13 +111,13 @@ export default function DetailItemWithDriver({
     let newArr = [...additionalItems]
     if (newArr[index].type.toLowerCase() === 'counter') {
       newArr[index].count = number
-      newArr[index].total = number * newArr[index].value
+      newArr[index].total = number * newArr[index].value * item.duration
       changeAdditionalItems(newArr)
       calculateTotal()
     } else if (newArr[index].type.toLowerCase() === 'boolean') {
       if (newArr[index].count === 1) newArr[index].count = 0
       else newArr[index].count = 1
-      newArr[index].total = newArr[index].count * newArr[index].value
+      newArr[index].total = newArr[index].count * newArr[index].value * item.duration
       changeAdditionalItems(newArr)
       calculateTotal()
     } else if (newArr[index].type.toLowerCase() === 'nominal') {
@@ -170,7 +171,9 @@ export default function DetailItemWithDriver({
             return (
               <NumberIncrement
                 number={item.count}
+                max={item.stockType === '1' ? parseInt(item.availability) : 999}
                 changeNumber={(number) => {
+                  console.log(item)
                   changeCount(number, index)
                 }}
               />
@@ -329,9 +332,7 @@ export default function DetailItemWithDriver({
               onOkFooterPress()
             }}
             onCancelPress={async () => {
-              if (onCancelFooterPress()) {
-                bsAddToCart.open()
-              }
+              onCancelFooterPress()
             }}
             style={{ ...Margin.mt_8, ...Padding.ph_16, ...Background.bg_white }}
           >
@@ -361,7 +362,7 @@ export default function DetailItemWithDriver({
             items={termsModalItems}
           />
           <CustomBottomSheet
-            rightText={() => renderRightText(1)}
+            topRightComponent={() => renderRightText(1)}
             title={paymentDetailLabel}
             botSheetRef={(ref) => (bsPaymentDetail = ref)}
           >
@@ -371,40 +372,13 @@ export default function DetailItemWithDriver({
                   ...[
                     {
                       name: item.cardTitle,
-                      total: item.priceAmount,
+                      total: parseInt(item.priceAmount) * parseInt(item.duration)
                     },
                   ],
                   ...additionalItems,
                 ]}
                 totalAmount={totalAmount}
               />
-            </View>
-          </CustomBottomSheet>
-          <CustomBottomSheet
-            title={addToCartLabel}
-            botSheetRef={(ref) => (bsAddToCart = ref)}
-          >
-            <View style={{ flexDirection: 'column', justifyContent: 'center', ...Padding.ph_20, ...Padding.pv_20 }}>
-              <CartItem
-                cardTitle={cartTitle}
-                city={city}
-                startDate={startDate}
-                endDate={endDate}
-                rentHour={rentHour}
-                rentHourSuffix={rentHourSuffix}
-                totalAmount={totalAmount}
-                carName={item.cardTitle}
-              />
-              <View style={{ width: '100%', ...Margin.mt_20 }}>
-                <PrimaryButton
-                  style={{ flex: 1, ...Margin.mt_20 }}
-                  text={addToCartButtonLabel}
-                  onPress={() => {
-                    bsAddToCart.close()
-                    onAddToCartPress()
-                  }}
-                />
-              </View>
             </View>
           </CustomBottomSheet>
         </ScrollView>
@@ -415,14 +389,14 @@ export default function DetailItemWithDriver({
 
 DetailItemWithDriver.defaultProps = {
   onIconLeftPress: () => {},
-  title: 'Sewa Mobil di ',
+  title: 'Cars in ',
   city: 'Bandung',
   startDate: new Date(),
   endDate: new Date().getTime() + 86400000,
   rentHour: 12,
-  rentHourSuffix: 'Jam',
-  subtitle: 'Senin, 26 Jan - 27 Jan 2020 | 12 Jam',
-  serviceInfoLabel: 'Informasi Layanan',
+  rentHourSuffix: 'Hour',
+  subtitle: 'Senin, 26 Jan - 27 Jan 2020 | 12 Hour',
+  serviceInfoLabel: 'Service Information',
   termsLabel: 'Syarat & Ketentuan',
   facilitiesLabel: 'Fasilitas',
   additionalLabel: 'Additional',
@@ -445,7 +419,7 @@ DetailItemWithDriver.defaultProps = {
   },
   facilities: [
     {
-      name: 'Layanan Darurat 24 Jam',
+      name: 'Layanan Darurat 24 Hour',
       image: iconCallCenter,
     },
     {
@@ -554,9 +528,9 @@ DetailItemWithDriver.defaultProps = {
   onChangeAdditionPersonName: () => {},
   onChangeAdditionPersonPhone: () => {},
   paymentItems: [],
-  totalLabel: 'Harga Total',
+  totalLabel: 'Total Price',
   okFooterLabel: 'Checkout',
-  cancelFooterLabel: 'Masukkan Keranjang',
+  cancelFooterLabel: 'Add To Cart',
   onOkFooterPress: () => {},
   onCancelFooterPress: () => {},
   totalAmount: 500000,
@@ -564,9 +538,9 @@ DetailItemWithDriver.defaultProps = {
   paymentDetailLabel: 'Detail Order',
   onAddToCartPress: () => {},
   addToCartLabel: 'Paket berhasil ditambahkan',
-  cartTitle: 'Sewa Mobil - Dengan Sopir',
+  cartTitle: 'Car Rental - With Driver',
   addToCartButtonLabel: 'Lihat Keranjang',
-  pickupLocationLabel: 'Lokasi Penjemputan',
+  pickupLocationLabel: 'Pick-up location',
   pickUpLocationDescription: 'Masukkan detail lokasi penjemputan',
   pickUpLocations: [
     {

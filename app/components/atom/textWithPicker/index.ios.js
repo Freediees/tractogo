@@ -21,9 +21,7 @@ import PropTypes from 'prop-types'
 import CustomBottomSheet from 'components/molecules/customBottomSheet'
 import OkCancelButton from 'components/molecules/okCancelButton'
 
-
 import caret from 'icons/ic-CTADown.svg'
-
 
 // Default render of country flag
 export default function PhoneFieldInput({
@@ -39,10 +37,9 @@ export default function PhoneFieldInput({
   title,
 }) {
   const onSelectContent = (val) => {
-
-    console.log('Hello', title)
+    //console.log('Hello', title)
     onSelectTitle(val)
-    setSelectContent(val)
+    //setSelectContent(val)
     modalSelect.close()
   }
 
@@ -62,14 +59,12 @@ export default function PhoneFieldInput({
             <View style={styles.itemStyle}>
               {/* country flag */}
               <Text style={{ ...Fonts.f_12 }}>{headerLabel}</Text>
-              <View
-                style={{ flexDirection: 'row' }}
-              >
+              <View style={{ flexDirection: 'row' }}>
                 <View
                   style={{ flex: 1, flexDirection: 'row', alignItems: 'center', ...Padding.ph_8 }}
                 >
                   <Text style={{ ...Fonts.f_14, ...Fonts.text_grey }}>
-                    { title == 0 ? 'Mr.' : 'Ms.'}
+                    {title == 0 ? 'Mr.' : 'Ms.'}
                   </Text>
                   <TouchableOpacity
                     name="md-arrow-dropdown"
@@ -91,8 +86,7 @@ export default function PhoneFieldInput({
                     secureTextEntry={false}
                     onChangeText={(val) => {
                       onChangeText(val)
-                    }
-                    }
+                    }}
                   />
                 </View>
               </View>
@@ -127,7 +121,7 @@ export default function PhoneFieldInput({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-   // justifyContent: 'center',
+    // justifyContent: 'center',
     flexDirection: 'column',
   },
   input: {

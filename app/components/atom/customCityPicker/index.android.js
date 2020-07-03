@@ -114,7 +114,7 @@ export default function CustomCityPicker({
               onChangeText={(term) => {
                 changeSearchTerm(term)
               }}
-              style={styles.searchInput}
+              style={{ ...Fonts.text_black, ...Fonts.f_12, ...Padding.pv_4}}
               placeholder={placeholder}
             />
           </View>
@@ -138,12 +138,18 @@ export default function CustomCityPicker({
             borderBottomColor: Colors.light_grey,
           }}
         >
-          <ScrollView>
-            {filteredData &&
-              filteredData.map((item) => {
-                return renderItem(item)
-              })}
-          </ScrollView>
+          {cities && cities.length > 0 ? (
+            <ScrollView>
+              {filteredData &&
+                filteredData.map((item) => {
+                  return renderItem(item)
+                })}
+            </ScrollView>
+          ) : (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <Text>Data Not Found :(</Text>
+            </View>
+          )}
         </View>
       </View>
     </Modal>

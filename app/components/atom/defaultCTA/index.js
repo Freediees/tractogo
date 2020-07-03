@@ -57,7 +57,7 @@ export default function DefaultCTA({ onPress, icon, title, description, superscr
 DefaultCTA.defaultProps = {
   children: null,
   onPress: () => {},
-  title: 'Lokasi Penjemputan',
+  title: 'Pick-up location',
   description: 'Masukkan detail lokasi penjemputan',
   superscript: '*',
   style: {},

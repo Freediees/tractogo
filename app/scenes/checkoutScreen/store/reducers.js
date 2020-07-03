@@ -5,6 +5,7 @@ import { CheckoutScreenTypes } from './actions'
 export const postCheckoutLoading = (state) => ({
   ...state,
   postCheckoutIsLoading: true,
+  postCheckoutWithoutCartIsLoading: true,
   postCheckoutErrorMessage: null,
   postCheckoutSuccessMessage: null,
 })
@@ -12,6 +13,7 @@ export const postCheckoutLoading = (state) => ({
 export const postCheckoutFailure = (state, { errorMessage }) => ({
   ...state,
   postCheckoutIsLoading: false,
+  postCheckoutWithoutCartIsLoading: false,
   postCheckoutErrorMessage: errorMessage,
   postCheckoutSuccessMessage: null,
 })
@@ -20,11 +22,13 @@ export const postCheckoutSuccess = (state, { successMessage }) => ({
   ...state,
   postCheckoutSuccessMessage: successMessage,
   postCheckoutIsLoading: false,
+  postCheckoutWithoutCartIsLoading: true,
   postCheckoutErrorMessage: null,
 })
 
 export const postCheckoutWithoutCartLoading = (state) => ({
   ...state,
+  postCheckoutIsLoading: true,
   postCheckoutWithoutCartIsLoading: true,
   postCheckoutWithoutCartErrorMessage: null,
   postCheckoutWithoutCartSuccessMessage: null,
@@ -32,6 +36,7 @@ export const postCheckoutWithoutCartLoading = (state) => ({
 
 export const postCheckoutWithoutCartFailure = (state, { errorMessage }) => ({
   ...state,
+  postCheckoutIsLoading: false,
   postCheckoutWithoutCartIsLoading: false,
   postCheckoutWithoutCartErrorMessage: errorMessage,
   postCheckoutWithoutCartSuccessMessage: null,
@@ -40,7 +45,8 @@ export const postCheckoutWithoutCartFailure = (state, { errorMessage }) => ({
 export const postCheckoutWithoutCartSuccess = (state, { successMessage }) => ({
   ...state,
   postCheckoutWithoutCartSuccessMessage: successMessage,
-  postCheckoutWithoutCartIsLoading: false,
+  postCheckoutWithoutCartIsLoading: true,
+  postCheckoutIsLoading: false,
   postCheckoutWithoutCartErrorMessage: null,
 })
 
@@ -108,6 +114,8 @@ export const checkVoucherSuccess = (state, { successMessage }) => ({
 
 export const resetVoucher = (state) => ({
   ...state,
+  postCheckoutIsLoading: false,
+  postCheckoutWithoutCartIsLoading: false,
   checkVoucherSuccessMessage: null,
   checkVoucherIsLoading: false,
   checkVoucherErrorMessage: null,

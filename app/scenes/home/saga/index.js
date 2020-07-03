@@ -21,13 +21,31 @@ function* fetchUser() {
   yield put(HomeActions.fetchUserLoading())
 
   // Fetch user informations from an API
-  const json = yield call(userService.getUserProfile)
+  const payload = {
+    callback: async function() {
+      NavigationService.logout()
+    },
+  }
+  const json = yield call(userService.getUserProfile, payload)
   if (json) {
-    if (json.Data) {
-      console.log('naruto')
-      console.log(json.Data)
-      yield saveUserProfileObject(json.Data)
-      yield put(HomeActions.fetchUserSuccess(json.Data))
+    console.log(json)
+    if (json.Error) {
+      console.log(json.Error)
+      if (json.Error.status === 401) {
+        yield AsyncStorage.removeItem('token')
+        // yield NavigationService.navigate('routeOne')
+      } else {
+        yield put(HomeActions.fetchUserFailure(json.Error.message))
+      }
+    } else {
+      if (json.Data) {
+        yield saveUserProfileObject(json.Data)
+        yield put(HomeActions.fetchUserSuccess(json.Data))
+      } else {
+        yield put(
+          HomeActions.fetchUserFailure('There was an error while fetching user informations.')
+        )
+      }
     }
   } else {
     yield put(HomeActions.fetchUserFailure('There was an error while fetching user informations.'))
@@ -43,39 +61,51 @@ function* fetchProducts() {
   const json = yield call(commonService.getMasterProduct)
   if (json) {
     const dataArr = []
-    if (json.Data) {
-      json.Data.forEach((item) => {
-        if (item.BusinessUnitId !== null && item.MsProductId !== null) {
-          let newData = {
-            name: item.MsProductName,
-            icon: item.Icon,
-            item: item,
-          }
-          if (item.MsProductId === CAR_RENTAL) {
-            newData.onPress = async function() {
-              await AsyncStorage.setItem('buID', item.BusinessUnitId)
-              await AsyncStorage.setItem('prdID', item.MsProductId)
-              NavigationService.navigate('CarFilterScreen')
-            }
-          } else if (item.MsProductId === BUS_RENTAL) {
-            newData.onPress = function() {
-              Alert.alert('to be developed')
-            }
-          } else if (item.MsProductId === AIRPORT_TRANSFER) {
-            newData.onPress = async function() {
-              await AsyncStorage.setItem('buID', item.BusinessUnitId)
-              await AsyncStorage.setItem('prdID', item.MsProductId)
-              NavigationService.navigate('AirportFilterScreen')
-            }
-          }
-          dataArr.push(newData)
-        }
-      })
-      yield put(HomeActions.fetchProductsSuccess(dataArr))
+    if (json.Error) {
+      console.log(json.Error)
+      if (json.Error.status === 401) {
+        yield AsyncStorage.removeItem('token')
+        // yield NavigationService.navigate('routeOne')
+      } else {
+        yield put(HomeActions.fetchUserFailure(json.Error.message))
+      }
     } else {
-      yield put(
-        HomeActions.fetchProductsFailure('There was an error while fetching products informations.')
-      )
+      if (json.Data) {
+        json.Data.forEach((item) => {
+          if (item.BusinessUnitId !== null && item.MsProductId !== null) {
+            let newData = {
+              name: item.MsProductName,
+              icon: item.Icon,
+              item: item,
+            }
+            if (item.MsProductId === CAR_RENTAL) {
+              newData.onPress = async function() {
+                await AsyncStorage.setItem('buID', item.BusinessUnitId)
+                await AsyncStorage.setItem('prdID', item.MsProductId)
+                NavigationService.navigate('CarFilterScreen')
+              }
+            } else if (item.MsProductId === BUS_RENTAL) {
+              newData.onPress = function() {
+                Alert.alert('to be developed')
+              }
+            } else if (item.MsProductId === AIRPORT_TRANSFER) {
+              newData.onPress = async function() {
+                await AsyncStorage.setItem('buID', item.BusinessUnitId)
+                await AsyncStorage.setItem('prdID', item.MsProductId)
+                NavigationService.navigate('AirportFilterScreen')
+              }
+            }
+            dataArr.push(newData)
+          }
+        })
+        yield put(HomeActions.fetchProductsSuccess(dataArr))
+      } else {
+        yield put(
+          HomeActions.fetchProductsFailure(
+            'There was an error while fetching products informations.'
+          )
+        )
+      }
     }
   }
 }
@@ -89,17 +119,35 @@ function* fetchPromos() {
   const json = yield call(commonService.getPromoRequest)
   if (json) {
     const dataArr = []
-    if (json.Data) {
-      json.Data.forEach((item) => {
-        let newData = {
-          text: item.Title,
-          image: item.ImageBanner,
-          item: item,
-        }
-        dataArr.push(newData)
-      })
+    if (json.Error) {
+      console.log(json.Error)
+      if (json.Error.status === 401) {
+        yield AsyncStorage.removeItem('token')
+        // yield NavigationService.navigate('routeOne')
+      } else {
+        yield put(HomeActions.fetchUserFailure(json.Error.message))
+      }
+    } else {
+      if (json.Data) {
+        json.Data.forEach((item) => {
+          console.log(item)
+          let newData = {
+            text: item.Title,
+            image: item.ImageBanner,
+            item: item,
+            onPress: () => {
+              NavigationService.navigate('NewsDetail', {
+                title: item.Title,
+                thumbnail: item.ImageBanner,
+                content: item.Content,
+              })
+            },
+          }
+          dataArr.push(newData)
+        })
+        yield put(HomeActions.fetchPromosSuccess(dataArr))
+      }
     }
-    yield put(HomeActions.fetchPromosSuccess(dataArr))
   } else {
     yield put(
       HomeActions.fetchPromosFailure('There was an error while fetching promos informations.')
@@ -116,17 +164,34 @@ function* fetchNews() {
   const json = yield call(commonService.getNewsRequest)
   if (json) {
     const dataArr = []
-    if (json.Data) {
-      json.Data.forEach((item) => {
-        let newData = {
-          text: item.lead,
-          image: item.image,
-          item: item,
-        }
-        dataArr.push(newData)
-      })
+    if (json.Error) {
+      console.log(json.Error)
+      if (json.Error.status === 401) {
+        yield AsyncStorage.removeItem('token')
+        // yield NavigationService.navigate('routeOne')
+      } else {
+        yield put(HomeActions.fetchUserFailure(json.Error.message))
+      }
+    } else {
+      if (json.Data) {
+        json.Data.forEach((item) => {
+          let newData = {
+            text: item.lead,
+            image: item.image,
+            item: item,
+            onPress: () => {
+              NavigationService.navigate('NewsDetail', {
+                title: item.title,
+                thumbnail: item.thumbnail,
+                content: item.content,
+              })
+            },
+          }
+          dataArr.push(newData)
+        })
+        yield put(HomeActions.fetchNewsSuccess(dataArr))
+      }
     }
-    yield put(HomeActions.fetchNewsSuccess(dataArr))
   } else {
     yield put(HomeActions.fetchNewsFailure('There was an error while fetching news informations.'))
   }

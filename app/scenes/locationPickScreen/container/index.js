@@ -38,6 +38,7 @@ const LocationPickScreen = ({
   const forceUpdate = useForceUpdate()
 
   const refreshItems = (items) => {
+    console.log(items)
     changeItems(items)
     forceUpdate()
   }

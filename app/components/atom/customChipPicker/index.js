@@ -64,7 +64,7 @@ CustomChipPicker.defaultProps = {
   items: [
     {
       value: 0,
-      label: 'Semua',
+      label: 'All',
     },
     {
       value: 1,
@@ -81,7 +81,7 @@ CustomChipPicker.defaultProps = {
   ],
   selectedItem: {
     value: 0,
-    label: 'Semua',
+    label: 'All',
   },
   selectedIndex: 0,
   onSelectItem: () => {},

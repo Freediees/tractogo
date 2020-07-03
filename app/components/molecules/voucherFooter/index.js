@@ -54,6 +54,7 @@ export default function VoucherFooter({
               ...Padding.pl_8,
               ...Margin.mr_16,
               flex: 9,
+              ...Fonts.text_black,
               ...Border.border_rad_4,
             }}
             value={voucherValue}

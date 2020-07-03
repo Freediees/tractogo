@@ -16,10 +16,11 @@ export default function VerifikasiKYC({
   timelineLabel,
   timelineStep,
   onBack,
+  statusKYC,
 }) {
   return (
     <View style={{ flex: 1, width: '100%' }}>
-      <DefaultHeader border={true} title={title} iconLeft={backIcon} onIconLeftPress={onBack} />
+      <DefaultHeader border={false} title={title} iconLeft={backIcon} onIconLeftPress={onBack} />
 
       <View style={{ ...Flex.flex_9 }}>
         <View
@@ -44,29 +45,36 @@ export default function VerifikasiKYC({
               textAlign: 'center',
               ...Padding.ph_16,
               ...Padding.pv_16,
+              width: '70%',
+              ...Fonts.semibold,
             }}
           >
             {informationLabel}
           </Text>
-          <View
-            style={{
-              ...Padding.pv_16,
-              ...Margin.mt_16,
-              flex: 1,
-              ...Padding.ph_16,
-              ...Column.col_9,
-              alignSelf: 'center',
-            }}
-          >
-            <Timeline
-              direction={'vertical'}
-              stepCount={timelineStep}
-              labels={timelineLabel}
-              defaultColor={Colors.blue}
-              failed={false}
-              labelAlign={'flex-start'}
-            />
-          </View>
+          {statusKYC == 0 ? (
+            <View
+              style={{
+                ...Padding.pv_16,
+                ...Margin.mt_16,
+                flex: 1,
+                ...Padding.ph_16,
+                ...Column.col_9,
+                alignSelf: 'center',
+              }}
+            >
+              <Timeline
+                direction={'vertical'}
+                stepCount={timelineStep}
+                labels={timelineLabel}
+                defaultColor={Colors.blue}
+                failed={false}
+                labelAlign={'flex-start'}
+                failed={true}
+              />
+            </View>
+          ) : (
+            <View />
+          )}
         </View>
       </View>
 
@@ -76,14 +84,14 @@ export default function VerifikasiKYC({
 }
 
 VerifikasiKYC.defaultProps = {
-  title: 'Verifikasi',
-  footerLabel: 'Kembali',
+  title: 'Data Verification',
+  footerLabel: 'Back',
   onFooterPress: () => {},
-  informationLabel:
-    'Mohon maaf sistem kami gagal melakukan verifikasi Identitas anda karena : Foto KTP yang anda ambil kurang jelas',
+  informationLabel: 'Our system is cheking the data that you have sent',
   timelineLabel: ['Verifikasi SIM', 'Verifikasi KTP', 'Verifikasi Wajah', 'Member TRAC To Go'],
   timelineStep: 4,
-  onBack: ()=>{},
+  onBack: () => {},
+  statusKYC: null,
 }
 
 VerifikasiKYC.propTypes = {
@@ -94,4 +102,5 @@ VerifikasiKYC.propTypes = {
   timelineLabel: PropTypes.array,
   stepCount: PropTypes.number,
   onBack: PropTypes.func,
+  statusKYC: PropTypes.number,
 }

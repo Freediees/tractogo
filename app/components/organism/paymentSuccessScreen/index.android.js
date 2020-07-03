@@ -68,7 +68,7 @@ export default function PaymentSuccessScreen({
               id={timerID}
               until={timer}
               onFinish={() => {
-                setIsTimerRunning(false)
+                // setIsTimerRunning(false)
               }}
               size={16}
               digitStyle={{ ...Background.bg_ice_blue }}
@@ -277,7 +277,7 @@ PaymentSuccessScreen.defaultProps = {
   buttonLabel: 'Check Status',
   timer: 3600,
   title: 'Payment',
-  timerLabel: 'Mohon dibayar sebelum ',
+  timerLabel: 'Pay Before ',
   timerDate: new Date(),
   copyLabel: 'Copy',
   isTimerRunning: false,

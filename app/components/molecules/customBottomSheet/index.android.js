@@ -16,7 +16,7 @@ export default function CustomBottomSheet({
   height,
   title,
   subtitle,
-  rightText,
+  topRightComponent,
   botSheetRef,
 }) {
   return (
@@ -38,7 +38,7 @@ export default function CustomBottomSheet({
               <Text style={{ ...Fonts.f_14, ...Fonts.semibold }}>{title}</Text>
               {subtitle && <Text style={{ ...Fonts.f_12, ...Fonts.text_grey }}>{subtitle}</Text>}
             </View>
-            <View style={{ flex: 1, alignItems: 'flex-end' }}>{rightText()}</View>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>{topRightComponent()}</View>
           </View>
           <Separator />
           <View>{children}</View>
@@ -53,7 +53,7 @@ CustomBottomSheet.defaultProps = {
   title: null,
   subtitle: null,
   botSheetRef: null,
-  rightText: () => {},
+  topRightComponent: () => {},
 }
 
 CustomBottomSheet.propTypes = {
@@ -61,5 +61,5 @@ CustomBottomSheet.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   botSheetRef: PropTypes.func,
-  rightText: PropTypes.func,
+  topRightComponent: PropTypes.func,
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>628358414804-0faqkib2nreu6nf29nfl6jeo0pj0gfkj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.628358414804-0faqkib2nreu6nf29nfl6jeo0pj0gfkj</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>628358414804-eki7e2ganimhs816afcaavbhv9q8n247.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDqP04L8wLhIa27cvtWJfvlfRodR7A8sD0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>628358414804</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.trac.tractogo</string>
+	<key>PROJECT_ID</key>
+	<string>tractogo</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tractogo.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:628358414804:ios:e83736762e6c3151</string>
+	<key>DATABASE_URL</key>
+	<string>https://tractogo.firebaseio.com</string>
+</dict>
+</plist>

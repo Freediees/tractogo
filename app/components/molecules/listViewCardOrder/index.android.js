@@ -63,6 +63,7 @@ export default function ListViewCardOrder({
                 countDown={v.countDown}
                 icCarRental={v.icCarRental}
                 isMultiOrder={v.details.length > 1}
+                isAirport={v.details[0].MsProductId === "PRD0007" ? true : false}
               />
             )
           })}

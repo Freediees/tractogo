@@ -13,23 +13,31 @@ function* fetchPhoneNumber({ payload }) {
     NoHandphone: payload.NoHandphone,
     UpdateNoHandphone: payload.UpdateNoHandphone,
   }
-
-  //
-  //   var payload = {
-  //     OtpCode: '1234', // sementara sampai id nexmo
-  //     NoHandphone: '+628123491376',
-  //     UpdateNoHandphone: '+6200000',
-  //   }
-
-  console.log(payload)
+  console.log('payload:', dataPayload)
   const json = yield call(putPhoneNumber, dataPayload)
-  console.log(json)
-  if (json.Status == 200) {
-    let dataObj = payload.user
-    dataObj.NoHandphone = dataPayload.UpdateNoHandphone
-    yield put(HomeActions.fetchUserSuccess(dataObj))
-    alert('Saved')
-    yield NavigationService.navigateAndReset('ProfileScreen')
+  //ProfileEditPhoneActions.fetchPhoneNumberFailure('Invalid verification code, please try again')
+  if (json) {
+    if (json.Error) {
+      yield put(
+        ProfileEditPhoneActions.fetchPhoneNumberFailure(
+          'Invalid verification code, please try again'
+        )
+      )
+    } else {
+      if (json.Data) {
+        if (json.Status == 200) {
+          let dataObj = payload.user
+          dataObj.NoHandphone = dataPayload.UpdateNoHandphone
+          yield put(HomeActions.fetchUserSuccess(dataObj))
+          alert('Saved')
+          yield NavigationService.navigateAndReset('ProfileScreen')
+        }
+      }
+    }
+  } else {
+    yield put(
+      ProfileEditPhoneActions.fetchPhoneNumberFailure('Invalid verification code, please try again')
+    )
   }
 }
 

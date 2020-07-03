@@ -7,7 +7,8 @@ import { Colors, Margin, Fonts, Flex, Padding } from 'theme'
 import { LabelNumberFormat } from 'function/numberFormat'
 import { SvgXml } from 'react-native-svg'
 import iconCall from 'icons/ic-call.svg'
-import iconFaq from 'icons/ic-faq.svg'
+import iconPlat from 'icons/ic-platnumber.svg'
+import iconChat from 'icons/ic-chat.svg'
 import iconDriver from 'icons/ic-driver.svg'
 
 import Separator from 'components/atom/separator'
@@ -52,7 +53,7 @@ export default function ContactDriverCenter({
             flexDirection: 'row',
           }}
         >
-          <SvgXml xml={iconCall} height={20} width={20} style={{ ...Margin.mr_16 }} />
+          <SvgXml xml={iconPlat} height={20} width={20} style={{ ...Margin.mr_16 }} />
           <View style={{ ...Flex.flex_column }}>
             <Text style={{ ...Fonts.text_dark_grey }}>{plateNumberLabel}</Text>
             <Text style={{ ...Fonts.f_10 }}>{plateNumberValue}</Text>
@@ -119,12 +120,11 @@ export default function ContactDriverCenter({
           <View
             style={{
               flex: 1,
+              ...Padding.pv_8,
               flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
           >
-            <SvgXml xml={iconFaq} height={20} width={20} style={{ ...Margin.mr_12 }} />
+            <SvgXml xml={iconChat} height={20} width={20} style={{ ...Margin.mr_12 }} />
           </View>
         </TouchableHighlight>
       </View>

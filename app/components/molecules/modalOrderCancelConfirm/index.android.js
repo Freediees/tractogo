@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { SvgXml } from 'react-native-svg'
@@ -7,7 +7,10 @@ import PropTypes from 'prop-types'
 import CardSimpleOrder from 'components/atom/cardSimpleOrder'
 import SecondaryButton from 'components/atom/secondaryButton'
 import PrimaryButton from 'components/atom/primaryButton'
+import IconButton from 'components/atom/iconButton'
 import closeIcon from 'icons/ic-close.svg'
+import backIcon from 'icons/ic-back.svg'
+import ctaIcon from 'icons/ic-CTA.svg'
 
 export default function ModalOrderCancelConfirm({
   children,
@@ -23,9 +26,12 @@ export default function ModalOrderCancelConfirm({
   okLabel,
   onCancelPress,
   onOkPress,
+  onClosePress,
   styleOrder,
   styleMultiOrder,
 }) {
+  const [selectedIndex, changeSelectedIndex] = useState(0)
+
   return (
     <Modal
       animationType="slide" // fade
@@ -58,11 +64,7 @@ export default function ModalOrderCancelConfirm({
               {title && <Text style={{ ...Fonts.f_12, ...Fonts.semibold }}>{title}</Text>}
             </View>
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
-              <TouchableOpacity
-                onPress={() => {
-                  changeModalVisible(false)
-                }}
-              >
+              <TouchableOpacity onPress={onClosePress}>
                 <SvgXml xml={closeIcon} width={16} height={16} />
               </TouchableOpacity>
             </View>
@@ -77,25 +79,57 @@ export default function ModalOrderCancelConfirm({
             <Text style={{ ...Fonts.text_dark_grey, ...Fonts.bold, ...Fonts.f_10 }}>
               {serviceLabel}
             </Text>
-            <CardSimpleOrder
-              onPress={item.onPressDetail}
-              cardTitle={item.cardTitle}
-              style={styleOrder}
-              city={item.placeLabel}
-              startDate={item.startDate}
-              endDate={item.endDate}
-              rentHour={item.rentHour}
-              rentHourSuffix={item.rentHourSuffix}
-              totalAmount={item.totalAmount}
-              carName={item.carName}
-              noReservasiLabel={item.noReservasiLabel}
-              orderCount={3}
-              paymentStatusLabel={item.paymentStatusLabel}
-              paymentStatusId={item.paymentStatusId}
-              countDown={item.countDown}
-              icCarRental={item.icCarRental}
-              isMultiOrder={false}
-            />
+            <View
+              style={{
+                flexDirection: 'row',
+              }}
+            >
+              <View style={{ flex: 1, justifyContent: 'center' }}>
+                {item && selectedIndex > 0 && (
+                  <IconButton
+                    svg={backIcon}
+                    onPress={() => {
+                      changeSelectedIndex(parseInt(selectedIndex) - 1)
+                    }}
+                    fill={Colors.amber}
+                  />
+                )}
+              </View>
+              <View style={{ flex: 10 }}>
+                <CardSimpleOrder
+                  onPress={item[selectedIndex].onPressDetail}
+                  cardTitle={item[selectedIndex].cardTitle}
+                  style={styleOrder}
+                  city={item[selectedIndex].placeLabel}
+                  startDate={item[selectedIndex].startDate}
+                  endDate={item[selectedIndex].endDate}
+                  rentHour={item[selectedIndex].rentHour}
+                  rentHourSuffix={item[selectedIndex].rentHourSuffix}
+                  totalAmount={item[selectedIndex].totalAmount}
+                  carName={item[selectedIndex].carName}
+                  noReservasiLabel={item[selectedIndex].noReservasiLabel}
+                  orderCount={3}
+                  paymentStatusLabel={item[selectedIndex].paymentStatusLabel}
+                  paymentStatusId={item[selectedIndex].paymentStatusId}
+                  countDown={item[selectedIndex].countDown}
+                  icCarRental={item[selectedIndex].icCarRental}
+                  isMultiOrder={false}
+                  isAirport={item[selectedIndex].details[0].MsProductId === "PRD0007" ? true : false}
+                />
+              </View>
+              <View style={{ flex: 1, justifyContent: 'center' }}>
+                {item && selectedIndex < item.length - 1 && (
+                  <IconButton
+                    svg={ctaIcon}
+                    onPress={() => {
+                      changeSelectedIndex(parseInt(selectedIndex) + 1)
+                    }}
+                    fill={Colors.amber}
+                  />
+                )}
+              </View>
+            </View>
+
             <Text
               style={{ ...Fonts.text_dark_grey, ...Fonts.bold, ...Fonts.f_10, ...Margin.mt_16 }}
             >
@@ -117,7 +151,7 @@ export default function ModalOrderCancelConfirm({
               isOrange={true}
               style={{ flex: 1, justifyContent: 'center' }}
               text={okLabel}
-              onPress={() => changeModalVisible(false)}
+              onPress={onClosePress}
             />
           </View>
         </ScrollView>
@@ -133,19 +167,19 @@ ModalOrderCancelConfirm.defaultProps = {
   title: 'Cancel Order',
   serviceLabel: 'Related Service',
   refundLabel: 'Kebijakan refund',
-  refundDetailLabel: 'Pengembalian 100% untuk pembatalan 48 Jam sebelum sewa dimulai',
+  refundDetailLabel: 'Pengembalian 100% untuk pembatalan 48 Hour sebelum sewa dimulai',
   confirmLabel: 'Are you sure cancel the order?',
   cancelLabel: 'Yakin, Batalkan',
   okLabel: 'Tetap pesan',
   onCancelPress: () => {},
   onOkPress: () => {},
   item: {
-    cardTitle: 'Sewa Mobil - Dengan Sopir',
+    cardTitle: 'Car Rental - With Driver',
     city: 'Bandung',
     startDate: new Date(),
     endDate: new Date().getTime() + 86400000,
     rentHour: 12,
-    rentHourSuffix: 'Jam',
+    rentHourSuffix: 'Hour',
     noReservasiLabel: '1234567',
     totalAmount: 500000,
     carName: 'TOYOTA ALPHARD',
@@ -158,24 +192,25 @@ ModalOrderCancelConfirm.defaultProps = {
     isMultiOrder: false,
     style: {
       flex: 1,
-      ...Row.row_2_2_5,
+      ...Row.row_2_5,
     },
   },
   styleMultiOrder: {
     flex: 1,
     ...Padding.pt_8,
     ...Margin.mv_8,
-    ...Row.row_2,
+    ...Row.row_3,
   },
   styleOrder: {
     flex: 1,
     ...Padding.pt_8,
     ...Margin.mv_8,
-    ...Row.row_2,
+    ...Row.row_2_5,
   },
 }
 
 ModalOrderCancelConfirm.propTypes = {
+  onClosePress: PropTypes.func,
   children: PropTypes.node,
   modalVisible: PropTypes.bool,
   changeModalVisible: PropTypes.func,

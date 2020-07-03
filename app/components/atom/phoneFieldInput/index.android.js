@@ -125,7 +125,7 @@ export default function PhoneFieldInput({
                     <SvgXml xml={caret} width={16} height={16} />
                   </TouchableOpacity>
                 </View>
-                <View style={{ flex: 7, ...Padding.ph_8 }}>
+                <View style={{ flex: 7, ...Padding.ph_8, ...Margin.ml_8 }}>
                   <TextInput
                     style={styles.input}
                     placeholder={placeholder}

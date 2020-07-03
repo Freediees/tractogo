@@ -7,6 +7,7 @@ import Moment from 'moment'
 import PaymentScreenActions from 'scenes/paymentScreen/store/actions'
 import PaymentScreenSuccess from 'components/organism/paymentSuccessScreen'
 import AsyncStorage from '@react-native-community/async-storage'
+import { NavigationActions, StackActions } from 'react-navigation'
 import { saveFilterFunc, saveFilterObject, getFilterObject, pad } from 'function'
 import { RENTAL_TIMEBASE } from 'config'
 
@@ -81,7 +82,15 @@ const PaymentSuccessScreen = ({ navigation }) => {
           : ''
       })`}
       isTimerRunning={isRunning}
-      onButtonPress={() => Alert.alert('to be develop')}
+      onButtonPress={() => {
+        navigation.dispatch(
+          StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Home' })],
+          })
+        )
+        navigation.navigate('MyBooking')
+      }}
       onIconLeftPress={() => navigation.goBack()}
     />
   )

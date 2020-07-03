@@ -65,15 +65,15 @@ export default function FacilityFlexIcons({
 FacilityFlexIcons.defaultProps = {
   items: [
     {
-      name: 'Layanan Darurat 24 Jam',
+      name: '24-Hour Emergency Service',
       image: iconCallCenter,
     },
     {
-      name: 'Kendaraan Pengganti',
+      name: 'Breakdown replacement car',
       image: iconReplacement,
     },
     {
-      name: 'Asuransi Jiwa',
+      name: 'Life Insurance',
       image: iconAsuransi,
     },
   ],

@@ -66,7 +66,7 @@ export default function CustomBorderlessAccordionCard({ title, children }) {
 }
 
 CustomBorderlessAccordionCard.defaultProps = {
-  title: 'Informasi Layanan',
+  title: 'Service Information',
   children: null,
 }
 

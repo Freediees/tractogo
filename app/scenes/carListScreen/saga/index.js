@@ -6,6 +6,9 @@ import NavigationService from 'services/navigationService'
 import { Padding, Margin, Row } from 'theme'
 import AsyncStorage from '@react-native-community/async-storage'
 import Moment from 'moment'
+import {
+  getUserProfileObject,
+} from 'function'
 import { SERVICE_ID_WITH_DRIVER, SERVICE_ID_SELF_DRIVE } from 'config'
 
 /**
@@ -55,45 +58,55 @@ function* fetchStocks({ payload }) {
     console.log({ json })
     // create the object here
     const dataArr = []
-    if (json.Data) {
-      json.Data.forEach((item) => {
-        let newData = {
-          cardTitle: item.vehicleTypeDesc,
-          seatAmount: item.totalSeat,
-          suitcaseAmount: item.totalLuggage,
-          transmision: item.isTransmissionManual ? 'MANUAL' : 'AUTOMATIC',
-          uriImage: item.vehicleImage,
-          priceUnit: ' / Hari',
-          totalLabel: ' Total',
-          item: item,
-          style: {
-            flex: 1,
-            ...Padding.pt_12,
-          },
-        }
-        dataArr.push(newData)
-      })
-      console.log('success fetchStock')
-      yield put(CarListScreenAction.fetchStocksSuccess(dataArr))
-      const searchPayloads = []
-      dataArr.forEach(function(v) {
-        const searchPricePayload = {
+    if (json.Data || json.Data !== '') {
+      if (json.Data.length > 0) {
+        json.Data.forEach((item) => {
+          let newData = {
+            cardTitle: item.vehicleTypeDesc,
+            seatAmount: item.totalSeat,
+            suitcaseAmount: item.totalLuggage,
+            transmision: item.isTransmissionManual ? 'MANUAL' : 'AUTOMATIC',
+            uriImage: item.vehicleImage,
+            priceUnit: ' / Hari',
+            totalLabel: ' Total',
+            item: item,
+            style: {
+              flex: 1,
+              ...Padding.pt_12,
+            },
+          }
+          dataArr.push(newData)
+        })
+        console.log('success fetchStock')
+        yield put(CarListScreenAction.fetchStocksSuccess(dataArr))
+        const searchPayloads = []
+        dataArr.forEach(function(v) {
+          const searchPricePayload = {
+            payload: {
+              VehicleTypeId: v.item.vehicleTypeId,
+              BusinessUnitId: v.item.businessUnitId,
+            },
+            stock: v,
+          }
+          searchPayloads.push(searchPricePayload)
+        })
+        const newPayload = {
           payload: {
-            VehicleTypeId: v.item.vehicleTypeId,
-            BusinessUnitId: v.item.businessUnitId,
+            payload: searchPayloads,
+            forceUpdate: payload.forceUpdate,
+            changeAlertVisible: payload.changeAlertVisible,
           },
-          stock: v,
         }
-        searchPayloads.push(searchPricePayload)
-      })
-      const newPayload = {
-        payload: {
-          payload: searchPayloads,
-          forceUpdate: payload.forceUpdate,
-        },
+        console.log(searchPayloads)
+        yield call(fetchStocksWithPrice, newPayload)
       }
-      console.log(searchPayloads)
-      yield call(fetchStocksWithPrice, newPayload)
+    } else {
+      console.log('testtt json data')
+      if (json.ErrorMessage) {
+        yield put(CarListScreenAction.fetchStocksFailure(json.ErrorMessage))
+        yield put(CarListScreenAction.fetchStocksWithPriceComplete())
+        payload.forceUpdate()
+      }
     }
   } else {
     yield put(
@@ -136,6 +149,7 @@ function* fetchStockWithPrice({ payload }) {
 
   // Fetch user informations from an API
   const json = yield call(orderService.getStockPriceCarRentalRequest, payload.payload)
+  const user = yield call(getUserProfileObject)
   if (json) {
     // create the object here
     console.log(json)
@@ -183,8 +197,15 @@ function* fetchStockWithPrice({ payload }) {
               NavigationService.navigate('OrderDetailWithDriverScreen', { item: newStock })
             }
           } else {
-            newStock.onPress = function() {
-              NavigationService.navigate('OrderDetailSelfDriveScreen', { item: newStock })
+            if (user && (user.IsMember === 0 || user.IsMember === '0')) {
+              newStock.onPress = function() {
+                console.log('test')
+                payload.changeAlertVisible(true)
+              }
+            } else {
+              newStock.onPress = function() {
+                NavigationService.navigate('OrderDetailSelfDriveScreen', { item: newStock })
+              }
             }
           }
           dataArr.push(newStock)
@@ -232,11 +253,12 @@ function* fetchStocksWithPrice({ payload }) {
       v.payload.BranchId = City.item.BranchId
       v.payload.ProductServiceId = ProductServiceId
       v.stock.duration = parseInt(day)
-      v.stock.priceUnit = ` / ${Duration} Jam`
+      v.stock.priceUnit = ` / ${Duration} Hour`
       const payloadObject = {
         payload: {
           payload: v.payload,
           stock: v.stock,
+          changeAlertVisible: payload.changeAlertVisible,
         },
       }
       console.log(payloadObject.payload)

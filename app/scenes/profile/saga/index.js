@@ -5,23 +5,35 @@ import NavigationService from 'services/navigationService'
 import AsyncStorage from '@react-native-community/async-storage'
 
 function* fetchProfile({ payload }) {
-  try {
-    const create = yield call(fetchProfileRequest, payload)
-    if (create.data.Status === 200) {
-      yield put(ProfileAction.fetchProfileSuccess(create.data.Data))
+  const json = yield call(fetchProfileRequest, payload)
+
+  if (json) {
+    if (json.Error) {
+      if (json.Error.status === 401) {
+        yield AsyncStorage.removeItem('token')
+      } else {
+        yield put(ProfileAction.fetchProfileFailure(create.data.ErrorMessage))
+      }
     } else {
-      yield put(ProfileAction.fetchProfileFailure(create.data.ErrorMessage))
+      if (json.Data) {
+        if (json.data.Status === 200) {
+          yield put(ProfileAction.fetchProfileSuccess(json.data.Data))
+        } else {
+          yield put(ProfileAction.fetchProfileFailure(json.data.ErrorMessage))
+        }
+      } else {
+        yield put(
+          ProfileAction.fetchProfileFailure('Oops! something went wrong! ' + JSON.stringify(error))
+        )
+      }
     }
-  } catch (error) {
-    yield put(
-      ProfileAction.fetchProfileFailure('Oops! something went wrong! ' + JSON.stringify(error))
-    )
   }
 }
 
 function* doLogout() {
   try {
     yield AsyncStorage.removeItem('token')
+    yield AsyncStorage.removeItem('userProfile')
     yield NavigationService.navigate('routeOne')
   } catch (err) {}
 }

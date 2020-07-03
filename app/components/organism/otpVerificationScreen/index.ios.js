@@ -24,6 +24,7 @@ export default function OTPVerificationScreen({
   buttonLabel,
   onCodeFilled,
   timer,
+  errorMessage,
 }) {
   const [isTimerRunning, setIsTimerRunning] = useState(true)
   const [timerID, setTimerID] = useState('1')
@@ -60,6 +61,9 @@ export default function OTPVerificationScreen({
           </View>
           <View style={{ alignItems: 'center' }}>
             <OTPInput onCodeFilled={onCodeFilled} />
+            <Text style={{ ...Fonts.f_10, ...Fonts.text_red, ...Margin.mb_8 }}>
+              {errorMessage ? JSON.stringify(errorMessage) : ''}
+            </Text>
             {isTimerRunning ? (
               <CountDown
                 id={timerID}
@@ -112,6 +116,7 @@ OTPVerificationScreen.defaultProps = {
     console.log(a)
   },
   timer: 60,
+  errorMessage: '',
 }
 
 OTPVerificationScreen.propTypes = {
@@ -125,4 +130,5 @@ OTPVerificationScreen.propTypes = {
   isTimerRunning: PropTypes.bool,
   onCodeFilled: PropTypes.func,
   timer: PropTypes.number,
+  errorMessage: PropTypes.string,
 }

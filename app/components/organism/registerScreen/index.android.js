@@ -63,8 +63,7 @@ export default function RegisterScreen({
     >
       <DefaultHeader border={true} title={screenTitle} />
       <View style={{ flex: 9 }}>
-      <ScrollView>
-        
+        <ScrollView>
           <CenterView>
             <View style={{ width: '100%', marginTop: 10 }}>
               <Text style={{ ...Fonts.f_10, color: '#a0a4a8' }}>{labelName}</Text>
@@ -120,7 +119,9 @@ export default function RegisterScreen({
                       {Moment(selectedDate).format('DD MMMM YYYY')}
                     </Text>
                   ) : (
-                    <Text style={{ width: '100%', ...Fonts.f_12, ...Fonts.text_grey }}>{placeholderBirthDate}</Text>
+                    <Text style={{ width: '100%', ...Fonts.f_12, ...Fonts.text_grey }}>
+                      {placeholderBirthDate}
+                    </Text>
                   )}
                   <View
                     style={{
@@ -195,14 +196,13 @@ export default function RegisterScreen({
               <TextButton text={labelSignIn} onPress={onSignin} />
             </View>
           </CenterView>
-        
-      </ScrollView>
+        </ScrollView>
       </View>
 
       <CustomBottomSheet
         title={bsNameTitle}
         botSheetRef={(ref) => (bsNameTitle = ref)}
-        // rightText={() => renderRightText(1)}
+        // topRightComponent={() => renderRightText(1)}
         bsHeight="25%"
         topRightComponent={() => (
           <TextButton
@@ -251,7 +251,9 @@ RegisterScreen.defaultProps = {
   onRegister: () => {},
   onRegisterError: null,
   onRegisterSuccess: false,
-  onGoogleLogin: () => { alert('Google sign in')},
+  onGoogleLogin: () => {
+    alert('Google sign in')
+  },
   onGoogleLoginError: null,
   onGoogleLoginSuccess: false,
   email: '',

@@ -1,14 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, Fragment } from 'react'
 import { Platform, Text, View, Button, ActivityIndicator, Image, Alert } from 'react-native'
 import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
+import { NavigationActions, StackActions } from 'react-navigation'
 import I18n from 'react-native-i18n'
 import Moment from 'moment'
 import AsyncStorage from '@react-native-community/async-storage'
 import CarFilterScreenActions from 'scenes/filter/store/actions'
 import CarListScreenActions from 'scenes/carListScreen/store/actions'
 import CarRentalFilterScreen from 'components/organism/carRentalFilterScreen'
-import { saveFilterFunc, saveFilterObject, getFilterObject, pad } from 'function'
+import {
+  saveFilterFunc,
+  saveFilterObject,
+  getFilterObject,
+  pad,
+  getUserProfileObject,
+} from 'function'
 import { RENTAL_TIMEBASE, SERVICE_ID_SELF_DRIVE, SERVICE_ID_WITH_DRIVER } from 'config'
 
 export function useForceUpdate() {
@@ -63,6 +70,7 @@ const FilterScreen = ({
 }) => {
   const [updated, changeUpdated] = useState(false)
   const [initReady, changeInit] = useState(false)
+  const [userProfile, changeUserProfile] = useState(null)
 
   const [maxOrderTime, changeMaxOrderTime] = useState('00:00')
 
@@ -70,7 +78,12 @@ const FilterScreen = ({
 
   useEffect(() => {
     async function initialize() {
+      const user = await getUserProfileObject()
+      changeUserProfile(user)
       changeDate(Moment(selectedDate))
+      if (selectedDuration && selectedDuration.item && selectedDuration.item.date) {
+        changeSelectedDurationFunc(selectedDuration)
+      }
       fetchCityCoverages()
       fetchRentDurations()
       initMaxOrderTime()
@@ -84,9 +97,10 @@ const FilterScreen = ({
   const initMaxOrderTime = async () => {
     const prdID = await AsyncStorage.getItem('prdID')
     changeProductId(prdID)
-    fetchAdjustmentRetails()
+    await fetchAdjustmentRetails()
     adjustmentRetails.forEach((v, i) => {
       if (v.MsProductId === prdID) {
+        console.log(v.MaxOrderTime)
         changeMaxOrderTime(v.MaxOrderTime)
       }
     })
@@ -127,19 +141,26 @@ const FilterScreen = ({
     changeSelectedDate(date._d)
     console.log(date._d)
     console.log(selectedDate)
-    // if (selectedDuration && selectedDuration.item) {
-    //   console.log(selectedDate)
-    //   console.log(selectedDuration)
-    //   console.log(selectedPackage)
-    //   let pastDay = 0
-    //   const tempDate = new Date(selectedDate).getTime()
-    //   if (tempDate.getHours + parseInt(selectedPackage.item.Duration) >= 24) {
-    //     pastDay = 1
-    //     console.log('past day')
-    //   }
-    //   console.log('end date')
-    //   console.log(endDate)
-    // }
+    if (selectedDuration && selectedDuration.item) {
+      console.log(selectedDate)
+      console.log(selectedDuration)
+      console.log(selectedPackage)
+      let pastDay = 0
+      const tempDate = new Date(selectedDate).getTime()
+      if (selectedPackage && selectedPackage.item) {
+        if (tempDate.getHours + parseInt(selectedPackage.item.Duration) >= 24) {
+          pastDay = 1
+          console.log('past day')
+        }
+      }
+      changeEndDate(
+        new Date(
+          date._d.getTime() + (selectedDuration.item.value + parseInt(pastDay) - 1) * 86400000
+        )
+      )
+      console.log('end date')
+      console.log(endDate)
+    }
     onChangeDate(date._d)
     forceUpdate()
   }
@@ -171,7 +192,9 @@ const FilterScreen = ({
     }
     console.log('index' + selectedDurationIndex)
     changeDurations(newDurationsArr)
-    changeSelectedDuration(newDurationsArr[selectedDurationIndex])
+    if (selectedDurationIndex !== -1 || selectedDurationIndex !== '-1') {
+      changeSelectedDuration(newDurationsArr[selectedDurationIndex])
+    }
   }
 
   const onSaveDate = () => {
@@ -201,7 +224,9 @@ const FilterScreen = ({
     }
     console.log('index' + selectedDurationIndex)
     changeDurations(newDurationsArr)
-    changeSelectedDurationFunc(newDurationsArr[selectedDurationIndex])
+    if (selectedDurationIndex !== -1 || selectedDurationIndex !== '-1') {
+      changeSelectedDuration(newDurationsArr[selectedDurationIndex])
+    }
   }
 
   const onChangePackage = (data) => {
@@ -209,10 +234,11 @@ const FilterScreen = ({
     for (let i = 1; i <= 10; i++) {
       let pastDay = 0
       const tempDate = new Date(selectedDate)
-      if (parseInt(tempDate.getHours()) + parseInt(data.item.Duration) >= 24) {
+      if (data.item && data.item.Duration) {
+        if (parseInt(tempDate.getHours()) + parseInt(data.item.Duration) >= 24) {
           pastDay = 1
         }
-      
+      }
       const newDuration = {
         leftLabel: `${i} Hari`,
         rightLabel: `Pengembalian ${Moment(
@@ -265,17 +291,21 @@ const FilterScreen = ({
       Alert.alert('Pilih Waktu terlebih dahulu')
       return
     }
-    if (!selectedPackage && activeTab === 0) {
-      Alert.alert('Pilih Paket terlebih dahulu')
-      return
-    } else {
+    if (activeTab === 1 || activeTab === '1') {
+      // self drive
       changeSelectedPackage(rentPackages[0])
       changeSelectedPackageIndex(0)
+    } else {
+      if (!selectedPackage || !selectedPackage.item || !selectedPackage.item.Duration) {
+        Alert.alert('Pilih Paket terlebih dahulu')
+        return
+      }
     }
-    if (!selectedDuration) {
+    if (selectedDurationIndex === -1 || selectedDurationIndex === '-1') {
       Alert.alert('Pilih Durasi terlebih dahulu')
       return
     }
+    changeSelectedDurationFunc(selectedDuration)
 
     const start = new Date(selectedDate)
     start.setHours(selectedHour)
@@ -289,26 +319,30 @@ const FilterScreen = ({
     const tempDateNow = new Date()
     const timeMax = maxOrderTime.split(':')
     dateNow.setTime(
-      dateNow.getTime() +
+      start.getTime() +
         (parseInt(timeMax[0]) || 0 * 60 * 60 * 1000) +
         (parseInt(timeMax[1]) || 0 * 60 * 1000)
     )
+    console.log('date now')
+    console.log(dateNow)
     const maxTime = new Date(dateNow)
+    console.log(start)
+    console.log('max time')
+    console.log(maxTime)
     if (start.getDate() === tempDateNow.getDate()) {
       if (start.getHours() <= tempDateNow.getHours()) {
         Alert.alert('Waktu untuk hari ini tidak bisa lebih rendah dari waktu sekarang.')
         initMaxOrderTime()
         return
       }
-      if (start.getTime() >= dateNow.getTime()) {
-        /*
-        Alert.alert(
-          'Batas Waktu Order Sudah habis, coba tekan tombol cari lagi, atau hubungi customer support'
-        )
-        initMaxOrderTime()
-        return
-        */
-      }
+    }
+    console.log(start.getTime() - dateNow.getTime())
+    if (start.getTime() - new Date().getTime() < timeMax[0] * 60 * 60 * 1000) {
+      Alert.alert(
+        'Maximum Order Time is Less than ' + timeMax[0] + ' hours ' + timeMax[1] + ' minutes'
+      )
+      initMaxOrderTime()
+      return
     }
     const payload = {
       startDate: Moment(start, 'UTC')
@@ -324,7 +358,7 @@ const FilterScreen = ({
       isWithDriver: activeTab === 1 ? '0' : '1',
       productServiceId: activeTab === 1 ? SERVICE_ID_SELF_DRIVE : SERVICE_ID_WITH_DRIVER,
       rentalPackage: activeTab === 1 ? '24' : selectedPackage.item.Duration,
-      rentalDuration: activeTab === 1 ? '24' : selectedDuration.item.value.toString(),
+      rentalDuration: selectedDuration.item.value.toString() || '1',
     }
     console.log(payload)
     saveFilterFunc(payload)
@@ -354,41 +388,43 @@ const FilterScreen = ({
   }
 
   return (
-    <CarRentalFilterScreen
-      onChangeTab={changeTab}
-      endDate={endDate}
-      citiesData={cityCoverages}
-      durationData={durations}
-      rentPackageData={rentPackages}
-      selectedHour={selectedHour}
-      changeSelectedHour={changeHour}
-      selectedMinute={selectedMinute}
-      changeSelectedMinute={changeMinute}
-      selectedDuration={selectedDuration}
-      changeSelectedDuration={changeSelectedDurationFunc}
-      selectedDurationIndex={selectedDurationIndex}
-      changeSelectedDurationIndex={changeSelectedDurationIndex}
-      selectedPackage={selectedPackage}
-      changeSelectedPackage={async (data) => {
-        console.log(selectedDuration)
-        changePackage(data)
-        // changeDate(Moment(selectedDate))
-        // console.log('new end date' + new Date(new Date(selectedDate).getTime() + (parseInt(selectedDuration && selectedDuration.item ? selectedDuration.item.value : 0)) * parseInt(data.item.Duration) * 3600000))
-        // changeEndDate(new Date(new Date(selectedDate).getTime() + (parseInt(selectedDuration && selectedDuration.item ? selectedDuration.item.value : 0)) * parseInt(data.item.Duration) * 3600000))
-      }}
-      selectedPackageIndex={selectedPackageIndex}
-      changeSelectedPackageIndex={changeSelectedPackageIndex}
-      selectedCity={selectedCity}
-      changeSelectedCity={changeSelectedCity}
-      selectedDate={selectedDate}
-      changeSelectedDate={(date) => {
-        changeDate(date)
-      }}
-      onSearchButtonPress={() => searchCar()}
-      onIconLeftPress={() => navigation.goBack()}
-      onSaveTime={() => reloadRentPackage()}
-      onSaveDate={() => onSaveDate()}
-    />
+    <Fragment>
+      <CarRentalFilterScreen
+        onChangeTab={changeTab}
+        endDate={endDate}
+        citiesData={cityCoverages}
+        durationData={durations}
+        rentPackageData={rentPackages}
+        selectedHour={selectedHour}
+        changeSelectedHour={changeHour}
+        selectedMinute={selectedMinute}
+        changeSelectedMinute={changeMinute}
+        selectedDuration={selectedDuration}
+        changeSelectedDuration={changeSelectedDurationFunc}
+        selectedDurationIndex={selectedDurationIndex}
+        changeSelectedDurationIndex={changeSelectedDurationIndex}
+        selectedPackage={selectedPackage}
+        changeSelectedPackage={async (data) => {
+          console.log(selectedDuration)
+          changePackage(data)
+          // changeDate(Moment(selectedDate))
+          // console.log('new end date' + new Date(new Date(selectedDate).getTime() + (parseInt(selectedDuration && selectedDuration.item ? selectedDuration.item.value : 0)) * parseInt(data.item.Duration) * 3600000))
+          // changeEndDate(new Date(new Date(selectedDate).getTime() + (parseInt(selectedDuration && selectedDuration.item ? selectedDuration.item.value : 0)) * parseInt(data.item.Duration) * 3600000))
+        }}
+        selectedPackageIndex={selectedPackageIndex}
+        changeSelectedPackageIndex={changeSelectedPackageIndex}
+        selectedCity={selectedCity}
+        changeSelectedCity={changeSelectedCity}
+        selectedDate={selectedDate}
+        changeSelectedDate={(date) => {
+          changeDate(date)
+        }}
+        onSearchButtonPress={() => searchCar()}
+        onIconLeftPress={() => navigation.goBack()}
+        onSaveTime={() => reloadRentPackage()}
+        onSaveDate={() => onSaveDate()}
+      />
+    </Fragment>
   )
 }
 

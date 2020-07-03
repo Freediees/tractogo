@@ -49,6 +49,7 @@ export default function DetailOrderRefund({
   styleMultiOrder,
 }) {
   const [modalTerms, changeModalTerms] = useState(false)
+  const [selectedIndex, changeSelectedIndex] = useState(0)
 
   return (
     <View
@@ -73,23 +74,23 @@ export default function DetailOrderRefund({
             }}
           >
             <CardSimpleOrder
-              onPress={item.onPressDetail}
-              cardTitle={item.cardTitle}
+              cardTitle={item[selectedIndex].cardTitle}
               style={styleOrder}
-              city={item.placeLabel}
-              startDate={item.startDate}
-              endDate={item.endDate}
-              rentHour={item.rentHour}
-              rentHourSuffix={item.rentHourSuffix}
-              totalAmount={item.totalAmount}
-              carName={item.carName}
-              noReservasiLabel={item.noReservasiLabel}
+              city={item[selectedIndex].placeLabel}
+              startDate={item[selectedIndex].startDate}
+              endDate={item[selectedIndex].endDate}
+              rentHour={item[selectedIndex].rentHour}
+              rentHourSuffix={item[selectedIndex].rentHourSuffix}
+              totalAmount={item[selectedIndex].totalAmount}
+              carName={item[selectedIndex].carName}
+              noReservasiLabel={item[selectedIndex].noReservasiLabel}
               orderCount={3}
-              paymentStatusLabel={item.paymentStatusLabel}
-              paymentStatusId={item.paymentStatusId}
-              countDown={item.countDown}
-              icCarRental={item.icCarRental}
+              paymentStatusLabel={item[selectedIndex].paymentStatusLabel}
+              paymentStatusId={item[selectedIndex].paymentStatusId}
+              countDown={item[selectedIndex].countDown}
+              icCarRental={item[selectedIndex].icCarRental}
               isMultiOrder={false}
+              isAirport={item[selectedIndex].details[0].MsProductId === "PRD0007" ? true : false}
             />
           </View>
           <View
@@ -131,7 +132,7 @@ export default function DetailOrderRefund({
             items={termsModalItems}
           />
           {/* <CustomBottomSheet
-            rightText={() => renderRightText(1)}
+            topRightComponent={() => renderRightText(1)}
             title={paymentDetailLabel}
             botSheetRef={(ref) => (bsPaymentDetail = ref)}
           >
@@ -229,13 +230,13 @@ DetailOrderRefund.defaultProps = {
     driverLabel: 'Driver',
     suitcaseAmount: 3,
     suitcaseLabel: 'Suitcase',
-    basePriceLabel: 'Harga Dasar',
+    basePriceLabel: 'Basic Price',
     priceAmount: 1000000,
     priceUnit: ' / Hari',
     totalLabel: ' Total',
     isAssurance: true,
-    assuranceLabel: 'Asuransi Kendaraan',
-    quality: '< 4 tahun pemakaian',
+    assuranceLabel: 'Vehicle Insurance',
+    quality: 'vehicle age < 4 years',
     itemImage: require('images/alphard-11.png'),
   },
   reservation: {},
@@ -276,7 +277,7 @@ DetailOrderRefund.defaultProps = {
   changeTotalAmount: () => {},
   onPressPickUpCTA: () => {},
   personDataTitle: 'Passanger Data',
-  pickupLocationLabel: 'Lokasi Penjemputan',
+  pickupLocationLabel: 'Pick-up location',
   pickUpLocationDescription: 'Masukkan detail lokasi penjemputan',
   styleMultiOrder: {
     flex: 1,

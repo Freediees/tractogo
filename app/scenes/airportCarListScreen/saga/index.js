@@ -7,6 +7,7 @@ import { Padding, Margin, Row } from 'theme'
 import AsyncStorage from '@react-native-community/async-storage'
 import Moment from 'moment'
 import NavigationService from 'services/navigationService'
+import { doResolveLoginRoute, checkAuth } from 'function/apiRequest'
 
 /**
  * A saga can contain multiple functions.
@@ -20,10 +21,10 @@ function* fetchAirportStocks({ payload }) {
   // @see https://redux-saga.js.org/docs/basics/DispatchingActions.html
   console.log('cari airport stock')
   yield put(AirportCarListScreenAction.fetchAirportStocksLoading())
-  // console.log({ payload })
+  console.log({ payload })
   // Fetch user informations from an API
   const json = yield call(commonService.getStocksRequest, payload.payload)
-  if (json) {
+  if (json && json.Data.length > 0) {
     console.log({ json })
     // create the object here
     const dataArr = []
@@ -123,7 +124,8 @@ function* fetchAirportStockWithPrice({ payload }) {
     const dataArr = []
     const newStock = payload.stock
     let insert = false
-    if (json.Data) {
+    if (json.Data && json.Data.length > 0) {
+      console.log('here')
       json.Data.forEach((item) => {
         if (
           item.configuration_price_product_retail_details &&
@@ -136,16 +138,16 @@ function* fetchAirportStockWithPrice({ payload }) {
             ''
           )
           console.log('cek diskon')
-          if (item.PriceDiscount) {
+          if (item.PriceDiscount && item.PriceDiscount.length > 0) {
             console.log('diskon ada')
-            if (item.PriceDiscount.type_value === 'percentage') {
+            if (item.PriceDiscount[0].type_value === 'percentage') {
               console.log('testtt 12345')
               newStock.discountPercent = parseInt(item.PriceDiscount.value)
               newStock.discountedPrice =
                 parseInt(
                   item.configuration_price_product_retail_details[0].BasePrice.replace('.00', '')
                 ) -
-                (parseInt(item.PriceDiscount.value) / 100) *
+                (parseInt(item.PriceDiscount[0].value) / 100) *
                   parseInt(
                     item.configuration_price_product_retail_details[0].BasePrice.replace('.00', '')
                   )
@@ -153,7 +155,7 @@ function* fetchAirportStockWithPrice({ payload }) {
               newStock.discountedPrice =
                 parseInt(
                   item.configuration_price_product_retail_details[0].BasePrice.replace('.00', '')
-                ) - parseInt(item.PriceDiscount.value)
+                ) - parseInt(item.PriceDiscount[0].value)
             }
           } else {
             newStock.discountPercent = null
@@ -164,12 +166,28 @@ function* fetchAirportStockWithPrice({ payload }) {
           //     NavigationService.navigate('OrderDetailWithDriverScreen', { item: newStock })
           //   }
           // } else {
+          const callback = () => {
+            // NavigationService.backAfterLogin()
+          }
           newStock.onPress = function() {
-            NavigationService.navigate('OrderDetailAirportScreen', {
-              item: newStock,
-              isFromAirport: payload.isFromAirport,
-              reservationDetails: payload.reservationDetails,
+            checkAuth().then((result) => {
+              console.log(result)
+              if (result === true) {
+                NavigationService.navigate('OrderDetailAirportScreen', {
+                  item: newStock,
+                  isFromAirport: payload.isFromAirport,
+                  reservationDetails: payload.reservationDetails,
+                })
+              } else {
+                doResolveLoginRoute(callback)
+              }
             })
+            // console.log('masuk kok')
+            // NavigationService.navigate('OrderDetailAirportScreen', {
+            //   item: newStock,
+            //   isFromAirport: payload.isFromAirport,
+            //   reservationDetails: payload.reservationDetails,
+            // })
           }
           // }
           dataArr.push(newStock)

@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "628358414804",
+    "firebase_url": "https://tractogo.firebaseio.com",
+    "project_id": "tractogo",
+    "storage_bucket": "tractogo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628358414804:android:450e53f975d90aa8",
+        "android_client_info": {
+          "package_name": "com.pushnotiflearn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628358414804-iafjt1dh925ipvlj2r8jcdf4faqj46hu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz8Po5XZAGB0pWe75hxyk28wLpyyA9qGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "628358414804-iafjt1dh925ipvlj2r8jcdf4faqj46hu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "628358414804-0faqkib2nreu6nf29nfl6jeo0pj0gfkj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trac.tractogo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628358414804:android:e83736762e6c3151",
+        "android_client_info": {
+          "package_name": "com.trac.tractogo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "628358414804-eki7e2ganimhs816afcaavbhv9q8n247.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trac.tractogo",
+            "certificate_hash": "374facfd97f24599f8bdc0613aa9559abb6c83a2"
+          }
+        },
+        {
+          "client_id": "628358414804-iafjt1dh925ipvlj2r8jcdf4faqj46hu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz8Po5XZAGB0pWe75hxyk28wLpyyA9qGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "628358414804-iafjt1dh925ipvlj2r8jcdf4faqj46hu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "628358414804-0faqkib2nreu6nf29nfl6jeo0pj0gfkj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trac.tractogo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

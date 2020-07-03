@@ -45,6 +45,15 @@ export default function App() {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
     })
 
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification
+      )
+      console.log('data inside', remoteMessage.data)
+      console.log('target screen', remoteMessage.data.screen)
+    })
+
     return unsubscribe
   }, [])
 
@@ -58,7 +67,8 @@ export default function App() {
     })
     if (authorizationStatus) {
       const fcmToken = messaging().getToken()
-      console.log({ fcmToken })
+      
+      fcmToken.then((data) => console.log('token data', data))
       console.log('Permission status:', authorizationStatus)
     }
 

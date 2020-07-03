@@ -23,6 +23,7 @@ import CheckBox from 'components/atom/checkBox'
 import CCInputMask from 'components/atom/cCInputMask'
 import CardItem from 'components/atom/cardItem'
 import CardLocation from 'components/atom/cardLocation'
+import CardSimpleOrder from 'components/atom/cardSimpleOrder'
 import CustomCalendarPicker from 'components/atom/customCalendarPicker'
 import CustomTimePicker from 'components/atom/customTimePicker'
 import CustomCityPicker from 'components/atom/customCityPicker'
@@ -99,6 +100,8 @@ import TimelineMolecule from 'components/molecules/timelineMolecule'
 import ContactDriverCenter from 'components/molecules/contactDriverCenter'
 import ModalOrderCancelConfirm from 'components/molecules/modalOrderCancelConfirm'
 import DatePickupView from 'components/molecules/datePickupView'
+import SummaryCard from 'components/molecules/summaryCard'
+import WaitPaymentSection from 'components/molecules/waitPaymentSection'
 
 import CarRentalFilterScreen from 'components/organism/carRentalFilterScreen'
 import ProductListScreen from 'components/organism/productListScreen'
@@ -134,6 +137,8 @@ import VerifikasiKYC from 'components/organism/verifikasiKYC'
 import TestingScreen from 'components/organism/testingScreen'
 import MyOrderCancelScreen from 'components/organism/myOrderCancelScreen'
 import DetailOrderRefund from 'components/organism/detailOrderRefund'
+import SummaryScreen from 'components/organism/kYCSummaryScreen'
+import NewsDetailScreen from 'components/organism/newsDetailScreen'
 
 import { Column, Row, Margin, Fonts } from 'theme'
 import icon from 'icons/ic-composer.svg'
@@ -150,7 +155,7 @@ storiesOf('Atom', module)
   .add('PrimaryButton', () => <PrimaryButton text={'Hello Button'} svg={icon} />)
   .add('SecondaryButton', () => <SecondaryButton text={'Hello Button'} />)
   .add('with text', () => (
-    <CardButton text={'Sewa Mobil'} svg={carrental} style={{ ...Column.col_3, ...Row.row_2 }} />
+    <CardButton text={'Car Rental'} svg={carrental} style={{ ...Column.col_3, ...Row.row_2 }} />
   ))
   .add('ButtonImageCircle', () => <ButtonImageCircle />)
   .add('IconButton', () => <IconButton svg={iconnotification} />)
@@ -197,6 +202,7 @@ storiesOf('Atom', module)
   .add('CustomTimePicker', () => <CustomTimePicker />)
   .add('CustomCalendarPicker', () => <CustomCalendarPicker />)
   .add('Card Item', () => <CardItem />)
+  .add('CardSimpleOrder', () => <CardSimpleOrder />)
   .add('Item Picker', () => <CustomItemPicker />)
   .add('CustomRangeSlider', () => (
     <CenterView>
@@ -225,7 +231,7 @@ storiesOf('Atom', module)
     <CustomBorderlessAccordionCard>
       <FacilityFlexIcons />
       <Separator style={{ ...Margin.mv_12 }} />
-      <FacilityFlexIcons moreButtonLabel={'selengkapnya'} />
+      <FacilityFlexIcons moreButtonLabel={'Read more'} />
     </CustomBorderlessAccordionCard>
   ))
   .add('CardLocation', () => <CardLocation />)
@@ -247,13 +253,13 @@ storiesOf('Atom', module)
   .add('TextWithPicker', () => <TextWithPicker />)
   .add('Notification Item', () => <NotificationItem />)
   .add('ItemDropDownPicker', () => <ItemDropDownPicker />)
-  .add('CustomCheckAccordion2', () => 
+  .add('CustomCheckAccordion2', () => (
     <CenterView>
       <CustomCheckAccordion2>
         <ItemDropDownPicker />
       </CustomCheckAccordion2>
     </CenterView>
-  )
+  ))
   .add('Timeline', () => <Timeline />)
   .add('CustomLocationInformationCard', () => <CustomLocationInformationCard />)
 
@@ -335,13 +341,14 @@ storiesOf('Molecules', module)
   .add('BorderlessDefaultCardView', () => (
     <BorderlessDefaultCardView
       icon={require('images/banefit-member-09.png')}
-      title={'Sewa Mobil Self Drive'}
+      title={'Car Rental Self Drive'}
       description={'Dengan member, anda dapat mengakses layanan Self Drive'}
     />
   ))
   .add('ContactDriverCenter', () => <ContactDriverCenter />)
   .add('FilterArea', () => <FilterArea />)
   .add('Rating Star', () => <RatingStar />)
+  .add('Summary Card', () => <SummaryCard />)
   .add('Timeline', () => <Timeline />)
   .add('FilterAirport', () => <FilterAirport />)
   .add('OkCancelButton', () => <OkCancelButton />)
@@ -357,7 +364,7 @@ storiesOf('Molecules', module)
           driverLabel: 'Driver',
           suitcaseAmount: 3,
           suitcaseLabel: 'Suitcase',
-          basePriceLabel: 'Harga Dasar',
+          basePriceLabel: 'Basic Price',
           priceAmount: 1000000,
           priceUnit: ' / Hari',
           totalLabel: ' Total',
@@ -377,7 +384,7 @@ storiesOf('Molecules', module)
           driverLabel: 'Driver',
           suitcaseAmount: 3,
           suitcaseLabel: 'Suitcase',
-          basePriceLabel: 'Harga Dasar',
+          basePriceLabel: 'Basic Price',
           priceAmount: 1000000,
           priceUnit: ' / Hari',
           totalLabel: ' Total',
@@ -397,7 +404,7 @@ storiesOf('Molecules', module)
           driverLabel: 'Driver',
           suitcaseAmount: 3,
           suitcaseLabel: 'Suitcase',
-          basePriceLabel: 'Harga Dasar',
+          basePriceLabel: 'Basic Price',
           priceAmount: 1000000,
           priceUnit: ' / Hari',
           totalLabel: ' Total',
@@ -417,7 +424,7 @@ storiesOf('Molecules', module)
           driverLabel: 'Driver',
           suitcaseAmount: 3,
           suitcaseLabel: 'Suitcase',
-          basePriceLabel: 'Harga Dasar',
+          basePriceLabel: 'Basic Price',
           priceAmount: 1000000,
           priceUnit: ' / Hari',
           totalLabel: ' Total',
@@ -443,7 +450,7 @@ storiesOf('Molecules', module)
           driverLabel: 'Driver',
           suitcaseAmount: 3,
           suitcaseLabel: 'Suitcase',
-          basePriceLabel: 'Harga Dasar',
+          basePriceLabel: 'Basic Price',
           priceAmount: 1000000,
           priceUnit: ' / Hari',
           totalLabel: ' Total',
@@ -462,7 +469,7 @@ storiesOf('Molecules', module)
           driverLabel: 'Driver',
           suitcaseAmount: 3,
           suitcaseLabel: 'Suitcase',
-          basePriceLabel: 'Harga Dasar',
+          basePriceLabel: 'Basic Price',
           priceAmount: 1000000,
           priceUnit: ' / Hari',
           totalLabel: ' Total',
@@ -481,7 +488,7 @@ storiesOf('Molecules', module)
           driverLabel: 'Driver',
           suitcaseAmount: 3,
           suitcaseLabel: 'Suitcase',
-          basePriceLabel: 'Harga Dasar',
+          basePriceLabel: 'Basic Price',
           priceAmount: 1000000,
           priceUnit: ' / Hari',
           totalLabel: ' Total',
@@ -500,7 +507,7 @@ storiesOf('Molecules', module)
           driverLabel: 'Driver',
           suitcaseAmount: 3,
           suitcaseLabel: 'Suitcase',
-          basePriceLabel: 'Harga Dasar',
+          basePriceLabel: 'Basic Price',
           priceAmount: 1000000,
           priceUnit: ' / Hari',
           totalLabel: ' Total',
@@ -557,11 +564,12 @@ storiesOf('Molecules', module)
   .add('Borderless Card View', () => (
     <BorderlessDefaultCardView
       icon={require('images/banefit-member-09.png')}
-      title={'Sewa Mobil Self Drive'}
+      title={'Car Rental Self Drive'}
       description={'Dengan member, anda dapat mengakses layanan Self Drive'}
     />
   ))
   .add('VoucherFooter', () => <VoucherFooter />)
+  .add('WaitPaymentSection', () => <WaitPaymentSection />)
   .add('PaymentSelect', () => <PaymentSelect />)
   .add('FacilityFlexIcons', () => <FacilityFlexIcons />)
   .add('PersonInfoPanel', () => <PersonInfoPanel />)
@@ -589,23 +597,27 @@ storiesOf('Molecules', module)
 
   .add('ListView Notification', () => (
     <ListViewNotification
-    items={[
-      {
-        titleText: 'Judul Update',
-        contentText: 'Deskirpsi update Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit',
-        dateText: Date.now()
-      },
-      {
-        titleText: 'Judul Update',
-        contentText: 'Deskirpsi update Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit',
-        dateText: Date.now()
-      },
-      {
-        titleText: 'Judul Update',
-        contentText: 'Deskirpsi update Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit',
-        dateText: Date.now()
-      }
-    ]}></ListViewNotification>
+      items={[
+        {
+          titleText: 'Judul Update',
+          contentText:
+            'Deskirpsi update Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit',
+          dateText: Date.now(),
+        },
+        {
+          titleText: 'Judul Update',
+          contentText:
+            'Deskirpsi update Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit',
+          dateText: Date.now(),
+        },
+        {
+          titleText: 'Judul Update',
+          contentText:
+            'Deskirpsi update Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit amet Lorem Ipsum Dolor sit',
+          dateText: Date.now(),
+        },
+      ]}
+    />
   ))
 
   .add('Timeline Molecule', () => <TimelineMolecule />)
@@ -670,6 +682,7 @@ storiesOf('Organism/HomeScreen', module)
       ]}
     />
   ))
+  .add('NewsDetail', () => <NewsDetailScreen />)
   .add('Member Registration Screen', () => <MemberRegistrationScreen />)
   .add('KYC OTP Screen', () => <KYCOTPScreen />)
   .add('KYC Success Screen', () => <KYCSuccessScreen />)
@@ -692,7 +705,8 @@ storiesOf('Organism/ProfileScreen', module)
   .add('Detail Profile Screen', () => <ProfileEditor />)
   .add('Edit Phone Screen', () => <ProfileEditPhoneScreen />)
   .add('Member Screen', () => <MemberScreen />)
-  .add('Verifikasi KYC', ()=> <VerifikasiKYC />)
+  .add('Verifikasi KYC', () => <VerifikasiKYC />)
+  .add('Summary KYC', () => <SummaryScreen />)
 storiesOf('Organism/MyOrderScreen', module)
   .addDecorator((getStory) => <CenterViewNoPadding>{getStory()}</CenterViewNoPadding>)
   .add('MyOrderListScreen', () => <MyOrderListScreen />)

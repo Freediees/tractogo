@@ -5,7 +5,7 @@ import { MyOrderScreenTypes } from './actions'
 export const fetchOrdersActiveLoading = (state) => ({
   ...state,
   ordersActive: [],
-  ordersActiveIsLoading: false,
+  ordersActiveIsLoading: true,
   ordersActiveErrorMessage: null,
 })
 
@@ -26,7 +26,7 @@ export const fetchOrdersActiveSuccess = (state, { ordersActive }) => ({
 export const fetchOrdersCompleteLoading = (state) => ({
   ...state,
   ordersComplete: [],
-  ordersCompleteIsLoading: false,
+  ordersCompleteIsLoading: true,
   ordersCompleteErrorMessage: null,
 })
 
@@ -47,7 +47,7 @@ export const fetchOrdersCompleteSuccess = (state, { ordersComplete }) => ({
 export const fetchOrdersCancelLoading = (state) => ({
   ...state,
   ordersCancel: [],
-  ordersCancelIsLoading: false,
+  ordersCancelIsLoading: true,
   ordersCancelErrorMessage: null,
 })
 
@@ -65,6 +65,16 @@ export const fetchOrdersCancelSuccess = (state, { ordersCancel }) => ({
   ordersCancelErrorMessage: null,
 })
 
+export const resetState = (state) => ({
+  ...state,
+  ordersActive: [],
+  ordersComplete: [],
+  ordersCancel: [],
+  ordersActiveIsLoading: true,
+  ordersCompleteIsLoading: true,
+  ordersCancelIsLoading: true,
+})
+
 export const reducer = createReducer(INITIAL_STATE, {
   [MyOrderScreenTypes.FETCH_ORDERS_ACTIVE_SUCCESS]: fetchOrdersActiveSuccess,
   [MyOrderScreenTypes.FETCH_ORDERS_ACTIVE_FAILURE]: fetchOrdersActiveFailure,
@@ -75,5 +85,5 @@ export const reducer = createReducer(INITIAL_STATE, {
   [MyOrderScreenTypes.FETCH_ORDERS_CANCEL_SUCCESS]: fetchOrdersCancelSuccess,
   [MyOrderScreenTypes.FETCH_ORDERS_CANCEL_FAILURE]: fetchOrdersCancelFailure,
   [MyOrderScreenTypes.FETCH_ORDERS_CANCEL_LOADING]: fetchOrdersCancelLoading,
-
+  [MyOrderScreenTypes.RESET_STATE]: resetState,
 })

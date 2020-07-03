@@ -6,6 +6,7 @@ import KYCImageScreen from 'components/organism/kYCImageScreen'
 import KYCSummary from 'components/organism/kYCSummaryScreen'
 import { getImage } from 'function'
 import ImageAction from 'scenes/kYCImage/store/actions'
+import NavigationService from 'services/navigationService'
 
 function KYCImage({
   navigation,
@@ -18,11 +19,15 @@ function KYCImage({
   fetchSim,
   fetchFace,
   putImage,
+  resetImage,
 }) {
-  const [faceImage, setFaceImage] = useState('')
-  const [simImage, setSimImage] = useState('')
-  const [ktpImage, setKtpImage] = useState('')
   const [userId, setUserId] = useState('')
+  const [noKTP, setNoKTP] = useState('')
+  const [namaKTP, setNamaKTP] = useState('')
+  const [noSIM, setNoSIM] = useState('')
+  const [namaSIM, setNamaSIM] = useState('')
+  const [modalVisible, setModalVisible] = useState(false)
+
   const defaultUrl =
     'https://www.digopaul.com/wp-content/uploads/related_images/2015/09/08/placeholder_2.jpg'
 
@@ -31,12 +36,44 @@ function KYCImage({
       // fetchKtp(null)
       // fetchFace(null)
       // fetchSim(null)
+
+      setNoKTP(kycImage.noKTP)
+      setNoSIM(kycImage.noSIM)
+      setNamaKTP(kycImage.namaKTP)
+      setNamaSIM(kycImage.namaSIM)
+      setModalVisible(kycImage.showModal)
+
       console.log(await kycImage)
       setUserId(await user.Id)
-
     }
     initialize()
   }, [])
+
+  const onChangeNoKTP = (value) => {
+    setNoKTP(value)
+  }
+
+  const onChangeNamaKTP = (value) => {
+    setNamaKTP(value)
+  }
+
+  const onChangeNoSIM = (value) => {
+    setNoSIM(value)
+  }
+
+  const onChangeNamaSIM = (value) => {
+    setNamaSIM(value)
+  }
+
+  const toggleModal = () => {
+    alert('modal')
+    setModalVisible(!modalVisible)
+  }
+
+  const submitToHome = () => {
+    NavigationService.navigateAndReset('ProfileScreen')
+    resetImage()
+  }
 
   const convertBase64 = async (uri) => {
     let value = null
@@ -100,13 +137,33 @@ function KYCImage({
       ImageSelfie: `data:image/gif;base64,${await convertBase64(kycImage.imageFace)}`,
       ImageKTP: `data:image/gif;base64,${await convertBase64(kycImage.imageKTP)}`,
       ImageSIM: `data:image/gif;base64,${await convertBase64(kycImage.imageSIM)}`,
+      NoKTP: noKTP,
+      KTPName: namaKTP,
+      NoSIM: noSIM,
+      SIMName: namaSIM,
     }
 
     await putImage(payload)
   }
 
   //return <KYCImageScreen listData={listData} onBack={onBack} onNext={onNext} isLoading={kycImage.imageIsLoading}/>
-  return <KYCSummary onBack={onBack} onNext={onNext}/>
+  return (
+    <KYCSummary
+      onBack={onBack}
+      onNext={onNext}
+      submitToHome={submitToHome}
+      modalVisible={kycImage.showModal}
+      onChangeNamaKTP={onChangeNamaKTP}
+      onChangeNamaSIM={onChangeNamaSIM}
+      onChangeNoKTP={onChangeNoKTP}
+      onChangeNoSIM={onChangeNoSIM}
+      valueNoKTP={noKTP}
+      valueNoSIM={noSIM}
+      valueNamaKTP={namaKTP}
+      valueNamaSIM={namaSIM}
+      isLoading={kycImage.imageIsLoading}
+    />
+  )
 }
 
 KYCImage.defaultProps = {}
@@ -123,6 +180,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchSim: (value) => dispatch(ImageAction.fetchSim(value)),
   fetchFace: (value) => dispatch(ImageAction.fetchFace(value)),
   putImage: (value) => dispatch(ImageAction.putImage(value)),
+  resetImage: () => dispatch(ImageAction.resetImage()),
 })
 
 export default connect(

@@ -10,6 +10,7 @@ import CountDown from 'react-native-countdown-component'
 import Separator from 'components/atom/separator'
 
 import icCarRental from 'icons/ic-carrental.svg'
+import icAirportTransfer from 'icons/ic-airporttransport.svg'
 
 export default function CardSimpleOrder({
   style,
@@ -32,6 +33,7 @@ export default function CardSimpleOrder({
   icOptions,
   isMultiOrder,
   onPress,
+  isAirport,
 }) {
   const [isTimerRunning, setIsTimerRunning] = useState(true)
   const [timerID, setTimerID] = useState('1')
@@ -83,7 +85,7 @@ export default function CardSimpleOrder({
             ...Padding.pt_8,
           }}
         >
-          <SvgXml xml={icCarRental} height={30} width={30} />
+          <SvgXml xml={isAirport ? icAirportTransfer : icCarRental} height={30} width={30} />
           <Text style={{ ...Fonts.f_12, ...Fonts.semibold, ...Margin.ml_12 }}>{cardTitle}</Text>
         </View>
         <View style={{ ...Flex.flex_column, ...Padding.ph_20, ...Padding.pb_16 }}>
@@ -115,12 +117,12 @@ export default function CardSimpleOrder({
 CardSimpleOrder.defaultProps = {
   style: {},
   isHeader: true,
-  cardTitle: 'Sewa Mobil - Dengan Sopir',
+  cardTitle: 'Car Rental - With Driver',
   city: 'Bandung',
   startDate: new Date(),
   endDate: new Date().getTime() + 86400000,
   rentHour: 12,
-  rentHourSuffix: 'Jam',
+  rentHourSuffix: 'Hour',
   noReservasiLabel: 'No Reservasi 1234567',
   totalAmount: 500000,
   carName: 'TOYOTA ALPHARD',
@@ -133,6 +135,7 @@ CardSimpleOrder.defaultProps = {
   paymentStatusId: 0,
   isMultiOrder: true,
   onPress: () => {},
+  isAirport: false,
 }
 
 CardSimpleOrder.propTypes = {
@@ -156,4 +159,5 @@ CardSimpleOrder.propTypes = {
   paymentStatusId: PropTypes.number,
   isMultiOrder: PropTypes.bool,
   onPress: PropTypes.func,
+  isAirport: PropTypes.bool,
 }

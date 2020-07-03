@@ -7,6 +7,7 @@ import DefaultHeader from 'components/molecules/defaultHeader'
 import TextWithPicker from 'components/atom/textWithPicker'
 import DefaultFooter from 'components/molecules/defaultFooter'
 import OTPScreen from 'components/organism/otpVerificationScreen'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 import { Column, Margin, Fonts, Colors, Padding, Row, Alignment, ImageSize, Flex } from 'theme'
 
@@ -32,16 +33,20 @@ export default function ProfileEditPhoneScreen({
   onSave,
   verification,
   onToggleModal,
+  errorMessage,
+  isLoading,
 }) {
+  let inputNumber = null
+
   const unlockInput = () => {
     setLockEdit(true)
-    setTimeout(function() {
-      inputNumber.focus()
-    }, 100)
+    // setTimeout(function() {
+    //   inputNumber.focus()
+    // }, 500)
   }
 
-  const onSimpan = () => {
-    onSave('1234', phoneNumber, phone)
+  const onSimpan = (otp) => {
+    onSave(otp, phoneNumber, phone)
   }
 
   const lockInput = () => {
@@ -67,6 +72,7 @@ export default function ProfileEditPhoneScreen({
         backgroundColor: Colors.white_grey,
       }}
     >
+      <Spinner visible={isLoading} textContent={'Loading...'} />
       <DefaultHeader border={true} title={title} iconLeft={backIcon} onIconLeftPress={onBack} />
       <View
         style={{
@@ -150,28 +156,30 @@ export default function ProfileEditPhoneScreen({
         </View>
       </View>
 
-      <DefaultFooter buttonText={labelSubmit} onButtonPress={()=>onToggleModal()} />
+      <DefaultFooter buttonText={labelSubmit} onButtonPress={() => onToggleModal()} />
 
-      <Modal
-        animationType={'slide'}
-        visible={verification}>
-          <OTPScreen 
-            onIconLeftPress={onToggleModal}
-            onButtonPress={onSimpan}
-          />
+      <Modal animationType={'slide'} visible={verification}>
+        <OTPScreen
+          onIconLeftPress={onToggleModal}
+          onButtonPress={onSimpan}
+          errorMessage={errorMessage}
+          phoneNumber={phone}
+          onCodeFilled={(a) => {
+            onSimpan(a)
+          }}
+        />
       </Modal>
-
     </View>
   )
 }
 
 ProfileEditPhoneScreen.defaultProps = {
   verification: false,
-  onToggleModal: ()=>{},
+  onToggleModal: () => {},
   onSave: () => {},
-  title: 'Pengaturan Akun',
+  title: 'Account Setting',
   thumbnails: require('images/TOM.png'),
-  labelName: 'Nama',
+  labelName: 'Name',
   firtsName: 'firtsName',
   onPress: () => {},
   placeholderName: 'cth : Name',
@@ -179,11 +187,12 @@ ProfileEditPhoneScreen.defaultProps = {
   onchangeName: () => {},
   phoneNumber: '-',
   email: '-',
-  labelSubmit: 'Simpan',
+  labelSubmit: 'Save',
   onBack: () => {},
   phoneLabel: 'Phone',
   emailLabel: 'Email',
-  informationContent: 'Semua informasi transaksi dan keamanan akunmu akan dikirim ke email ini',
+  informationContent: 'All transaction information and security will be sent to this email',
+  errorMessage: '',
 }
 
 ProfileEditPhoneScreen.propTypes = {
@@ -205,4 +214,5 @@ ProfileEditPhoneScreen.propTypes = {
   phoneLabel: PropTypes.string,
   emailLabel: PropTypes.string,
   informationContent: PropTypes.string,
+  errorMessage: PropTypes.string,
 }

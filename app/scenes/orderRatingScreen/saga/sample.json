@@ -1,0 +1,346 @@
+{
+    "Status": 200,
+    "Data": [
+        {
+            "Description": "Driver",
+            "QuestionDesc": "Beritahu kami apa yang salah dari sopir",
+            "Info": "Sopir sangat buruk",
+            "ValueStar": "1",
+            "StarId": "STAR-1",
+            "ms_star_detail": [
+                {
+                    "Id": 22,
+                    "StarId": "STAR-1",
+                    "Description": "Terlambat menjemput"
+                },
+                {
+                    "Id": 23,
+                    "StarId": "STAR-1",
+                    "Description": "Penampilan tidak rapih"
+                },
+                {
+                    "Id": 24,
+                    "StarId": "STAR-1",
+                    "Description": "Tidak bisa membaca navigasi"
+                },
+                {
+                    "Id": 25,
+                    "StarId": "STAR-1",
+                    "Description": "Menyetir tidak aman"
+                },
+                {
+                    "Id": 26,
+                    "StarId": "STAR-1",
+                    "Description": "Sikap yang buruk"
+                }
+            ]
+        },
+        {
+            "Description": "Driver",
+            "QuestionDesc": "Beritahu kami apa yang salah dari sopir",
+            "Info": "Sopir buruk",
+            "ValueStar": "2",
+            "StarId": "STAR-2",
+            "ms_star_detail": [
+                {
+                    "Id": 27,
+                    "StarId": "STAR-2",
+                    "Description": "Terlambat menjemput"
+                },
+                {
+                    "Id": 28,
+                    "StarId": "STAR-2",
+                    "Description": "Penampilan tidak rapih"
+                },
+                {
+                    "Id": 29,
+                    "StarId": "STAR-2",
+                    "Description": "Tidak bisa membaca navigasi"
+                },
+                {
+                    "Id": 30,
+                    "StarId": "STAR-2",
+                    "Description": "Menyetir tidak aman"
+                },
+                {
+                    "Id": 31,
+                    "StarId": "STAR-2",
+                    "Description": "Sikap yang buruk"
+                }
+            ]
+        },
+        {
+            "Description": "Driver",
+            "QuestionDesc": "Beritahu kami apa yang salah dari sopir",
+            "Info": "Sopir cukup baik",
+            "ValueStar": "3",
+            "StarId": "STAR-3",
+            "ms_star_detail": [
+                {
+                    "Id": 32,
+                    "StarId": "STAR-3",
+                    "Description": "Tepat waktu"
+                },
+                {
+                    "Id": 33,
+                    "StarId": "STAR-3",
+                    "Description": "Penampilan sopir"
+                },
+                {
+                    "Id": 34,
+                    "StarId": "STAR-3",
+                    "Description": "Membaca navigasi"
+                },
+                {
+                    "Id": 35,
+                    "StarId": "STAR-3",
+                    "Description": "Keamanan menyetir"
+                },
+                {
+                    "Id": 36,
+                    "StarId": "STAR-3",
+                    "Description": "Komunikasi sopir"
+                }
+            ]
+        },
+        {
+            "Description": "Driver",
+            "QuestionDesc": "Beritahu kami apa yang salah dari sopir",
+            "Info": "Sopir baik",
+            "ValueStar": "4",
+            "StarId": "STAR-4",
+            "ms_star_detail": [
+                {
+                    "Id": 39,
+                    "StarId": "STAR-4",
+                    "Description": "Tepat waktu"
+                },
+                {
+                    "Id": 40,
+                    "StarId": "STAR-4",
+                    "Description": "Penampilan sopir"
+                },
+                {
+                    "Id": 41,
+                    "StarId": "STAR-4",
+                    "Description": "Membaca navigasi"
+                },
+                {
+                    "Id": 42,
+                    "StarId": "STAR-4",
+                    "Description": "Keamanan menyetir"
+                },
+                {
+                    "Id": 43,
+                    "StarId": "STAR-4",
+                    "Description": "Komunikasi sopir"
+                }
+            ]
+        },
+        {
+            "Description": "Driver",
+            "QuestionDesc": "Beritahu kami apa yang salah dari sopir",
+            "Info": "Sopir sangat baik",
+            "ValueStar": "5",
+            "StarId": "STAR-5",
+            "ms_star_detail": [
+                {
+                    "Id": 44,
+                    "StarId": "STAR-5",
+                    "Description": "Tepat waktu"
+                },
+                {
+                    "Id": 45,
+                    "StarId": "STAR-5",
+                    "Description": "Penampilan sopir"
+                },
+                {
+                    "Id": 46,
+                    "StarId": "STAR-5",
+                    "Description": "Membaca navigasi"
+                },
+                {
+                    "Id": 47,
+                    "StarId": "STAR-5",
+                    "Description": "Keamanan menyetir"
+                },
+                {
+                    "Id": 48,
+                    "StarId": "STAR-5",
+                    "Description": "Komunikasi sopir"
+                }
+            ]
+        },
+        {
+            "Description": "Unit",
+            "QuestionDesc": "Beritahu kami apa yang salah dari kendaraan",
+            "Info": "Kendaraan sangat buruk",
+            "ValueStar": "1",
+            "StarId": "STAR-6",
+            "ms_star_detail": [
+                {
+                    "Id": 49,
+                    "StarId": "STAR-6",
+                    "Description": "Kendaraan Buruk banget"
+                },
+                {
+                    "Id": 50,
+                    "StarId": "STAR-6",
+                    "Description": "Kendaraan Buruk"
+                },
+                {
+                    "Id": 51,
+                    "StarId": "STAR-6",
+                    "Description": "Suara Mesin berisik"
+                },
+                {
+                    "Id": 52,
+                    "StarId": "STAR-6",
+                    "Description": "AC Mobil Buruk"
+                },
+                {
+                    "Id": 53,
+                    "StarId": "STAR-6",
+                    "Description": "Kendaraan Kotor"
+                }
+            ]
+        },
+        {
+            "Description": "Unit",
+            "QuestionDesc": "Beritahu kami apa yang salah dari kendaraan",
+            "Info": "Kendaraan buruk",
+            "ValueStar": "2",
+            "StarId": "STAR-7",
+            "ms_star_detail": [
+                {
+                    "Id": 55,
+                    "StarId": "STAR-7",
+                    "Description": "Kendaraan Buruk banget"
+                },
+                {
+                    "Id": 56,
+                    "StarId": "STAR-7",
+                    "Description": "Kendaraan Buruk"
+                },
+                {
+                    "Id": 57,
+                    "StarId": "STAR-7",
+                    "Description": "Suara Mesin berisik"
+                },
+                {
+                    "Id": 58,
+                    "StarId": "STAR-7",
+                    "Description": "AC Mobil Buruk"
+                },
+                {
+                    "Id": 59,
+                    "StarId": "STAR-7",
+                    "Description": "Kendaraan Kotor"
+                }
+            ]
+        },
+        {
+            "Description": "Unit",
+            "QuestionDesc": "Beritahu kami apa yang salah dari kendaraan",
+            "Info": "Kendaraan cukup baik",
+            "ValueStar": "3",
+            "StarId": "STAR-8",
+            "ms_star_detail": [
+                {
+                    "Id": 60,
+                    "StarId": "STAR-8",
+                    "Description": "Kendaraan Bagus"
+                },
+                {
+                    "Id": 61,
+                    "StarId": "STAR-8",
+                    "Description": "Suara Mesin Halus"
+                },
+                {
+                    "Id": 62,
+                    "StarId": "STAR-8",
+                    "Description": "AC Mobil Berfungsi"
+                },
+                {
+                    "Id": 63,
+                    "StarId": "STAR-8",
+                    "Description": "Kendaraan Bersih"
+                },
+                {
+                    "Id": 64,
+                    "StarId": "STAR-8",
+                    "Description": "Kendaraan Nyaman"
+                }
+            ]
+        },
+        {
+            "Description": "Unit",
+            "QuestionDesc": "Beritahu kami apa yang salah dari kendaraan",
+            "Info": "Kendaraan baik",
+            "ValueStar": "4",
+            "StarId": "STAR-9",
+            "ms_star_detail": [
+                {
+                    "Id": 65,
+                    "StarId": "STAR-9",
+                    "Description": "Kendaraan Bagus"
+                },
+                {
+                    "Id": 66,
+                    "StarId": "STAR-9",
+                    "Description": "Suara Mesin Halus"
+                },
+                {
+                    "Id": 67,
+                    "StarId": "STAR-9",
+                    "Description": "AC Mobil Berfungsi"
+                },
+                {
+                    "Id": 68,
+                    "StarId": "STAR-9",
+                    "Description": "Kendaraan Bersih"
+                },
+                {
+                    "Id": 69,
+                    "StarId": "STAR-9",
+                    "Description": "Kendaraan Nyaman"
+                }
+            ]
+        },
+        {
+            "Description": "Unit",
+            "QuestionDesc": "Beritahu kami apa yang salah dari kendaraan",
+            "Info": "Kendaraan sangat baik",
+            "ValueStar": "5",
+            "StarId": "STAR-10",
+            "ms_star_detail": [
+                {
+                    "Id": 70,
+                    "StarId": "STAR-10",
+                    "Description": "Kendaraan Sangat Bagus"
+                },
+                {
+                    "Id": 71,
+                    "StarId": "STAR-10",
+                    "Description": "Suara Mesin Sangat Halus"
+                },
+                {
+                    "Id": 72,
+                    "StarId": "STAR-10",
+                    "Description": "AC Mobil Berfungsi Dengan Baik"
+                },
+                {
+                    "Id": 73,
+                    "StarId": "STAR-10",
+                    "Description": "Kendaraan Sangat Bersih"
+                },
+                {
+                    "Id": 74,
+                    "StarId": "STAR-10",
+                    "Description": "Kendaraan Sangat Nyaman"
+                }
+            ]
+        }
+    ]
+}
+    

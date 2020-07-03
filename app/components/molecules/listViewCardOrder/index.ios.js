@@ -63,6 +63,7 @@ export default function ListViewCardOrder({
                 countDown={v.countDown}
                 icCarRental={v.icCarRental}
                 isMultiOrder={v.details.length > 1}
+                isAirport={v.details[0].MsProductId === "PRD0007" ? true : false}
               />
             )
           })}
@@ -105,5 +106,5 @@ ListViewCardOrder.propTypes = {
   isCart: PropTypes.bool,
   styleMultiOrder: PropTypes.shape({}),
   styleOrder: PropTypes.shape({}),
-  changeItems: () => {},
+  changeItems: PropTypes.func,
 }

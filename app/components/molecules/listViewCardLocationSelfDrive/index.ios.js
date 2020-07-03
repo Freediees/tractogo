@@ -39,7 +39,13 @@ export default function ListViewCardLocationSelfDrive({
 
   const changeItemIsPool = (index, isPool) => {
     let temp = items
+    if (isPool) {
+      temp[index].location = poolLocation
+      temp[index].price = 0
+      temp[index].priceExpedition = []
+    }
     temp[index].isPool = isPool
+    console.log(temp[index])
     changeItems(temp)
   }
 
@@ -162,14 +168,14 @@ ListViewCardLocationSelfDrive.defaultProps = {
   style: {},
   locationDetailLabel: 'Detail Lokasi',
   notesPlaceholder: 'Notes',
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   placeHolderStartTime: 'Pilih Waktu Jemput',
-  hourSufix: 'Jam',
+  hourSufix: 'Hour',
   keyword: null,
   changeKeyword: () => {},
   predictionItemClick: () => {},
   requestSearchPrediction: () => {},
-  keywordPlaceholder: 'Cari Lokasi',
+  keywordPlaceholder: 'Find Location',
   locationPlaceHolder: '-',
   predictions: [
     {

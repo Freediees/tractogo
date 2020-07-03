@@ -47,7 +47,9 @@ export default function CheckOutScreen({
   paymentPress,
   paymentDetailItems,
   voucherError,
-  isLoading,
+  isLoadingVoucher,
+  isLoadingCheckout,
+  isLoadingValidation,
   termsChecked,
   changeChecked,
 }) {
@@ -61,7 +63,9 @@ export default function CheckOutScreen({
         flexDirection: 'column',
       }}
     >
-      <Spinner visible={isLoading} textContent={'Loading...'} />
+      <Spinner visible={isLoadingVoucher} textContent={'Applying Voucher...'} />
+      <Spinner visible={isLoadingCheckout} textContent={'Loading...'} />
+      <Spinner visible={isLoadingValidation} textContent={'Validating...'} />
       <DefaultHeader
         isBlack
         border={true}
@@ -232,13 +236,13 @@ CheckOutScreen.defaultProps = {
     driverLabel: 'Driver',
     suitcaseAmount: 3,
     suitcaseLabel: 'Suitcase',
-    basePriceLabel: 'Harga Dasar',
+    basePriceLabel: 'Basic Price',
     priceAmount: 1000000,
     priceUnit: ' / Hari',
     totalLabel: ' Total',
     isAssurance: true,
-    assuranceLabel: 'Asuransi Kendaraan',
-    quality: '< 4 tahun pemakaian',
+    assuranceLabel: 'Vehicle Insurance',
+    quality: 'vehicle age < 4 years',
     itemImage: require('images/alphard-11.png'),
   },
   termsCheck: false,
@@ -282,7 +286,9 @@ CheckOutScreen.defaultProps = {
   ],
   voucherError: 'error di sini',
   totalAmount: 1000000,
-  isLoading: false,
+  isLoadingVoucher: false,
+  isLoadingCheckout: false,
+  isLoadingValidation: false,
   termsChecked: false,
   changeChecked: () => {},
 }
@@ -314,7 +320,9 @@ CheckOutScreen.propTypes = {
   paymentPress: PropTypes.func,
   paymentDetailItems: PropTypes.arrayOf(PropTypes.shape({})),
   voucherError: PropTypes.string,
-  isLoading: PropTypes.bool,
   termsChecked: PropTypes.bool,
   changeChecked: PropTypes.func,
+  isLoadingVoucher: PropTypes.bool,
+  isLoadingCheckout: PropTypes.bool,
+  isLoadingValidation: PropTypes.bool,
 }

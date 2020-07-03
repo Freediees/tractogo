@@ -127,7 +127,7 @@ CustomLocationInformationCardSelfDrive.defaultProps = {
   toggle: false,
   changeToggle: () => {},
   toggleLabel: 'Sama Dengan Penjemputan Mobil',
-  title: 'Lokasi Penjemputan',
+  title: 'Pick-up location',
   description: 'Masukkan detail lokasi penjemputan',
   superscript: '*',
   style: {},

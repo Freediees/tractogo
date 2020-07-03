@@ -25,6 +25,7 @@ import { AirportCarListScreenTypes } from 'scenes/airportCarListScreen/store/act
 import { CekTypes, ProfileEditPhoneTypes } from 'scenes/profileEditPhone/store/actions'
 import { RatingTypes } from 'scenes/orderRatingScreen/store/actions'
 import { MyOrderScreenTypes } from 'scenes/myOrderScreen/store/actions'
+import { MyOrderDetailTypes } from 'scenes/myOrderDetail/store/actions'
 import { OrderDetailAirportTypes } from 'scenes/orderDetailAirport/store/actions'
 import { MyOrderCancelTypes } from 'scenes/myOrderCancel/store/actions'
 
@@ -38,7 +39,7 @@ import { fetchRentDurations, fetchCityCoverages, fetchAdjustmentRetails } from '
 import { fetchExtras, addCart, navigateHome } from 'scenes/orderDetailWithDriver/saga'
 import { fetchExtrasSelfDrive } from 'scenes/orderDetailSelfDrive/saga'
 import { updateLanguage } from 'scenes/setting/saga'
-import { fetchRegister } from 'scenes/registration/saga'
+import { fetchRegister, updateRegisterGoogle } from 'scenes/registration/saga'
 import { fetchRegisterVerify } from 'scenes/registrationVerification/saga'
 import { fetchLoginVerify } from 'scenes/loginVerification/saga'
 import { fetchLogin, fetchLoginSocialite } from 'scenes/login/saga'
@@ -72,7 +73,13 @@ import {
   fetchUpdateNotifications,
   updateNotifications,
 } from 'scenes/notificationListScreen/saga'
-import { postCheckout, postCheckoutWithoutCart, checkVoucher } from 'scenes/checkoutScreen/saga'
+import {
+  postCheckout,
+  postCheckoutWithoutCart,
+  postCheckoutCC,
+  postCheckoutWithoutCartCC,
+  checkVoucher,
+} from 'scenes/checkoutScreen/saga'
 import { fetchPaymentMethods } from 'scenes/paymentScreen/saga'
 import { fetchPhoneNumber } from 'scenes/profileEditPhone/saga'
 import { putImage } from 'scenes/kYCImage/saga'
@@ -84,8 +91,10 @@ import {
   fetchOrdersCancel,
 } from 'scenes/myOrderScreen/saga'
 
+import { fetchPaymentDetail } from 'scenes/myOrderDetail/saga'
+
 import { fetchExtrasAirport } from 'scenes/orderDetailAirport/saga'
-import { fetchMasterReason } from 'scenes/myOrderCancel/saga'
+import { fetchMasterReason, fetchBankData, postReservationCancel } from 'scenes/myOrderCancel/saga'
 
 // import { postLoginToServer } from 'scenes/login/saga'
 // import { postRegisterToServer } from 'scenes/registration/saga'
@@ -101,6 +110,7 @@ export default function* root() {
     //    takeLatest(POST_REGISTER, postRegisterToServer),
     //    takeLatest(POST_LOGIN, postLoginToServer),
     takeLatest(RegisterTypes.FETCH_REGISTER, fetchRegister),
+    takeLatest(RegisterTypes.UPDATE_REGISTER_GOOGLE, updateRegisterGoogle),
     takeLatest(RegisterVerifyTypes.FETCH_REGISTER_VERIFY, fetchRegisterVerify),
     takeLatest(LoginVerifyTypes.FETCH_LOGIN_VERIFY, fetchLoginVerify),
     takeLatest(LoginTypes.FETCH_LOGIN, fetchLogin),
@@ -154,6 +164,8 @@ export default function* root() {
     takeLatest(NotificationScreenTypes.UPDATE_NOTIFICATIONS, updateNotifications),
     takeLatest(CheckoutScreenTypes.POST_CHECKOUT, postCheckout),
     takeLatest(CheckoutScreenTypes.POST_CHECKOUT_WITHOUT_CART, postCheckoutWithoutCart),
+    takeLatest(CheckoutScreenTypes.POST_CHECKOUT_CC, postCheckoutCC),
+    takeLatest(CheckoutScreenTypes.POST_CHECKOUT_WITHOUT_CART_CC, postCheckoutWithoutCartCC),
     takeLatest(CheckoutScreenTypes.CHECK_VOUCHER, checkVoucher),
     takeLatest(PaymentScreenTypes.FETCH_PAYMENT_METHODS, fetchPaymentMethods),
     takeLatest(ProfileEditPhoneTypes.FETCH_PHONE_NUMBER, fetchPhoneNumber),
@@ -165,11 +177,13 @@ export default function* root() {
     ),
     takeLatest(ImageTypes.PUT_IMAGE, putImage),
     takeLatest(RatingTypes.FETCH_RATING_INFO, fetchRatingInfo),
-    takeLatest(AirportCarListScreenTypes.FETCH_AIRPORT_STOCKS, fetchAirportStocks),
     takeLatest(MyOrderScreenTypes.FETCH_ORDERS_ACTIVE, fetchOrdersActive),
     takeLatest(MyOrderScreenTypes.FETCH_ORDERS_COMPLETE, fetchOrdersComplete),
     takeLatest(MyOrderScreenTypes.FETCH_ORDERS_CANCEL, fetchOrdersCancel),
+    takeLatest(MyOrderDetailTypes.FETCH_PAYMENT_DETAIL, fetchPaymentDetail),
     // takeLatest(OrderDetailAirportTypes.FETCH_EXTRAS_AIRPORT, fetchExtrasAirport),
     takeLatest(MyOrderCancelTypes.FETCH_MASTER_REASON, fetchMasterReason),
+    takeLatest(MyOrderCancelTypes.FETCH_BANK_DATA, fetchBankData),
+    takeLatest(MyOrderCancelTypes.POST_RESERVATION_CANCEL, postReservationCancel),
   ])
 }

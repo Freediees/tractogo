@@ -16,6 +16,7 @@ import { Column, Margin, Fonts, Colors, Padding, Row, Alignment, ImageSize, Flex
 
 import backIcon from 'icons/ic-back.svg'
 import editIcon from 'icons/ic-edit.svg'
+import avatar from 'icons/ic-deafult profile.svg'
 
 export default function ProfileEditorScreen({
   navigation,
@@ -35,6 +36,7 @@ export default function ProfileEditorScreen({
   lastName,
   isLoading,
   gender,
+  toggleGender,
 }) {
   var month = new Array()
   month[0] = 'Januari'
@@ -50,12 +52,11 @@ export default function ProfileEditorScreen({
   month[10] = 'November'
   month[11] = 'Desember'
 
-
   const onSaveDate = (value) => {
-    var date = value.getDate()
+    var date = ('0' + value.getDate()).slice(-2)
     var monthName = month[value.getMonth()]
     var year = value.getFullYear()
-    var months = value.getMonth()
+    var months = ('0' + (value.getMonth() + 1)).slice(-2)
 
     //var day = date + ' ' + monthName + ' ' + year
     var day = year + '-' + months + '-' + date
@@ -66,22 +67,22 @@ export default function ProfileEditorScreen({
   }
 
   const onSimpan = () => {
-
     var obj = {
       name,
       nameTitle,
-      birthDateContent
+      birthDateContent,
     }
 
     onSubmit(obj)
     //console.log("call API update name, nameTitle, birthdate")
   }
 
-  const onNameChange = (val) =>{
+  const onNameChange = (val) => {
     setName(val)
   }
 
   const onSelectTitle = (val) => {
+    console.log(val)
     setNameTitle(val)
   }
 
@@ -107,7 +108,7 @@ export default function ProfileEditorScreen({
         flexDirection: 'column',
         backgroundColor: Colors.white_grey,
       }}
-    > 
+    >
       <Spinner visible={isLoading} textContent={'Loading...'} />
       <DefaultHeader border={true} title={title} iconLeft={backIcon} onIconLeftPress={onBack} />
       <View
@@ -119,7 +120,7 @@ export default function ProfileEditorScreen({
           backgroundColor: Colors.white,
         }}
       >
-        <Image
+        {/* <Image
           source={require('images/TOM.png')}
           style={{
             ...ImageSize.img_xs,
@@ -127,7 +128,8 @@ export default function ProfileEditorScreen({
             backgroundColor: Colors.white,
             borderRadius: ImageSize.img_xs.width,
           }}
-        />
+        /> */}
+        <SvgXml xml={avatar} width={60} height={60} />
       </View>
 
       <View style={{ ...Flex.flex_10, width: '100%' }}>
@@ -143,7 +145,7 @@ export default function ProfileEditorScreen({
         >
           <TextWithPicker
             onNameChange={onNameChange}
-            onSelectTitle={onSelectTitle}
+            onSelectTitle={toggleGender}
             value={name}
             title={gender}
           />
@@ -246,25 +248,26 @@ export default function ProfileEditorScreen({
 
 ProfileEditorScreen.defaultProps = {
   gender: 0,
-  title: 'Pengaturan Akun',
+  title: 'Account Setting',
   thumbnails: require('images/TOM.png'),
-  labelName: 'Nama',
-  firtsName: 'firtsName',
+  labelName: 'Name',
+  firtsName: '-',
   onPress: () => {},
   placeholderName: 'cth : Name',
   lastName: '',
   onchangeName: () => {},
-  phoneNumber: '+628581763645',
-  email: 'Frdaus@gmail.com',
-  labelSubmit: 'Simpan',
+  phoneNumber: ' ',
+  email: ' ',
+  labelSubmit: 'Save',
   onBack: () => {},
   onEditPhone: () => {},
   birthDateLabel: 'Birth Date',
   // birthDateContent: "17 Agustus 1990",
-  emailLabel: 'Email dan Telepon',
+  emailLabel: 'Email and Phone',
   emailContent: 'email@gmail.com',
   phoneContent: '+62',
-  onSubmit: ()=>{}
+  onSubmit: () => {},
+  toggleGender: () => {},
 }
 
 ProfileEditorScreen.propTypes = {
@@ -287,5 +290,6 @@ ProfileEditorScreen.propTypes = {
   emailLabel: PropTypes.string,
   emailContent: PropTypes.string,
   phoneContent: PropTypes.string,
-  onSubmit: PropTypes.func
+  onSubmit: PropTypes.func,
+  toggleGender: PropTypes.func,
 }

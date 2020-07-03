@@ -124,22 +124,26 @@ const generateAddCartPayload = async (payload) => {
   if (payload.reservationPromo) {
     const tempPromo = []
     payload.reservationPromo.forEach((v) => {
-      const newV = {
-        PromoCode: v.code,
-        CategoryPromoId: v.category_id,
-        CategoryPromoName: v.category_name,
-        TypeValue: v.type_value,
-        Value: v.value,
-        value: v.value,
+      if (v && v.code) {
+        const newV = {
+          PromoCode: v.code,
+          CategoryPromoId: v.category_id,
+          CategoryPromoName: v.category_name,
+          TypeValue: v.type_value,
+          Value: v.value,
+          value: v.value,
+        }
+        tempPromo.push(newV)
       }
-      tempPromo.push(newV)
     })
     payload.reservationPromo = tempPromo
   }
 
   const newPayload = {
     CompanyId: '0100',
-    CustomerName: `${userProfile.FirstName} ${userProfile.LastName}`,
+    CustomerName: userProfile
+      ? `${userProfile.FirstName} ${userProfile.LastName}`
+      : 'PT Serasi Autoraya',
     BusinessUnitId: payload.item.item.businessUnitId,
     BranchId: payload.item.item.branchId,
     ServiceTypeId: payload.item.item.unitContractList[0].serviceTypeId,
@@ -190,7 +194,7 @@ const generateAddCartPayload = async (payload) => {
         TotalDistance: payload.item.totalDistance || null,
         PickupLocation: pickUpLocationsArr,
         DropLocation: dropLocationsArr.length > 0 ? dropLocationsArr : pickUpLocationsArr,
-        Price: parseInt(payload.item.priceAmount),
+        Price: parseInt(payload.item.priceAmount) * payload.item.duration,
         PriceExtras: payload.PriceExtras,
         PriceExpedition: payload.PriceExpedition,
         PriceDiscount: payload.PriceDiscount,
@@ -359,22 +363,26 @@ const generateCheckoutPayload = async (payload) => {
   if (payload.reservationPromo) {
     const tempPromo = []
     payload.reservationPromo.forEach((v) => {
-      const newV = {
-        PromoCode: v.code,
-        CategoryPromoId: v.category_id,
-        CategoryPromoName: v.category_name,
-        TypeValue: v.type_value,
-        Value: v.value,
-        value: v.value,
+      if (v && v.code) {
+        const newV = {
+          PromoCode: v.code,
+          CategoryPromoId: v.category_id,
+          CategoryPromoName: v.category_name,
+          TypeValue: v.type_value,
+          Value: v.value,
+          value: v.value,
+        }
+        tempPromo.push(newV)
       }
-      tempPromo.push(newV)
     })
     payload.reservationPromo = tempPromo
   }
 
   const newPayload = {
     CompanyId: '0100',
-    CustomerName: `${userProfile.FirstName} ${userProfile.LastName}`,
+    CustomerName: userProfile
+      ? `${userProfile.FirstName} ${userProfile.LastName}`
+      : 'PT Serasi Auto Raya',
     BusinessUnitId: payload.item.item.businessUnitId,
     BranchId: payload.item.item.branchId,
     ServiceTypeId: payload.item.item.unitContractList[0].serviceTypeId,
@@ -424,7 +432,7 @@ const generateCheckoutPayload = async (payload) => {
         TotalDistance: payload.item.totalDistance || null,
         PickupLocation: pickUpLocationsArr,
         DropLocation: dropLocationsArr.length > 0 ? dropLocationsArr : pickUpLocationsArr,
-        Price: parseInt(payload.item.priceAmount),
+        Price: parseInt(payload.item.priceAmount) * payload.item.duration,
         PriceExtras: payload.PriceExtras,
         PriceExpedition: payload.PriceExpedition,
         PriceDiscount: payload.PriceDiscount,
@@ -476,15 +484,17 @@ const generateAirportCheckoutPayload = async (payload) => {
   if (payload.reservationPromo) {
     const tempPromo = []
     payload.reservationPromo.forEach((v) => {
-      const newV = {
-        PromoCode: v.code,
-        CategoryPromoId: v.category_id,
-        CategoryPromoName: v.category_name,
-        TypeValue: v.type_value,
-        Value: v.value,
-        value: v.value,
+      if (v && v.code) {
+        const newV = {
+          PromoCode: v.code,
+          CategoryPromoId: v.category_id,
+          CategoryPromoName: v.category_name,
+          TypeValue: v.type_value,
+          Value: v.value,
+          value: v.value,
+        }
+        tempPromo.push(newV)
       }
-      tempPromo.push(newV)
     })
     payload.reservationPromo = tempPromo
   }
@@ -534,12 +544,10 @@ const generateAirportCheckoutPayload = async (payload) => {
         ProductId: 'PD-001',
         MaterialId: payload.item.item.unitContractList[0].materialId,
         LicensePlate: '',
-        TotalLuggage: payload.item.suitcaseAmount || 0,
-        TotalSeat: payload.item.seatAmount || 0,
+        TotalLuggage: payload.item.item.totalLugagge || 0,
+        TotalSeat: payload.item.item.totalSeat || 0,
         VehicleImage: payload.item.item.vehicleImage,
-        Price: parseInt(payload.subTotal),
         IsTransmissionManual: null,
-        PriceExtras: 0,
         MsProductId: 'PRD0007',
         MsProductServiceId: 'PSV0003',
         ZoneId: payload.reservationDetails.zone.MsZoneId,
@@ -560,7 +568,7 @@ const generateAirportCheckoutPayload = async (payload) => {
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
             Notes: payload.isFromAirport
-              ? `Gate Number : ${payload.gateNumber}, Flight Number : ${payload.flightNumber}`
+              ? `${payload.gateNumber}, Flight Number : ${payload.flightNumber}`
               : payload.fromAddressNotes,
           },
         ],
@@ -568,20 +576,25 @@ const generateAirportCheckoutPayload = async (payload) => {
           {
             CityId: payload.reservationDetails.city.CityID,
             Long: payload.isFromAirport
-              ? payload.reservationDetails.airport.location.lng
-              : payload.reservationDetails.city.lon,
+              ? payload.reservationDetails.city.lon
+              : payload.reservationDetails.airport.location.lng,
             Lat: payload.isFromAirport
-              ? payload.reservationDetails.airport.location.lat
-              : payload.reservationDetails.city.lat,
+              ? payload.reservationDetails.city.lat
+              : payload.reservationDetails.airport.location.lat,
             Alamat: payload.isFromAirport
-              ? payload.reservationDetails.airport.Airport
-              : payload.reservationDetails.city.address,
+              ? payload.reservationDetails.city.address
+              : payload.reservationDetails.airport.Airport,
             Time: Moment(Moment.utc(payload.reservationDetails.date.formatedSelectedDate).toDate())
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
             Notes: null,
           },
         ],
+        Price: parseInt(payload.item.priceAmount),
+        PriceExtras: 0,
+        PriceExpedition: 0,
+        PriceDiscount: payload.PriceDiscount,
+        SubTotal: parseInt(payload.subTotal),
         Passengers: [
           {
             Name: `${userProfile.FirstName} ${userProfile.LastName}`,
@@ -641,22 +654,26 @@ const generateAirportAddCartPayload = async (payload) => {
   if (payload.reservationPromo) {
     const tempPromo = []
     payload.reservationPromo.forEach((v) => {
-      const newV = {
-        PromoCode: v.code,
-        CategoryPromoId: v.category_id,
-        CategoryPromoName: v.category_name,
-        TypeValue: v.type_value,
-        Value: v.value,
-        value: v.value,
+      if (v && v.code) {
+        const newV = {
+          PromoCode: v.code,
+          CategoryPromoId: v.category_id,
+          CategoryPromoName: v.category_name,
+          TypeValue: v.type_value,
+          Value: v.value,
+          value: v.value,
+        }
+        tempPromo.push(newV)
       }
-      tempPromo.push(newV)
     })
     payload.reservationPromo = tempPromo
   }
 
   const newPayload = {
     CompanyId: '0100',
-    CustomerName: `${userProfile.FirstName} ${userProfile.LastName}`,
+    CustomerName: userProfile
+      ? `${userProfile.FirstName} ${userProfile.LastName}`
+      : 'PT Serasi Auto Raya',
     BusinessUnitId: payload.item.item.businessUnitId,
     BranchId: payload.item.item.branchId,
     ServiceTypeId: payload.item.item.unitContractList[0].serviceTypeId,
@@ -699,13 +716,11 @@ const generateAirportAddCartPayload = async (payload) => {
         ContractItemId: payload.item.item.unitContractList[0].contractItemId,
         ProductId: 'PD-001',
         MaterialId: payload.item.item.unitContractList[0].materialId,
-        TotalLuggage: payload.item.suitcaseAmount || 0,
-        TotalSeat: payload.item.seatAmount || 0,
+        TotalLuggage: payload.item.item.totalLugagge || 0,
+        TotalSeat: payload.item.item.totalSeat || 0,
         VehicleImage: payload.item.item.vehicleImage,
         LicensePlate: '',
-        Price: parseInt(payload.subTotal),
         IsTransmissionManual: null,
-        PriceExtras: 0,
         MsProductId: 'PRD0007',
         MsProductServiceId: 'PSV0003',
         ZoneId: payload.reservationDetails.zone.MsZoneId,
@@ -726,7 +741,7 @@ const generateAirportAddCartPayload = async (payload) => {
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
             Notes: payload.isFromAirport
-              ? `Gate Number : ${payload.gateNumber}, Flight Number : ${payload.flightNumber}`
+              ? `${payload.gateNumber}, Flight Number : ${payload.flightNumber}`
               : payload.fromAddressNotes,
           },
         ],
@@ -734,20 +749,25 @@ const generateAirportAddCartPayload = async (payload) => {
           {
             CityId: payload.reservationDetails.city.CityID,
             Long: payload.isFromAirport
-              ? payload.reservationDetails.airport.location.lng
-              : payload.reservationDetails.city.lon,
+              ? payload.reservationDetails.city.lon
+              : payload.reservationDetails.airport.location.lng,
             Lat: payload.isFromAirport
-              ? payload.reservationDetails.airport.location.lat
-              : payload.reservationDetails.city.lat,
+              ? payload.reservationDetails.city.lat
+              : payload.reservationDetails.airport.location.lat,
             Alamat: payload.isFromAirport
-              ? payload.reservationDetails.airport.Airport
-              : payload.reservationDetails.city.address,
+              ? payload.reservationDetails.city.address
+              : payload.reservationDetails.airport.Airport,
             Time: Moment(Moment.utc(payload.reservationDetails.date.formatedSelectedDate).toDate())
               .local()
               .format('YYYY-MM-DD HH:mm:ss'),
             Notes: null,
           },
         ],
+        Price: parseInt(payload.item.priceAmount),
+        PriceExtras: 0,
+        PriceExpedition: 0,
+        PriceDiscount: payload.PriceDiscount,
+        SubTotal: parseInt(payload.subTotal),
         Passengers: [
           {
             Name: `${userProfile.FirstName} ${userProfile.LastName}`,

@@ -70,7 +70,7 @@ export default function SelfDrivePickLocationScreen({
 
 SelfDrivePickLocationScreen.defaultProps = {
   onIconLeftPress: () => {},
-  title: 'Pilih Lokasi',
+  title: 'Select Location',
   items: [
     {
       date: new Date(),
@@ -95,14 +95,14 @@ SelfDrivePickLocationScreen.defaultProps = {
   style: {},
   locationDetailLabel: 'Detail Lokasi',
   notesPlaceholder: 'Notes',
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   placeHolderStartTime: 'Pilih Waktu Jemput',
-  hourSufix: 'Jam',
+  hourSufix: 'Hour',
   keyword: null,
   changeKeyword: () => {},
   predictionItemClick: () => {},
   requestSearchPrediction: () => {},
-  keywordPlaceholder: 'Cari Lokasi',
+  keywordPlaceholder: 'Find Location',
   predictions: [
     {
       description:

@@ -53,7 +53,7 @@ export default function CheckBox({
 
 CheckBox.defaultProps = {
   renderHeader: () => {},
-  titleLabel: 'Semua',
+  titleLabel: 'All',
   onCheck: () => {},
   checked: false,
 }

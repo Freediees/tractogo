@@ -74,7 +74,7 @@ export default function CustomLocationPicker({
                   }
                 }}
                 value={keyword}
-                style={{ ...Padding.pv_16 }}
+                style={{ ...Padding.pv_16, ...Fonts.text_black }}
                 placeholder={keywordPlaceholder}
               />
               <View>
@@ -211,11 +211,11 @@ CustomLocationPicker.defaultProps = {
   modalVisible: true,
   changeModalVisible: () => {},
   changeKeyword: () => {},
-  keywordPlaceholder: 'Cari Lokasi',
+  keywordPlaceholder: 'Find Location',
   latitude: -6.2,
   longitude: 106.816666,
   location: null,
-  locationPlaceHolder: 'Pilih Lokasi',
+  locationPlaceHolder: 'Select Location',
   changeLocation: () => {},
   requestSearchPrediction: () => {},
   predictions: [

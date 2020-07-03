@@ -316,7 +316,6 @@ export default function DetailItemAirport({
                 onPress={() => changeModalTerms(true)}
               />
               <Separator style={{ ...Margin.mv_4 }} />
-              <DetailInfoSection title={'Pickup Method'} onPress={() => changeModalTerms(true)} />
             </CustomBorderlessAccordionCard>
           </View>
           <DefaultOkCancelFooter
@@ -360,7 +359,7 @@ export default function DetailItemAirport({
             items={termsModalItems}
           />
           <CustomBottomSheet
-            rightText={() => renderRightText(1)}
+            topRightComponent={() => renderRightText(1)}
             title={paymentDetailLabel}
             botSheetRef={(ref) => (bsPaymentDetail = ref)}
           >
@@ -411,15 +410,15 @@ export default function DetailItemAirport({
 
 DetailItemAirport.defaultProps = {
   onIconLeftPress: () => {},
-  title: 'Sewa Mobil di ',
+  title: 'Cars in ',
   city: 'Bandung',
   serviceInfoLabel: 'Service Info',
   startDate: new Date(),
   endDate: new Date().getTime() + 86400000,
   rentHour: 12,
-  rentHourSuffix: 'Jam',
-  subtitle: 'Senin, 26 Jan - 27 Jan 2020 | 12 Jam',
-  termsLabel: 'Syarat & Ketentuan',
+  rentHourSuffix: 'Hour',
+  subtitle: 'Senin, 26 Jan - 27 Jan 2020 | 12 Hour',
+  termsLabel: 'Terms and Conditions',
   facilitiesLabel: 'Fasilitas',
   additionalLabel: 'Additional',
   item: {
@@ -430,26 +429,26 @@ DetailItemAirport.defaultProps = {
     driverLabel: 'Driver',
     suitcaseAmount: 3,
     suitcaseLabel: 'Suitcase',
-    basePriceLabel: 'Harga Dasar',
+    basePriceLabel: 'Basic Price',
     priceAmount: 1000000,
     priceUnit: ' / Hari',
     totalLabel: ' Total',
     isAssurance: true,
-    assuranceLabel: 'Asuransi Kendaraan',
-    quality: '< 4 tahun pemakaian',
+    assuranceLabel: 'Vehicle Insurance',
+    quality: 'vehicle age < 4 years',
     itemImage: require('images/alphard-11.png'),
   },
   facilities: [
     {
-      name: 'Layanan Darurat 24 Jam',
+      name: '24-Hour Emergency Service',
       image: iconCallCenter,
     },
     {
-      name: 'Kendaraan Pengganti',
+      name: 'Breakdown replacement car',
       image: iconReplacement,
     },
     {
-      name: 'Asuransi Jiwa',
+      name: 'Life Insurance',
       image: iconAsuransi,
     },
   ],
@@ -484,7 +483,7 @@ DetailItemAirport.defaultProps = {
         'E. Total Lost, asuransi untuk kehilangan unit. PENYEWA juga wajib menanggung Biaya Resiko Kehilangan (Total Lost Risk) sebesar Rp 6.000.000,- (enam juta rupiah) bila Mobil tersebut hilang.',
     },
   ],
-  moreButtonLabel: 'selengkapnya',
+  moreButtonLabel: 'more',
   // changeAdditionalItems: () => {},
   notesTitleLabel: 'Keterangan',
   notes: 'Penambahan Biaya diperuntukan akomodasi dan penginapan sopir',
@@ -500,18 +499,18 @@ DetailItemAirport.defaultProps = {
   onChangeAdditionPersonName: () => {},
   onChangeAdditionPersonPhone: () => {},
   paymentItems: [],
-  totalLabel: 'Total Price',
+  totalLabel: 'Price Total',
   okFooterLabel: 'Checkout',
-  cancelFooterLabel: 'Masukkan Keranjang',
+  cancelFooterLabel: 'Add To Cart',
   onOkFooterPress: () => {},
   onCancelFooterPress: () => {},
   totalAmount: 500000,
   changeTotalAmount: () => {},
-  paymentDetailLabel: 'Detail Order',
+  paymentDetailLabel: 'Order Details',
   onAddToCartPress: () => {},
-  addToCartLabel: 'Paket berhasil ditambahkan',
-  cartTitle: 'Sewa Mobil - Dengan Sopir',
-  addToCartButtonLabel: 'Lihat Keranjang',
+  addToCartLabel: 'Package Successfully Added',
+  cartTitle: 'Car Rental - With Driver',
+  addToCartButtonLabel: 'Go To Cart',
   pickupLocationLabel: 'Pickup Details',
   pickUpLocationDescription: 'Masukkan detail lokasi penjemputan',
   pickUpLocations: [

@@ -53,6 +53,7 @@ export default function CreditCardList({
             <TextInput
               style={{
                 ...Fonts.f_12,
+                ...Fonts.text_black,
                 borderBottomColor: Colors.grey,
                 borderBottomWidth: 1,
                 ...Padding.pv_8,
@@ -80,6 +81,7 @@ export default function CreditCardList({
             <TextInput
               style={{
                 ...Fonts.f_12,
+                ...Fonts.text_black,
                 borderBottomColor: Colors.grey,
                 borderBottomWidth: 1,
                 ...Padding.pv_8,
@@ -103,6 +105,7 @@ export default function CreditCardList({
           <TextInput
             style={{
               ...Fonts.f_12,
+              ...Fonts.text_black,
               borderBottomColor: Colors.grey,
               borderBottomWidth: 1,
               ...Padding.pv_8,

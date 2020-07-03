@@ -46,7 +46,7 @@ KYCSuccessScreen.defaultProps = {
   onButtonPress: null,
   title: 'Yeay! pendaftaran kamu telah terkirim',
   label1: 'Kami sedang mengecek kelengkapan',
-  label2: 'data yang telah kamu kirim, tunggu 1 x 24 jam',
+  label2: 'data yang telah kamu kirim, tunggu 1 x 24 Hour',
   buttonLabel: 'Home',
 }
 

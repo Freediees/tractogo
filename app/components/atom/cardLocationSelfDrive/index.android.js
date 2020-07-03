@@ -235,7 +235,7 @@ export default function CardLocationSelfDrive({
                 placeholder={notesPlaceholder}
                 editable={true}
                 value={notes}
-                onChange={(value) => {
+                onChangeText={(value) => {
                   onNoteChange(value)
                 }}
                 placeholderTextColor={Colors.grey}
@@ -270,12 +270,12 @@ CardLocationSelfDrive.defaultProps = {
     lon: 106.816666,
   },
   notesPlaceholder: 'Notes',
-  locationPlaceholder: 'Pilih Lokasi',
+  locationPlaceholder: 'Select Location',
   date: new Date(),
   notes: null,
   onNoteChange: () => {},
   style: {},
-  hourSufix: 'Jam',
+  hourSufix: 'Hour',
   hour: '10',
   minute: '00',
   changeLocation: () => {},

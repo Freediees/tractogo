@@ -37,6 +37,7 @@ const { Types, Creators } = createActions({
   fetchStockPriceSuccess: ['price'],
   fetchStockPriceFailure: ['errorMessage'],
   changeStocksWithPrice: ['payload'],
+  changeAlertVisible: ['payload'],
   resetState: null,
 })
 

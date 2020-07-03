@@ -14,30 +14,31 @@ import {
 
 function* fetchCartDetails() {
   yield put(CartScreenAction.fetchCartDetailsLoading())
-  try {
-    const json = yield call(orderService.getCartDetailsRequest)
-    if (json) {
-      console.log(json)
+  const json = yield call(orderService.getCartRequest)
+  if (json) {
+    console.log(json)
+    if (json.Error) {
+      yield put(CartScreenAction.fetchCartDetailsFailure(json.Error))
+    } else {
       if (json.Data) {
         const dataArr = []
-        yield AsyncStorage.setItem('buID', json.Data[0].BusinessUnitId)
-        json.Data[0].cart_details.forEach(async (item) => {
+        yield AsyncStorage.setItem('buID', json.Data.BusinessUnitId)
+        json.Data.cart_details.forEach(async (item) => {
           let carRentalLabel = ''
           console.log('abcdef')
           if (item.MsProductId === CAR_RENTAL) {
-            carRentalLabel = 'Sewa Mobil'
+            carRentalLabel = 'Car Rental'
           } else if (item.MsProductId === AIRPORT_TRANSFER) {
-            carRentalLabel = 'Transfer Bandara'
+            carRentalLabel = 'Airport Transfer'
           } else if (item.MsProductId === BUS_RENTAL) {
             carRentalLabel = 'Sewa Bus'
           }
           let rentalDriverLabel = ''
           if (item.MsProductServiceId === SERVICE_ID_WITH_DRIVER) {
-            rentalDriverLabel = 'Dengan Sopir'
+            rentalDriverLabel = 'With Driver'
           } else if (item.MsProductServiceId === SERVICE_ID_SELF_DRIVE) {
-            rentalDriverLabel = 'Tanpa Sopir'
+            rentalDriverLabel = 'Self Drive'
           }
-          console.log('abcdef1234')
           let newData = {
             cardTitle: item.UnitTypeName || 'TOYOTA CARS',
             seatAmount: item.TotalSeat || 0,
@@ -62,11 +63,9 @@ function* fetchCartDetails() {
           }
           dataArr.push(newData)
         })
-        console.log('abcdef1234567')
-        const cartInfos = json.Data[0]
+        const cartInfos = json.Data
         cartInfos.CartDetail = cartInfos.cart_details
         cartInfos.CartDetail.forEach(async (v) => {
-          console.log('aaaaaa')
           v.Passengers = v.cart_passengers
           v.cart_drop_locations.forEach(async (y) => {
             y.PriceExpedition = y.expedition_cart_drop_location
@@ -85,8 +84,8 @@ function* fetchCartDetails() {
           v.ReservationExtras =
             v.cart_extras && v.cart_extras[0] ? v.cart_extras[0].cart_extras_details : []
           v.ReservationExtras.forEach((y) => {
-            y.ExtrasId = y.CartExtrasId
-            delete y.CartExtrasId
+            y.ExtrasId = y.MsExtrasId
+            delete y.MsExtrasId
           })
 
           delete v.StartDateArray
@@ -101,8 +100,6 @@ function* fetchCartDetails() {
         })
 
         delete cartInfos.cart_details
-        console.log('testttt12345')
-        console.log(cartInfos)
         yield AsyncStorage.setItem('cartInfos', JSON.stringify(cartInfos))
         const newPayload = {
           payload: {
@@ -112,25 +109,32 @@ function* fetchCartDetails() {
         }
         console.log(newPayload)
         yield call(checkoutValidationCart, newPayload)
+      } else {
+        yield put(CartScreenAction.fetchCartDetailsFailure(json.ErrorMessage))
       }
     }
-  } catch (error) {
-    yield put(CartScreenAction.fetchCartDetailsFailure(error))
+  } else {
+    yield put(
+      CartScreenAction.fetchCartDetailsFailure(
+        'There was an error while fetching products informations.'
+      )
+    )
   }
 }
 
 function* deleteCartDetails({ payload }) {
   yield put(CartScreenAction.deleteCartDetailsLoading())
-  try {
-    const json = yield call(orderService.deleteCartDetails, payload)
-    if (json) {
-      console.log(json)
+  const json = yield call(orderService.deleteCartDetails, payload)
+  if (json) {
+    if (json.Error) {
+      yield put(CartScreenAction.deleteCartDetailsFailure(json.Error))
+    } else {
       if (json.Data) {
         yield put(CartScreenAction.deleteCartDetailsSuccess('' + json.Data))
       }
     }
-  } catch (error) {
-    yield put(CartScreenAction.deleteCartDetailsFailure(error))
+  } else {
+    yield put(CartScreenAction.deleteCartDetailsFailure('There was an error'))
   }
 }
 
@@ -142,9 +146,16 @@ function* checkoutValidation({ payload }) {
   if (json) {
     // create the object here
     if (json) {
+      console.log('checkout validate')
       console.log(json)
-      if (json.Data === false && json.ErrorMessage !== null && json.ErrorMessage !== '') {
-        yield put(CartScreenAction.checkoutValidationFailure(json.ErrorMessage))
+      if (json.Data === false) {
+        if (json.ErrorMessage !== null && json.ErrorMessage !== '') {
+          console.log(json.ErrorMessage)
+          yield put(CartScreenAction.checkoutValidationFailure(json.ErrorMessage))
+        } else {
+          console.log(json.ErrorMessage)
+          yield put(CartScreenAction.checkoutValidationFailure('undefined error'))
+        }
       } else {
         yield put(CartScreenAction.checkoutValidationSuccess('Success'))
       }
@@ -164,16 +175,12 @@ function* checkoutValidationCart({ payload }) {
   // Fetch user informations from an API
   const json = yield call(orderService.postCheckoutValidation, payload.payload)
   if (json) {
-    // create the object here
-    console.log('validate cart')
     console.log(json)
-    console.log(payload)
+    console.log('validate')
     if (json.Data === false) {
       if (json.ErrorMessage !== null && json.ErrorMessage !== '') {
-        console.log('try')
         yield put(CartScreenAction.checkoutValidationFailure(json.ErrorMessage))
         if (json.ErrorMessage) {
-          console.log(json.ErrorMessage)
           const tempCarts = payload.data
           if (json.ErrorMessage.backDateError) {
             const error = json.ErrorMessage.backDateError

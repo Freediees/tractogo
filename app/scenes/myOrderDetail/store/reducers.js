@@ -1,30 +1,30 @@
 import { INITIAL_STATE } from './initialState'
 import { createReducer } from 'reduxsauce'
-import { ExampleScreenTypes } from './actions'
+import { MyOrderDetailTypes } from './actions'
 
-export const fetchExampleLoading = (state) => ({
+export const fetchPaymentDetailLoading = (state) => ({
   ...state,
-  example: [],
-  exampleIsLoading: false,
-  exampleErrorMessage: null,
+  paymentDetail: {},
+  paymentDetailIsLoading: false,
+  paymentDetailErrorMessage: null,
 })
 
-export const fetchExampleFailure = (state, { errorMessage }) => ({
+export const fetchPaymentDetailFailure = (state, { errorMessage }) => ({
   ...state,
-  example: [],
-  exampleIsLoading: false,
-  exampleErrorMessage: errorMessage,
+  paymentDetail: {},
+  paymentDetailIsLoading: false,
+  paymentDetailErrorMessage: errorMessage,
 })
 
-export const fetchExampleSuccess = (state, { example }) => ({
+export const fetchPaymentDetailSuccess = (state, { paymentDetail }) => ({
   ...state,
-  example: example,
-  exampleIsLoading: false,
-  exampleErrorMessage: null,
+  paymentDetail: paymentDetail,
+  paymentDetailIsLoading: false,
+  paymentDetailErrorMessage: null,
 })
 
 export const reducer = createReducer(INITIAL_STATE, {
-  [ExampleScreenTypes.FETCH_EXAMPLE_SUCCESS]: fetchExampleSuccess,
-  [ExampleScreenTypes.FETCH_EXAMPLE_FAILURE]: fetchExampleFailure,
-  [ExampleScreenTypes.FETCH_EXAMPLE_LOADING]: fetchExampleLoading,
+  [MyOrderDetailTypes.FETCH_PAYMENT_DETAIL_SUCCESS]: fetchPaymentDetailSuccess,
+  [MyOrderDetailTypes.FETCH_PAYMENT_DETAIL_FAILURE]: fetchPaymentDetailFailure,
+  [MyOrderDetailTypes.FETCH_PAYMENT_DETAIL_LOADING]: fetchPaymentDetailLoading,
 })

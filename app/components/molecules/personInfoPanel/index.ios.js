@@ -89,6 +89,7 @@ export default function PersonInfoPanel({
             <TextInput
               style={{
                 ...Fonts.f_12,
+                ...Fonts.text_black,
                 borderBottomColor: Colors.light_grey,
                 borderBottomWidth: 1,
                 ...Padding.pb_8,
@@ -102,6 +103,7 @@ export default function PersonInfoPanel({
             <TextInput
               style={{
                 ...Fonts.f_12,
+                ...Fonts.text_black,
                 borderBottomColor: Colors.light_grey,
                 borderBottomWidth: 1,
                 ...Padding.pb_8,

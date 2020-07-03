@@ -28,6 +28,8 @@ import { reducer as ProfileEditPhoneReducer } from 'scenes/profileEditPhone/stor
 import { reducer as ImageKYCReducer } from 'scenes/kYCImage/store/reducers'
 import { reducer as RatingReducer } from 'scenes/orderRatingScreen/store/reducers'
 import { reducer as MyOrderScreenReducer } from 'scenes/myOrderScreen/store/reducers'
+import { reducer as MyOrderDetailReducer } from 'scenes/myOrderDetail/store/reducers'
+
 import { reducer as OrderDetailAirportReducer } from 'scenes/orderDetailAirport/store/reducers'
 
 import { reducer as MyOrderCancelReducer } from 'scenes/myOrderCancel/store/reducers'
@@ -63,6 +65,7 @@ export default () => {
     kycImage: ImageKYCReducer,
     ratings: RatingReducer,
     order: MyOrderScreenReducer,
+    orderDetail: MyOrderDetailReducer,
     orderDetailAirport: OrderDetailAirportReducer,
     cancelOrder: MyOrderCancelReducer,
     //    register: RegisterReducer,

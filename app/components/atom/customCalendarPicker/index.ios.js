@@ -26,7 +26,6 @@ export default function CustomCalendarPicker({
         weekdays={weekdays}
         months={months}
         minDate={minDate}
-        maxDate={maxDate}
         todayTextStyle={{ ...Background.bg_transparent }}
         dayOfWeekStyles={{ ...Background.bg_blue, ...Fonts.text_white }}
         selectedDayTextColor={'#fff'}
@@ -83,7 +82,7 @@ CustomCalendarPicker.defaultProps = {
   onDateChange: () => { },
   initialDate: new Date(),
   minDate: new Date(),
-  maxDate: new Date().getTime() + 864000000,
+  maxDate: null,
   selectedDate: null,
   weekdays: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
   months: [

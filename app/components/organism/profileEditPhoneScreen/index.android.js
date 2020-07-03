@@ -7,6 +7,7 @@ import DefaultHeader from 'components/molecules/defaultHeader'
 import TextWithPicker from 'components/atom/textWithPicker'
 import DefaultFooter from 'components/molecules/defaultFooter'
 import OTPScreen from 'components/organism/otpVerificationScreen'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 import { Column, Margin, Fonts, Colors, Padding, Row, Alignment, ImageSize, Flex } from 'theme'
 
@@ -32,24 +33,23 @@ export default function ProfileEditPhoneScreen({
   onSave,
   verification,
   onToggleModal,
+  isLoading,
+  errorMessage,
 }) {
-
   const unlockInput = () => {
     setLockEdit(true)
-    setTimeout(function(){
-      inputNumber.focus()
-    }, 100);
-    
+    // setTimeout(function() {
+    //   inputNumber.focus()
+    // }, 100)
   }
 
-  const onSimpan = () => {
-    onSave('1234', phoneNumber, phone)
+  const onSimpan = (otp) => {
+    onSave(otp, phoneNumber, phone)
   }
 
   const lockInput = () => {
     setLockEdit(false)
   }
-  
 
   const [lockEdit, setLockEdit] = useState(false)
   const [phone, setPhone] = useState('')
@@ -70,6 +70,7 @@ export default function ProfileEditPhoneScreen({
         backgroundColor: Colors.white_grey,
       }}
     >
+      <Spinner visible={isLoading} textContent={'Loading...'} />
       <DefaultHeader border={true} title={title} iconLeft={backIcon} onIconLeftPress={onBack} />
       <View
         style={{
@@ -83,23 +84,27 @@ export default function ProfileEditPhoneScreen({
       >
         <View style={{ width: '100%', ...Margin.mh_20, backgroundColor: Colors.white }}>
           <Text style={{ ...Fonts.f_12 }}>{phoneLabel}</Text>
-                <TextInput
-                    ref={(input) => {inputNumber = input} }
-                    keyboardType={'phone-pad'}
-                    value={phone}
-                    //color={lockEdit ? Colors.black : Colors.grey }
-                    //placeholderTextColor={Colors.grey}
-                    returnKeyType="done"
-                    autoCorrect={false}
-                    editable={lockEdit}
-                    secureTextEntry={false}
-                    onEndEditing={()=> lockInput() }
-                    onChangeText={(val) => {
-                      setPhone(val)
-                    }
-                    }
-                  />
-          <TouchableOpacity style={{ position: 'absolute', right: 10, top: 0, zIndex: 888 }} onPress={()=> unlockInput()}>
+          <TextInput
+            ref={(input) => {
+              inputNumber = input
+            }}
+            keyboardType={'phone-pad'}
+            value={phone}
+            //color={lockEdit ? Colors.black : Colors.grey }
+            //placeholderTextColor={Colors.grey}
+            returnKeyType="done"
+            autoCorrect={false}
+            editable={lockEdit}
+            secureTextEntry={false}
+            onEndEditing={() => lockInput()}
+            onChangeText={(val) => {
+              setPhone(val)
+            }}
+          />
+          <TouchableOpacity
+            style={{ position: 'absolute', right: 10, top: 0, zIndex: 888 }}
+            onPress={() => unlockInput()}
+          >
             <SvgXml xml={icedit} width={20} height={20} fill="#f39c12" />
           </TouchableOpacity>
         </View>
@@ -135,15 +140,18 @@ export default function ProfileEditPhoneScreen({
         </View>
       </View>
 
-      <DefaultFooter buttonText={labelSubmit} onButtonPress={()=>onToggleModal()} />
+      <DefaultFooter buttonText={labelSubmit} onButtonPress={() => onToggleModal()} />
 
-      <Modal
-        animationType={'slide'}
-        visible={verification}>
-          <OTPScreen 
-            onIconLeftPress={onToggleModal}
-            onButtonPress={onSimpan}
-          />
+      <Modal animationType={'slide'} visible={verification}>
+        <OTPScreen
+          onIconLeftPress={onToggleModal}
+          onButtonPress={onSimpan}
+          errorMessage={errorMessage || ''}
+          phoneNumber={phone}
+          onCodeFilled={(a) => {
+            onSimpan(a)
+          }}
+        />
       </Modal>
     </View>
   )
@@ -151,11 +159,11 @@ export default function ProfileEditPhoneScreen({
 
 ProfileEditPhoneScreen.defaultProps = {
   verification: false,
-  onToggleModal: ()=>{},
-  onSave: ()=>{},
-  title: 'Pengaturan Akun',
+  onToggleModal: () => {},
+  onSave: () => {},
+  title: 'Account Setting',
   thumbnails: require('images/TOM.png'),
-  labelName: 'Nama',
+  labelName: 'Name',
   firtsName: 'firtsName',
   onPress: () => {},
   placeholderName: 'cth : Name',
@@ -163,11 +171,12 @@ ProfileEditPhoneScreen.defaultProps = {
   onchangeName: () => {},
   phoneNumber: '-',
   email: '-',
-  labelSubmit: 'Simpan',
+  labelSubmit: 'Save',
   onBack: () => {},
-  phoneLabel: "Phone",
-  emailLabel: "Email",
-  informationContent: "Semua informasi transaksi dan keamanan akunmu akan dikirim ke email ini"
+  phoneLabel: 'Phone',
+  emailLabel: 'Email',
+  informationContent: 'All transaction information and security will be sent to this email',
+  errorMessage: '',
 }
 
 ProfileEditPhoneScreen.propTypes = {
@@ -189,4 +198,5 @@ ProfileEditPhoneScreen.propTypes = {
   phoneLabel: PropTypes.string,
   emailLabel: PropTypes.string,
   informationContent: PropTypes.string,
+  errorMessage: PropTypes.string,
 }

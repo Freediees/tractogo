@@ -2,6 +2,8 @@ export const Config = {
   API_URL: 'https://jsonplaceholder.typicode.com/users/',
 }
 
+export const PUBLIC_KEY = 'L1A6L2JnVPBsppBcxPR7q2nm95VaGa8uSuRTKdq6A='
+
 export const SECRET_KEY = '153fa3e1352cd10281496006eb41f9b6'
 export const CID = 'CID-999999'
 export const SERVICE_ID_SELF_DRIVE = 'PSV0001'
@@ -91,6 +93,35 @@ export const STATUS_RESERVATION = [
   {
     name: 'REJECTED',
     id: 'BOSID-012',
+  },
+]
+
+// 1. ACV-001 (penjemputan pada tanggal 20 januari 2020 Hour 12)
+// 2. ACV-002 (sopir menuju titik penjemputan anda / sopir menunggu anda dibandara)
+// 3. ACV-003 (sedang dalam perjalanan dengan anda)
+// 4. ACV-004 (perjalanan selesai)
+// 5. ACV-005 (puas dengan kendaraan ini)
+
+export const ACTIVITY_STATUS_V2 = [
+  {
+    activityID: 'ACV-001',
+    name: 'Penjemputan pada tanggal',
+  },
+  {
+    activityID: 'ACV-002',
+    name: 'Sopir menuju titik penjemputan anda',
+  },
+  {
+    activityID: 'ACV-003',
+    name: 'Sedang dalam perjalanan dengan anda',
+  },
+  {
+    activityID: 'ACV-004',
+    name: 'Perjalanan selesai',
+  },
+  {
+    activityID: 'ACV-005',
+    name: 'Puas dengan kendaraan ini',
   },
 ]
 
@@ -194,6 +225,7 @@ export const USER_PROFILE_UPDATE = `${BASE_URL_BTC(
 export const CHANGE_PASSWORD = `${BASE_URL_BTC('authorization')}/authorization/change-password/`
 export const CREDIT_CARD = `${BASE_URL_BTC('authorization')}/authorization/credit-card-account`
 ;('GET: /get-by-user/, SAVE: /save, UPDATE: /update, DELETE: /delete, SET PRIMARY: /set-primary ')
+export const SEND_DEVICE_TOKEN = `${BASE_URL_BTC('authorization')}/authorization/device-token`
 
 // MASTER
 export const LIST_CAR_TYPE = `${BASE_URL_BTC('configuration')}/configuration/car-type/get-by-param`
@@ -277,6 +309,7 @@ export const CONTENT_ARTICLE = `${BASE_URL_BTC('product')}/product/content-artic
 export const PROMO = `${BASE_URL_BTC('product')}/product/content-promo`
 
 /** CART */
+export const CART = `${BASE_URL_BTC('order')}/order/reservation/get-cart`
 export const ADD_CART = `${BASE_URL_BTC('order')}/order/reservation/add-cart`
 export const DELETE_CART = `${BASE_URL_BTC('order')}/order/reservation/delete-cart`
 export const CART_CHECKOUT = `${BASE_URL_BTC('order')}/order/reservation/cart-checkout`
@@ -288,13 +321,16 @@ export const MY_ORDERS_ACTIVE = `${BASE_URL_BTC('order')}/order/reservation/get-
 export const MY_ORDERS_COMPLETE = `${BASE_URL_BTC('order')}/order/reservation/get-history`
 export const MY_ORDERS_CANCEL = `${BASE_URL_BTC('order')}/order/reservation/get-cancel-history`
 export const MY_ORDERS_CANCEL_MASTER_REASON = `${BASE_URL_BTC('order')}/order/master-cancellation`
-
+export const MY_ORDERS_PAYMENT = (args) =>
+  `${BASE_URL_BTC('order')}/order/reservation/get-detail-payment/${args}`
+export const RESERVATION_CANCEL = `${BASE_URL_BTC('order')}/order/reservation/cancelReservation`
 
 export const PRICE_EXPEDITION = (args1, args2, args3) =>
   `${BASE_URL_BTC('price')}/price/price-expedition/${args1}/${args2}/${args3}`
 /** PROFILE */
 //export const PUT_PHONE_NUMBER = `${BASE_URL_BTC('authorization')}user-profile/change-number-phone`
-export const PUT_PHONE_NUMBER = 'http://omni-service-authorization.azurewebsites.net/api/v2/b2c/authorization/user-profile/change-number-phone'
+export const PUT_PHONE_NUMBER =
+  'http://omni-service-authorization.azurewebsites.net/api/v2/b2c/authorization/user-profile/change-number-phone'
 
 //export const NOTIFICATION_BY_USER = `${BASE_URL('notification')}/notification/notification-history/get-by-param?UserId=`
 //export const PAYMENT_METHOD = `${BASE_URL_BTC('configuration')}/configuration/payment-method/get-by-param`
@@ -310,10 +346,11 @@ export const PAYMENT_METHOD = `${BASE_URL_BTC(
   'configuration'
 )}/configuration/payment-method/get-by-param`
 export const PUT_UPDATE_PROFILE =
-  'http://omni-service-authorization.azurewebsites.net/api/b2c/authorization/user-profile/update/'
+  'http://omni-service-authorization.azurewebsites.net/api/v2/b2c/authorization/user-profile/update/'
 
 /** VOUCHER */
-export const REDEEM_VOUCHER = (args1) =>
-  `${BASE_URL('discount')}/discount/promo/validate/${args1}/`
-
-
+export const REDEEM_VOUCHER = (args1) => `${BASE_URL('discount')}/discount/promo/validate/${args1}/`
+export const GET_RATING_INFO =
+  'http://omni-service-rating.azurewebsites.net/api/v2/b2c/clientrating/rating'
+export const POST_REGISTER_GOOGLE =
+  'https://omni-service-authorization.azurewebsites.net/api/v2/b2c/authorization/user-profile/insert-phone-number'

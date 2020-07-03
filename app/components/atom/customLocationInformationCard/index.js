@@ -122,6 +122,7 @@ export default function CustomLocationInformationCard({
                       borderBottomColor: Colors.grey,
                       borderBottomWidth: 1,
                       ...Padding.pb_8,
+                      ...Fonts.text_black
                     }}
                     placeholder={placeholderPickupNotes}
                     value={pickupNotes}
@@ -165,7 +166,7 @@ export default function CustomLocationInformationCard({
 }
 
 CustomLocationInformationCard.defaultProps = {
-  title: 'Informasi Layanan',
+  title: 'Service Information',
   children: null,
   editLabel: 'Ubah',
   onEditPress: () => {},
